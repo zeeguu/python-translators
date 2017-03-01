@@ -1,12 +1,11 @@
 import urllib
 
 import requests
-
+import re
 from context_aware_translator import ContextAwareTranslator
 
 
 class GoogleTranslator(ContextAwareTranslator):
-
     API_BASE_URL = 'https://translation.googleapis.com/language/translate/v2?'
 
     OPENING_TAG = '<span>'
@@ -39,26 +38,32 @@ class GoogleTranslator(ContextAwareTranslator):
 
     # Function to translate a query by taking into account the context
     def ca_translate(self, left_context, query, right_context, source_language, target_language):
-        query = left_context + GoogleTranslator.OPENING_TAG + query + GoogleTranslator.CLOSING_TAG + right_context
+        query = left_context + '<span>' + query + '</span>' + right_context
 
-        translated_text = self.translate(query, source_language, target_language)
+        translation = self.translate(query, source_language, target_language)
+        translated_query = self.parse_spanned_string(translation)
 
-        index_opening_tag = translated_text.find(GoogleTranslator.OPENING_TAG)
-        index_closing_tag = translated_text.find(GoogleTranslator.CLOSING_TAG, index_opening_tag)
+        return translated_query
 
-        if index_closing_tag == -1:
-            index_closing_tag = translated_text.find(GoogleTranslator)
+    def parse_spanned_string(self, spanned_string):
+        re_opening_tag = re.compile(r"<[\s]*[sS]pan[\s]*>(.*)", flags=re.DOTALL)  # <span> tag
 
-        # Somehow the <p> and/or the </p> tags were lost in translation
-        if index_opening_tag == -1 or index_closing_tag == -1:
-            raise Exception('Something went wrong, couldn\'t translate query')
+        search_obj = re_opening_tag.search(spanned_string)
+        if not search_obj:
+            raise Exception('Failed to parse spanned string: no opening span tag found.')
 
-        begin = index_opening_tag + len(GoogleTranslator.OPENING_TAG)
-        end = index_closing_tag
+        trail = search_obj.group(1)
 
-        # todo: decode encoded symbols
+        re_closing_tag = re.compile(r"(.*)<[\s]*/[\s]*[sS]pan[\s]*>", flags=re.DOTALL)  # </span> tag
 
-        return translated_text[begin:end]
+        search_obj = re_closing_tag.search(trail)
+
+        if not search_obj:
+            raise Exception('Failed to parse spanned string: no closing tag found.')
+
+        result = search_obj.group(1)
+
+        return result.strip()
 
     # Builds up the API URL from the key, query, source language and target language
     def build_url(self, query, source_language, target_language):
@@ -67,11 +72,9 @@ class GoogleTranslator(ContextAwareTranslator):
             'target': target_language,
             'source': source_language,
             'q': query,
-            'format': 'text'
+            'format': 'html'
         }
 
         encoded_query_params = urllib.urlencode(query_params)
 
         return GoogleTranslator.API_BASE_URL + encoded_query_params
-
-
