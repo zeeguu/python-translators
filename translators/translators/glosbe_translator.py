@@ -30,4 +30,4 @@ class GlosbeTranslator(Translator):
             'phrase': query
         }
 
-        return GlosbeTranslators.API_BASE_URL + urllib.urlencode(query_params)
+        return GlosbeTranslator.API_BASE_URL + urllib.urlencode(query_params)
