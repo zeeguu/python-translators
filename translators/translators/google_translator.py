@@ -10,6 +10,7 @@ from context_aware_translator import ContextAwareTranslator
 
 CONFIG_FILE_PATH = '~/.config/translators.cfg'
 
+
 class GoogleTranslator(ContextAwareTranslator):
     API_BASE_URL = 'https://translation.googleapis.com/language/translate/v2?'
 
