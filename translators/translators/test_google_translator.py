@@ -1,6 +1,4 @@
-import os
 from unittest import TestCase
-from configobj import ConfigObj
 from translators import GoogleTranslator
 
 
@@ -9,20 +7,20 @@ class TestGoogleTranslator(TestCase):
     def setUp(self):
         self.translator = GoogleTranslator ()
 
-    def testSimple(self):
+    def testContextMatters(self):
 
-        translation = self.translator.ca_translate('De directeur', 'treedt', 'af', 'nl', 'en')
-        assert translation == u"resigns"
+        translation1 = self.translator.ca_translate('De directeur', 'treedt', 'af', 'nl', 'en')
+        translation2 = self.translator.ca_translate('Dark', 'matter', 'is to be found in the universe', 'en', 'nl')
 
-        translation = self.translator.ca_translate('Dark', 'matter', 'is to be found in the universe', 'en', 'nl')
-        assert translation == "materie"
+        assert translation1 == "resigns"
+        assert translation2 == "materie"
 
-    def testSpanish(self):
+    def testSuffixIsEmpty(self):
 
         translation = self.translator.ca_translate('Estoy en la', 'cama', '', 'es', 'en')
         assert translation == "bed"
 
-    def testSuffixIsSimple(self):
+    def testSuffixStartsWithPunctuation(self):
 
         translation = self.translator.ca_translate('Estoy en la', 'cama', ', e soy dormiendo', 'es', 'en')
         assert translation == "bed"
