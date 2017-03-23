@@ -1,3 +1,4 @@
+# -*- coding: utf8 -*-
 from unittest import TestCase
 from translators import GoogleTranslator
 
@@ -24,3 +25,8 @@ class TestGoogleTranslator(TestCase):
 
         translation = self.goog.ca_translate('Estoy en la', 'cama', ', e soy dormiendo', 'es', 'en')
         assert translation == "bed"
+
+    def testUnicodeCharactersInStringToTranslate(self):
+
+        translation = self.goog.ca_translate(u'Ein', 'klein', u'jägermeister', 'es', 'en')
+        assert translation == "small"
