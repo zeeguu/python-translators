@@ -1,9 +1,14 @@
+import os
 import urllib
 
 import requests
 import re
+
+from configobj import ConfigObj
+
 from context_aware_translator import ContextAwareTranslator
 
+CONFIG_FILE_PATH = '~/.config/translators.cfg'
 
 class GoogleTranslator(ContextAwareTranslator):
     API_BASE_URL = 'https://translation.googleapis.com/language/translate/v2?'
@@ -11,7 +16,17 @@ class GoogleTranslator(ContextAwareTranslator):
     OPENING_TAG = '<span>'
     CLOSING_TAG = '</ span>'
 
-    def __init__(self, key):
+    def __init__(self, key = None):
+
+        if not key:
+            try:
+                config_file = os.path.expanduser(CONFIG_FILE_PATH)
+                config = ConfigObj(config_file)
+                key = config['TRANSLATE_API_KEY']
+            except KeyError as e:
+                raise Exception ("No config file found. "
+                                 "Create config file or pass key as argument to constructor")
+
         self.key = key
 
     # Translate a query from source language to target language
