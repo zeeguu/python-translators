@@ -1,9 +1,9 @@
-import os
-import urllib
+# -*- coding: utf-8 -*-
 
-import requests
+import os
 import re
 
+from googleapiclient.discovery import build
 from configobj import ConfigObj
 
 from context_aware_translator import ContextAwareTranslator
@@ -12,56 +12,60 @@ CONFIG_FILE_PATH = '~/.config/translators.cfg'
 
 
 class GoogleTranslator(ContextAwareTranslator):
-    API_BASE_URL = 'https://translation.googleapis.com/language/translate/v2?'
 
-    OPENING_TAG = '<span>'
-    CLOSING_TAG = '</ span>'
-
-    def __init__(self, key = None):
+    def __init__(self, key=None):
 
         if not key:
             try:
                 config_file = os.path.expanduser(CONFIG_FILE_PATH)
                 config = ConfigObj(config_file)
                 key = config['TRANSLATE_API_KEY']
-            except KeyError as e:
-                raise Exception ("No config file found. "
-                                 "Create config file or pass key as argument to constructor")
+            except KeyError:
+                raise Exception('No config file found. Create config file or pass key as argument to constructor')
 
         self.key = key
+        self.translation_service = build('translate', 'v2', developerKey=key)
 
-    # Translate a query from source language to target language
     # This translation is not aware of context
     def translate(self, query, source_language, target_language):
+        """
+        Translate a query from source language to target language
+        :param query:
+        :param source_language:
+        :param target_language:
+        :return:
+        """
 
-        # Construct URL to send request to
-        api_url = self.build_url(query, source_language, target_language)
+        params = {
+            'source': source_language,
+            'target': target_language,
+            'q': query,
+            'format': 'html'
+        }
 
-        # Send request
-        response = requests.get(api_url)
+        translations = self.translation_service.translations().list(**params).execute()
 
-        if response.status_code == 400:
-            error_message = response.json()['error']['message']
+        return translations['translations'][0][u'translatedText']
 
-            raise Exception(error_message)
-
-        elif response.status_code == 200:
-            try:
-                return response.json()['data']['translations'][0]['translatedText']
-
-            except KeyError:
-                raise Exception('Something went wrong, couldn\'t translate query')
-
-    # Function to translate a query by taking into account the context
-    def ca_translate(self, left_context, query, right_context, source_language, target_language):
-        query = left_context + '<span>' + query + '</span>' + right_context
+    def ca_translate(self, query, source_language, target_language, before_context ='', after_context=''):
+        """
+        Function to translate a query by taking into account the context
+        :param query:
+        :param source_language:
+        :param target_language:
+        :param before_context:
+        :param after_context:
+        :return:
+        """
+        query = before_context + '<span>' + query + '</span>' + after_context
 
         translation = self.translate(query, source_language, target_language)
-        translated_query = self.parse_spanned_string(translation)
+        translated_query = GoogleTranslator.parse_spanned_string(translation)
 
         return translated_query
 
-    def parse_spanned_string(self, spanned_string):
+    @staticmethod
+    def parse_spanned_string(spanned_string):
         re_opening_tag = re.compile(r"<[\s]*[sS]pan[\s]*>(.*)", flags=re.DOTALL)  # <span> tag
 
         search_obj = re_opening_tag.search(spanned_string)
@@ -81,16 +85,8 @@ class GoogleTranslator(ContextAwareTranslator):
 
         return result.strip()
 
-    # Builds up the API URL from the key, query, source language and target language
-    def build_url(self, query, source_language, target_language):
-        query_params = {
-            'key': self.key,
-            'target': target_language,
-            'source': source_language,
-            'q': query,
-            'format': 'html'
-        }
 
-        encoded_query_params = urllib.urlencode(query_params)
+if __name__ == '__main__':
+    translator = GoogleTranslator('AIzaSyC6hioSx_nb1HCmt719hLK-HS6OHG0D7-8')
 
-        return GoogleTranslator.API_BASE_URL + encoded_query_params
+    print(translator.ca_translate(query=u'klein', before_context=u'Ein', after_context=u'jägermeister', source_language='es', target_language='en'))
