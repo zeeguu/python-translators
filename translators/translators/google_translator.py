@@ -28,7 +28,7 @@ class GoogleTranslator(ContextAwareTranslator):
 
         self.key = key
         self.translation_service = build('translate', 'v2', developerKey=key)
-        self.
+
 
     # This translation is not aware of context
     def translate(self, query, source_language, target_language):
