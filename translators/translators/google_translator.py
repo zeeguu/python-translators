@@ -71,6 +71,7 @@ class GoogleTranslator(ContextAwareTranslator):
     @staticmethod
     def parse_spanned_string(spanned_string):
         search_obj = re_opening_tag.search(spanned_string)
+
         if not search_obj:
             raise Exception('Failed to parse spanned string: no opening span tag found.')
 
@@ -83,9 +84,3 @@ class GoogleTranslator(ContextAwareTranslator):
         result = search_obj.group(1)
 
         return result.strip()
-
-
-if __name__ == '__main__':
-    translator = GoogleTranslator('AIzaSyC6hioSx_nb1HCmt719hLK-HS6OHG0D7-8')
-
-    print(translator.ca_translate(query=u'klein', before_context=u'Ein', after_context=u'jägermeister', source_language='es', target_language='en'))

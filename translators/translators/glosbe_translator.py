@@ -7,19 +7,18 @@ class GlosbeTranslator(Translator):
 
     API_BASE_URL = 'https://glosbe.com/gapi/translate?'
 
-    def translate(self, query, source_language, target_language, max_translations=1):
+    def translate(self, query, source_language, target_language, max_translations=2):
 
         # Construct url
         api_url = GlosbeTranslator.build_url(query, source_language, target_language)
 
         # Send request
-        response = requests.get(api_url)
+        response = requests.get(api_url).json()['tuc']
 
-        # Extract translation
-        try:
-            return response.json()['tuc'][0]['phrase']['text']
-        except Exception:
-            raise Exception('Something went wrong, could\'t translate query')
+        # Extract the translations
+        translations = [translation['phrase']['text'] for translation in response[:max_translations]]
+
+        return translations
 
     @staticmethod
     def build_url(query, source_language, target_language):
