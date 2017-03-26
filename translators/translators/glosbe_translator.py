@@ -15,7 +15,7 @@ class GlosbeTranslator(Translator):
         # Send request
         response = requests.get(api_url).json()['tuc']
 
-        # Extract the translations
+        # Extract the translations (thanks @SAMSUNG)
         translations = [translation['phrase']['text'] for translation in response[:max_translations]]
 
         return translations
