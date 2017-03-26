@@ -3,6 +3,8 @@ import urllib
 import requests
 import re
 
+re_opening_tag = re.compile(r"<[\s]*[sS]pan[\s]*>(.*)", flags=re.DOTALL)  # <span> tag
+
 
 def translate(api_key, query, source_language, target_language, before_context='', after_context=''):
     query = "{before_context}<span>{query}</span>{after_context}".format(**locals())
@@ -11,7 +13,6 @@ def translate(api_key, query, source_language, target_language, before_context='
     api_url = build_url(api_key=api_key, query=query,
                         source_language=source_language, target_language=target_language)
 
-    # Send request
     response = requests.get(api_url)
 
     spanned_translation = response.json()['data']['translations'][0]['translatedText']
@@ -20,7 +21,6 @@ def translate(api_key, query, source_language, target_language, before_context='
 
 
 def parse_spanned_string(spanned_string):
-    re_opening_tag = re.compile(r"<[\s]*[sS]pan[\s]*>(.*)", flags=re.DOTALL)  # <span> tag
 
     search_obj = re_opening_tag.search(spanned_string)
     if not search_obj:
