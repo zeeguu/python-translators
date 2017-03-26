@@ -1,2 +1,0 @@
-from google_translator import GoogleTranslator
-from glosbe_translator import GlosbeTranslator
