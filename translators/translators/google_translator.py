@@ -10,6 +10,9 @@ from context_aware_translator import ContextAwareTranslator
 
 CONFIG_FILE_PATH = '~/.config/translators.cfg'
 
+re_opening_tag = re.compile(r"<[\s]*[sS]pan[\s]*>(.*)", flags=re.DOTALL)  # <span> tag
+re_closing_tag = re.compile(r"(.*)<[\s]*/[\s]*[sS]pan[\s]*>", flags=re.DOTALL)  # </span> tag
+
 
 class GoogleTranslator(ContextAwareTranslator):
 
@@ -25,6 +28,7 @@ class GoogleTranslator(ContextAwareTranslator):
 
         self.key = key
         self.translation_service = build('translate', 'v2', developerKey=key)
+        self.
 
     # This translation is not aware of context
     def translate(self, query, source_language, target_language):
@@ -66,16 +70,11 @@ class GoogleTranslator(ContextAwareTranslator):
 
     @staticmethod
     def parse_spanned_string(spanned_string):
-        re_opening_tag = re.compile(r"<[\s]*[sS]pan[\s]*>(.*)", flags=re.DOTALL)  # <span> tag
-
         search_obj = re_opening_tag.search(spanned_string)
         if not search_obj:
             raise Exception('Failed to parse spanned string: no opening span tag found.')
 
         trail = search_obj.group(1)
-
-        re_closing_tag = re.compile(r"(.*)<[\s]*/[\s]*[sS]pan[\s]*>", flags=re.DOTALL)  # </span> tag
-
         search_obj = re_closing_tag.search(trail)
 
         if not search_obj:
