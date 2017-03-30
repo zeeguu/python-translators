@@ -14,5 +14,6 @@ setuptools.setup(
     author_email="...",
     description="...",
     keywords="...",
-    install_requires=("requests")
+    install_requires=("requests",
+        "google-api-python-client")
 )
