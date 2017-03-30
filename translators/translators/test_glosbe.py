@@ -2,13 +2,17 @@ from unittest import TestCase
 from translators import GlosbeTranslator
 
 
-class TestGoogleTranslator(TestCase):
+class TestGlosbeTranslator(TestCase):
 
     def setUp(self):
         self.translator = GlosbeTranslator()
 
-    def testContextMatters(self):
+    def testNumberOfTranslationsWorks(self):
 
         translations = self.translator.translate("cama", "es", "en", 5)
         assert translations[0] == "bed"
         assert len(translations) == 5
+
+        translations = self.translator.translate("cama", "es", "en", 3)
+        assert translations[0] == "bed"
+        assert len(translations) == 3
