@@ -14,6 +14,20 @@ re_opening_tag = re.compile(r"<[\s]*[sS]pan[\s]*>(.*)", flags=re.DOTALL)  # <spa
 re_closing_tag = re.compile(r"(.*)<[\s]*/[\s]*[sS]pan[\s]*>", flags=re.DOTALL)  # </span> tag
 
 
+def get_key_from_config():
+
+    if os.environ.has_key('TRANSLATE_API_KEY'):
+        return os.environ['TRANSLATE_API_KEY']
+
+    try:
+        config_file = os.path.expanduser(CONFIG_FILE_PATH)
+        config = ConfigObj(config_file)
+        key = config['TRANSLATE_API_KEY']
+        return key
+    except KeyError:
+        raise Exception('No config file found. Create config file or pass key as argument to constructor')
+
+
 class GoogleTranslator(ContextAwareTranslator):
 
     gt_instance = None
@@ -21,12 +35,7 @@ class GoogleTranslator(ContextAwareTranslator):
     def __init__(self, key=None):
 
         if not key:
-            try:
-                config_file = os.path.expanduser(CONFIG_FILE_PATH)
-                config = ConfigObj(config_file)
-                key = config['TRANSLATE_API_KEY']
-            except KeyError:
-                raise Exception('No config file found. Create config file or pass key as argument to constructor')
+            key = get_key_from_config()
 
         self.key = key
         self.translation_service = build('translate', 'v2', developerKey=key)

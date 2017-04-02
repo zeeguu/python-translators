@@ -6,7 +6,7 @@ from translators import GoogleTranslator
 class TestGoogleTranslator(TestCase):
 
     def setUp(self):
-        self.goog = GoogleTranslator()
+        self.goog = GoogleTranslator().unique_instance()
 
     def testContextMatters(self):
 
