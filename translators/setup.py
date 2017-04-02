@@ -16,5 +16,6 @@ setuptools.setup(
     keywords="...",
     install_requires=(
         "google-api-python-client",
-        "configobj")
+        "configobj",
+        "requests")
 )
