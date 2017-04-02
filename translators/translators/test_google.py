@@ -6,7 +6,7 @@ from translators import GoogleTranslator
 class TestGoogleTranslator(TestCase):
 
     def setUp(self):
-        self.goog = GoogleTranslator ()
+        self.goog = GoogleTranslator()
 
     def testContextMatters(self):
 
@@ -23,16 +23,16 @@ class TestGoogleTranslator(TestCase):
 
     def testUnicodeCharactersInContext(self):
 
-        translation = self.goog.ca_translate( 'klein', 'de', 'en', u'Ein', u'löwe' )
+        translation = self.goog.ca_translate( 'klein', 'de', 'en', u'Ein', u'löwe')
         assert translation == "small"
 
     def testUnicodeCharactersInWordToTranslate(self):
 
-        translation = self.goog.ca_translate(u'löwen', 'de', 'en', u'Die schön', u' geht zum Wald' )
+        translation = self.goog.ca_translate(u'löwen', 'de', 'en', u'Die schön', u' geht zum Wald')
         assert translation == "lion"
 
     def testUnicodeInResult(self):
-        translation = self.goog.ca_translate('lion', 'en', 'de', 'The ', ' goes to the forrest.' )
+        translation = self.goog.ca_translate('lion', 'en', 'de', 'The ', ' goes to the forrest.')
         assert translation == u'Löwe'
 
     def testSuffixStartsWithPunctuation(self):
@@ -43,3 +43,12 @@ class TestGoogleTranslator(TestCase):
         # the problem appears even when the right_context begins with a space
         translation = self.goog.ca_translate('cama', 'es', 'en', 'Estoy en la', ' , e soy dormiendo')
         assert translation == "bed"
+
+    def testQueryEndsWithPunctuation(self):
+        translation = self.goog.ca_translate(before_context='Estoy en la',
+                                             query='cama,',
+                                             after_context=' e soy dormiendo',
+                                             source_language='es',
+                                             target_language='en')
+
+        assert translation == "bed,"

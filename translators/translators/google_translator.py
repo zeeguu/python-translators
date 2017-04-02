@@ -52,7 +52,6 @@ class GoogleTranslator(ContextAwareTranslator):
 
 
 
-    # This translation is not aware of context
     def translate(self, query, source_language, target_language):
         """
         Translate a query from source language to target language
@@ -86,7 +85,13 @@ class GoogleTranslator(ContextAwareTranslator):
         query = before_context + '<span>' + query + '</span>' + after_context
 
         translation = self.translate(query, source_language, target_language)
-        translated_query = GoogleTranslator.parse_spanned_string(translation)
+        translated_query = GoogleTranslator.parse_spanned_string(translation).strip()
+
+        stripped_after_context = after_context.strip()
+
+        if stripped_after_context and translated_query and stripped_after_context[0] in ",;'.\"-" \
+                and translated_query[-1] == stripped_after_context[0]:
+            translated_query = translated_query[:-1]
 
         return translated_query
 
