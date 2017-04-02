@@ -9,6 +9,18 @@ class GlosbeTranslator(Translator):
 
     def translate(self, query, source_language, target_language, max_translations=2):
 
+        """
+
+            Returns a list of max_translations possible translations for the given word.
+            
+        :param query: 
+        :param source_language: 
+        :param target_language: 
+        :param max_translations: 
+        
+        :return: a list of possible translations 
+        """
+
         # Construct url
         api_url = GlosbeTranslator.build_url(query, source_language, target_language)
 
