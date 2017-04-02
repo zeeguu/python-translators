@@ -22,7 +22,6 @@ class GoogleTranslator(ContextAwareTranslator):
 
         if not key:
             try:
-                print "------- creating a translator..."
                 config_file = os.path.expanduser(CONFIG_FILE_PATH)
                 config = ConfigObj(config_file)
                 key = config['TRANSLATE_API_KEY']

@@ -61,4 +61,5 @@ class TestGoogleTranslator(TestCase):
                                              source_language='de',
                                              target_language='en')
 
+        # print translation
         assert "</span>" not in translation
