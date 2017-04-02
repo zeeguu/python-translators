@@ -48,6 +48,7 @@ class GoogleTranslator(ContextAwareTranslator):
             return GoogleTranslator.gt_instance
 
         GoogleTranslator.gt_instance = GoogleTranslator(key)
+        return GoogleTranslator.gt_instance
 
 
 
