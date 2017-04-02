@@ -16,10 +16,13 @@ re_closing_tag = re.compile(r"(.*)<[\s]*/[\s]*[sS]pan[\s]*>", flags=re.DOTALL)  
 
 class GoogleTranslator(ContextAwareTranslator):
 
+    gt_instance = None
+
     def __init__(self, key=None):
 
         if not key:
             try:
+                print "------- creating a translator..."
                 config_file = os.path.expanduser(CONFIG_FILE_PATH)
                 config = ConfigObj(config_file)
                 key = config['TRANSLATE_API_KEY']
@@ -28,6 +31,25 @@ class GoogleTranslator(ContextAwareTranslator):
 
         self.key = key
         self.translation_service = build('translate', 'v2', developerKey=key)
+
+    @classmethod
+    def unique_instance(cls, key=None):
+        """
+            
+            The creation of a translator object is slow, since it requires
+            sending the secret key and authenticating!  
+            
+            This is a static class instance that caches a connection and 
+            reuses it.
+             
+        :return: a cached GoogleTranslator object
+        """
+        if GoogleTranslator.gt_instance:
+            return GoogleTranslator.gt_instance
+
+        GoogleTranslator.gt_instance = GoogleTranslator(key)
+
+
 
 
     # This translation is not aware of context
