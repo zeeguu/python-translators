@@ -38,7 +38,8 @@ class GlosbeTranslator(Translator):
             'from': source_language,
             'dest': target_language,
             'format': 'json',
-            'phrase': query
+            'phrase': query.encode('utf-8')
         }
 
-        return GlosbeTranslator.API_BASE_URL + urllib.urlencode(query_params)
+        url = GlosbeTranslator.API_BASE_URL + urllib.urlencode(query_params)
+        return url
