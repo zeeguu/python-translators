@@ -52,3 +52,13 @@ class TestGoogleTranslator(TestCase):
                                              target_language='en')
 
         assert translation == "bed,"
+
+    def test_strange_span_in_return(self):
+
+        translation = self.goog.ca_translate(before_context='Ich hatte mich',
+                                             query='eigentlich schon',
+                                             after_context=' mit dem 1:1-Unentschieden abgefunden',
+                                             source_language='de',
+                                             target_language='en')
+
+        assert "</span>" not in translation
