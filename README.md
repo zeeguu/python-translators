@@ -1,3 +1,7 @@
+
+[![Build Status](https://travis-ci.org/mircealungu/python-translators.svg?branch=master)](https://travis-ci.org/mircealungu/python-translators)
+
+
 # Python translators
 
 This library contains a few wrappers for translation services. As of now it contains two translators: google translator
