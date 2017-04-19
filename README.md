@@ -1,6 +1,6 @@
 # Python translators
 
-This library contains a few wrappers for translation services. As of know it contains two translators: google translator
+This library contains a few wrappers for translation services. As of now it contains two translators: google translator
 and glosbe translator. The GlosbeTranslator is a simple translator. It can only translates single words. The GoogleTranslator can also translate phrases and more importantly: words and phrases occurring within other phrases/sentences. We call these context aware translations.
 
 ## Installation
