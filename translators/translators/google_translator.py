@@ -16,7 +16,7 @@ re_closing_tag = re.compile(r"(.*)<[\s]*/[\s]*[sS]pan[\s]*>", flags=re.DOTALL)  
 
 def get_key_from_config():
 
-    if os.environ.has_key('TRANSLATE_API_KEY'):
+    if 'TRANSLATE_API_KEY' in os.environ:
         return os.environ['TRANSLATE_API_KEY']
 
     try:
@@ -78,7 +78,7 @@ class GoogleTranslator(ContextAwareTranslator):
 
         return translations['translations'][0][u'translatedText']
 
-    def ca_translate(self, query, source_language, target_language, before_context ='', after_context=''):
+    def ca_translate(self, query, source_language, target_language, before_context='', after_context=''):
         """
         Function to translate a query by taking into account the context
         :param query:
