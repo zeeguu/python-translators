@@ -11,7 +11,7 @@ from context_aware_translator import ContextAwareTranslator
 CONFIG_FILE_PATH = '~/.config/translators.cfg'
 
 re_opening_tag = re.compile(r"<[\s]*[sS]pan[\s]*>(.*)", flags=re.DOTALL)  # <span> tag
-re_closing_tag = re.compile(r"(.*)<[\s]*/[\s]*[sS]pan[\s]*>", flags=re.DOTALL)  # </span> tag
+re_closing_tag = re.compile(r"(.*?)<[\s]*/[\s]*[sS]pan[\s]*>", flags=re.DOTALL)  # </span> tag
 
 
 def get_key_from_config():
@@ -91,6 +91,7 @@ class GoogleTranslator(ContextAwareTranslator):
         query = before_context + '<span>' + query + '</span>' + after_context
 
         translation = self.translate(query, source_language, target_language)
+
         translated_query = GoogleTranslator.parse_spanned_string(translation).strip()
 
         stripped_after_context = after_context.strip()
