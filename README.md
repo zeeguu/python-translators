@@ -17,7 +17,7 @@ Translating "treedt" in the sentence "De directeur treedt af":
 >>> from google_translator import GoogleTranslator
 >>> t = GoogleTranslator('<valid google API key>')
 
->>> t.ca_translate(left_context='De directeur', query='treedt', right_context='af', source_language='nl', target_language='en')
+>>> t.ca_translate(before_context='De directeur', query='treedt', after_context='af', source_language='nl', target_language='en')
 u'resigns'
 ```
 
@@ -35,7 +35,7 @@ This is a nonsensical translation whereas the context aware translation is quite
 Translating (the first occurrence of) "matter" in the sentence "Dark matter is an unidentified type of matter distinct from dark energy."
 
 ```
->>> t.ca_translate(left_context='Dark', query='matter', right_context='is an unidentified type of matter distinct from dark energy.', source_language='en', target_language='nl')
+>>> t.ca_translate(before_context='Dark', query='matter', after_context='is an unidentified type of matter distinct from dark energy.', source_language='en', target_language='nl')
 u'materie'
 ```
 
