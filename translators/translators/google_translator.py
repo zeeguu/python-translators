@@ -58,9 +58,6 @@ class GoogleTranslator(ContextAwareTranslator):
         GoogleTranslator.gt_instance = GoogleTranslator(key)
         return GoogleTranslator.gt_instance
 
-
-
-
     def translate(self, query, source_language, target_language):
         """
         Translate a query from source language to target language
