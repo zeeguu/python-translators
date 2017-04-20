@@ -3,6 +3,7 @@
 import os
 import re
 
+import HTMLParser
 from googleapiclient.discovery import build
 from configobj import ConfigObj
 
@@ -76,7 +77,13 @@ class GoogleTranslator(ContextAwareTranslator):
 
         translations = self.translation_service.translations().list(**params).execute()
 
-        return translations['translations'][0][u'translatedText']
+        translation = translations['translations'][0][u'translatedText']
+
+        # Unescape HTML characters
+        unescaped_translation = HTMLParser.HTMLParser().unescape(translation)
+
+
+        return unescaped_translation
 
     def ca_translate(self, query, source_language, target_language, before_context='', after_context=''):
         """
