@@ -24,8 +24,8 @@ class TestGoogleTranslator(TestCase):
 
     def testUnicodeCharactersInWordToTranslate(self):
         translation = self.goog.ca_translate(u'löwen', 'de', 'en', u'Die schön', u' geht zum Wald')
-        assert translation == "lion"
         print translation
+        assert translation == "lion"
 
     def testUnicodeInResult(self):
         translation = self.goog.ca_translate('lion', 'en', 'de', 'The ', ' goes to the forrest.')
@@ -46,8 +46,9 @@ class TestGoogleTranslator(TestCase):
                                              source_language='es',
                                              target_language='en')
 
-        assert translation == "bed,"
         print translation
+        assert translation == "bed,"
+
 
     def test_strange_span_in_return(self):
         translation = self.goog.ca_translate(before_context='Ich hatte mich',
@@ -67,5 +68,6 @@ class TestGoogleTranslator(TestCase):
             source_language='de',
             target_language='en')
 
+        print translation
         assert '&#39;' not in translation
         assert '\'' in translation
