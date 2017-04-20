@@ -3,6 +3,7 @@
 import os
 import re
 
+import HTMLParser
 from googleapiclient.discovery import build
 from configobj import ConfigObj
 
@@ -11,12 +12,12 @@ from context_aware_translator import ContextAwareTranslator
 CONFIG_FILE_PATH = '~/.config/translators.cfg'
 
 re_opening_tag = re.compile(r"<[\s]*[sS]pan[\s]*>(.*)", flags=re.DOTALL)  # <span> tag
-re_closing_tag = re.compile(r"(.*)<[\s]*/[\s]*[sS]pan[\s]*>", flags=re.DOTALL)  # </span> tag
+re_closing_tag = re.compile(r"(.*?)<[\s]*/[\s]*[sS]pan[\s]*>", flags=re.DOTALL)  # </span> tag
 
 
 def get_key_from_config():
 
-    if os.environ.has_key('TRANSLATE_API_KEY'):
+    if 'TRANSLATE_API_KEY' in os.environ:
         return os.environ['TRANSLATE_API_KEY']
 
     try:
@@ -58,9 +59,6 @@ class GoogleTranslator(ContextAwareTranslator):
         GoogleTranslator.gt_instance = GoogleTranslator(key)
         return GoogleTranslator.gt_instance
 
-
-
-
     def translate(self, query, source_language, target_language):
         """
         Translate a query from source language to target language
@@ -79,9 +77,15 @@ class GoogleTranslator(ContextAwareTranslator):
 
         translations = self.translation_service.translations().list(**params).execute()
 
-        return translations['translations'][0][u'translatedText']
+        translation = translations['translations'][0][u'translatedText']
 
-    def ca_translate(self, query, source_language, target_language, before_context ='', after_context=''):
+        # Unescape HTML characters
+        unescaped_translation = HTMLParser.HTMLParser().unescape(translation)
+
+
+        return unescaped_translation
+
+    def ca_translate(self, query, source_language, target_language, before_context='', after_context=''):
         """
         Function to translate a query by taking into account the context
         :param query:
@@ -94,6 +98,7 @@ class GoogleTranslator(ContextAwareTranslator):
         query = before_context + '<span>' + query + '</span>' + after_context
 
         translation = self.translate(query, source_language, target_language)
+
         translated_query = GoogleTranslator.parse_spanned_string(translation).strip()
 
         stripped_after_context = after_context.strip()

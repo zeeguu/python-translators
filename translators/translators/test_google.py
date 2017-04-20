@@ -4,12 +4,10 @@ from translators import GoogleTranslator
 
 
 class TestGoogleTranslator(TestCase):
-
     def setUp(self):
         self.goog = GoogleTranslator().unique_instance()
 
     def testContextMatters(self):
-
         translation1 = self.goog.ca_translate('treedt', 'nl', 'en', 'De directeur', 'af')
         translation2 = self.goog.ca_translate('matter', 'en', 'nl', 'Dark', 'is to be found in the universe')
 
@@ -17,17 +15,14 @@ class TestGoogleTranslator(TestCase):
         assert translation2 == "materie"
 
     def testSuffixIsEmpty(self):
-
         translation = self.goog.ca_translate('cama', 'es', 'en', 'Estoy en la', '')
         assert translation == "bed"
 
     def testUnicodeCharactersInContext(self):
-
-        translation = self.goog.ca_translate( 'klein', 'de', 'en', u'Ein', u'löwe')
+        translation = self.goog.ca_translate('klein', 'de', 'en', u'Ein', u'löwe')
         assert translation == "small"
 
     def testUnicodeCharactersInWordToTranslate(self):
-
         translation = self.goog.ca_translate(u'löwen', 'de', 'en', u'Die schön', u' geht zum Wald')
         assert translation == "lion"
 
@@ -36,7 +31,6 @@ class TestGoogleTranslator(TestCase):
         assert translation == u'Löwe'
 
     def testSuffixStartsWithPunctuation(self):
-
         translation = self.goog.ca_translate('cama', 'es', 'en', 'Estoy en la', ', e soy dormiendo')
         assert translation == "bed"
 
@@ -54,7 +48,6 @@ class TestGoogleTranslator(TestCase):
         assert translation == "bed,"
 
     def test_strange_span_in_return(self):
-
         translation = self.goog.ca_translate(before_context='Ich hatte mich',
                                              query='eigentlich schon',
                                              after_context=' mit dem 1:1-Unentschieden abgefunden',
@@ -63,3 +56,14 @@ class TestGoogleTranslator(TestCase):
 
         # print translation
         assert "</span>" not in translation
+
+    def test_escaped_characters_in_translation(self):
+        translation = self.goog.ca_translate(
+            before_context='Um Fernbusse aus dem Geschäft zu drängen, hat das Unternehmen damit begonnen, das',
+            query='konzerneigene Flaggschiff',
+            after_context='ICE straßentauglich zu machen. ',
+            source_language='de',
+            target_language='en')
+
+        assert '&#39;' not in translation
+        assert '\'' in translation
