@@ -1,5 +1,14 @@
 appdirs==1.4.0
+configobj==5.0.6
+google-api-python-client==1.6.2
+httplib2==0.10.3
+oauth2client==4.0.0
 packaging==16.8
+pyasn1==0.2.3
+pyasn1-modules==0.0.8
 pyparsing==2.1.10
 requests==2.13.0
+rsa==3.4.2
 six==1.10.0
+-e git+https://github.com/mircealungu/python-translators.git@9ce24a4bad316866cd3a256fe2f78f7270d7ded0#egg=translators&subdirectory=translators
+uritemplate==3.0.0
