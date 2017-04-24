@@ -82,6 +82,8 @@ class GoogleTranslator(ContextAwareTranslator):
         # Unescape HTML characters
         unescaped_translation = HTMLParser.HTMLParser().unescape(translation)
 
+        print(unescaped_translation)
+
 
         return unescaped_translation
 
