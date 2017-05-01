@@ -1,42 +1,25 @@
 # -*- coding: utf-8 -*-
 
-import os
 import re
 
 import HTMLParser
 from googleapiclient.discovery import build
-from configobj import ConfigObj
 
-from context_aware_translator import ContextAwareTranslator
-
-CONFIG_FILE_PATH = '~/.config/translators.cfg'
+from translator import Translator
+from config_parsing import get_key_from_config
 
 re_opening_tag = re.compile(r"<[\s]*[sS]pan[\s]*>(.*)", flags=re.DOTALL)  # <span> tag
 re_closing_tag = re.compile(r"(.*?)<[\s]*/[\s]*[sS]pan[\s]*>", flags=re.DOTALL)  # </span> tag
 
 
-def get_key_from_config():
-
-    if 'TRANSLATE_API_KEY' in os.environ:
-        return os.environ['TRANSLATE_API_KEY']
-
-    try:
-        config_file = os.path.expanduser(CONFIG_FILE_PATH)
-        config = ConfigObj(config_file)
-        key = config['TRANSLATE_API_KEY']
-        return key
-    except KeyError:
-        raise Exception('No config file found. Create config file or pass key as argument to constructor')
-
-
-class GoogleTranslator(ContextAwareTranslator):
+class GoogleTranslator(Translator):
 
     gt_instance = None
 
     def __init__(self, key=None):
 
         if not key:
-            key = get_key_from_config()
+            key = get_key_from_config('GOOGLE_TRANSLATE_API_KEY')
 
         self.key = key
         self.translation_service = build('translate', 'v2', developerKey=key)
@@ -59,9 +42,13 @@ class GoogleTranslator(ContextAwareTranslator):
         GoogleTranslator.gt_instance = GoogleTranslator(key)
         return GoogleTranslator.gt_instance
 
-    def translate(self, query, source_language, target_language):
+    def translate(self, query, source_language, target_language, before_context='', after_context='',
+                  max_translations=1):
         """
         Translate a query from source language to target language
+        :param max_translations: 
+        :param after_context: 
+        :param before_context: 
         :param query:
         :param source_language:
         :param target_language:
