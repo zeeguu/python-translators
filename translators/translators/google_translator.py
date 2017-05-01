@@ -68,8 +68,6 @@ class GoogleTranslator(ContextAwareTranslator):
         :return:
         """
 
-        print(query)
-
         params = {
             'source': source_language,
             'target': target_language,
@@ -83,9 +81,6 @@ class GoogleTranslator(ContextAwareTranslator):
 
         # Unescape HTML characters
         unescaped_translation = HTMLParser.HTMLParser().unescape(translation)
-
-        print(unescaped_translation)
-
 
         return unescaped_translation
 
