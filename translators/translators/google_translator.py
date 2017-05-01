@@ -68,6 +68,8 @@ class GoogleTranslator(ContextAwareTranslator):
         :return:
         """
 
+        print(query)
+
         params = {
             'source': source_language,
             'target': target_language,

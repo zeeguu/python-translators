@@ -10,5 +10,5 @@ pyparsing==2.1.10
 requests==2.13.0
 rsa==3.4.2
 six==1.10.0
--e git+https://github.com/mircealungu/python-translators.git@9ce24a4bad316866cd3a256fe2f78f7270d7ded0#egg=translators&subdirectory=translators
+-e git+https://github.com/mircealungu/python-translators.git@6306f7b5e64a04f83d591fd3e6d85412a559211d#egg=translators&subdirectory=translators
 uritemplate==3.0.0
