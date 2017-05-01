@@ -63,6 +63,5 @@ class TestGoogleTranslator(TestCase):
             source_language='de',
             target_language='en')
 
-        print translation
         self.assertNotIn('&#39;', translation)
 

@@ -4,4 +4,4 @@ python:
 
 install: "python translators/setup.py develop"
 
-script: "python -m unittest discover -v translators/"
+script: "python -m unittest discover -v tests/"
