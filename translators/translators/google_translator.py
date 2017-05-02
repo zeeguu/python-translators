@@ -4,6 +4,7 @@ import re
 
 import HTMLParser
 from googleapiclient.discovery import build
+import xml.etree.ElementTree as ET
 
 from translator import Translator
 from config_parsing import get_key_from_config
@@ -81,7 +82,7 @@ class GoogleTranslator(Translator):
         :param after_context:
         :return:
         """
-        query = '%(before_context)s<span>%(query)s</span>%(after_context)s' % locals()  # enclose query in span tags
+        query = u'%(before_context)s<span>%(query)s</span>%(after_context)s' % locals()  # enclose query in span tags
 
         translation = self.translate(query, source_language, target_language)
 
@@ -97,17 +98,12 @@ class GoogleTranslator(Translator):
 
     @staticmethod
     def parse_spanned_string(spanned_string):
-        search_obj = re_opening_tag.search(spanned_string)
 
-        if not search_obj:
-            raise Exception('Failed to parse spanned string: no opening span tag found.')
+        xml_object = ET.fromstring('<s>' + spanned_string.encode('utf-8') + '</s>')
 
-        trail = search_obj.group(1)
-        search_obj = re_closing_tag.search(trail)
+        return xml_object.find('span').text
 
-        if not search_obj:
-            raise Exception('Failed to parse spanned string: no closing tag found.')
 
-        result = search_obj.group(1)
-
-        return result.strip()
+if __name__ == '__main__':
+    g = GoogleTranslator()
+    g.ca_translate('lion', 'en', 'de', 'The ', ' goes to the forrest.')

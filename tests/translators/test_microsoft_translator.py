@@ -47,3 +47,23 @@ class TestGoogleTranslator(TestCase):
             target_language='nl')
 
         self.assertEquals(translation, 'materie')
+
+    def test_unicode_outputs(self):
+        translation = self.translator.ca_translate(
+            before_context='The ',
+            query='lion',
+            after_context='goes to the forest',
+            source_language='en',
+            target_language='de'
+        )
+
+        self.assertEquals(translation, u'Löwe')
+
+    def test_unicode_inputs(self):
+        translation = self.translator.translate(
+            query=u'Löwe',
+            source_language='de',
+            target_language='en'
+        )
+
+        self.assertEquals(translation, 'Lion')

@@ -56,9 +56,9 @@ class TestGoogleTranslator(TestCase):
 
     def test_escaped_characters_in_translation(self):
         translation = self.goog.ca_translate(
-            before_context='Um Fernbusse aus dem Geschäft zu drängen, hat das Unternehmen damit begonnen, das',
+            before_context=u'Um Fernbusse aus dem Geschäft zu drängen, hat das Unternehmen damit begonnen, das',
             query='konzerneigene Flaggschiff',
-            after_context='ICE straßentauglich zu machen. ',
+            after_context=u'ICE straßentauglich zu machen. ',
             source_language='de',
             target_language='en')
 
