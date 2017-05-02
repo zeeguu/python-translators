@@ -81,7 +81,7 @@ class GoogleTranslator(Translator):
         :param after_context:
         :return:
         """
-        query = before_context + '<span>' + query + '</span>' + after_context
+        query = '%(before_context)s<span>%(query)s</span>%(after_context)s' % locals()  # enclose query in span tags
 
         translation = self.translate(query, source_language, target_language)
 
