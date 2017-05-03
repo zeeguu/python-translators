@@ -1,4 +1,5 @@
 # -*- coding: utf8 -*-
+import unittest
 from unittest import TestCase
 from translators import GoogleTranslator
 
@@ -64,3 +65,6 @@ class TestGoogleTranslator(TestCase):
 
         self.assertNotIn('&#39;', translation)
 
+
+if __name__ == '__main__':
+    unittest.main()

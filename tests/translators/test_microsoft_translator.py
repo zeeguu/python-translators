@@ -1,4 +1,5 @@
 # -*- coding: utf8 -*-
+import unittest
 from unittest import TestCase
 from translators import MicrosoftTranslator
 
@@ -67,3 +68,6 @@ class TestGoogleTranslator(TestCase):
         )
 
         self.assertEquals(translation, 'Lion')
+
+if __name__ == '__main__':
+    unittest.main()

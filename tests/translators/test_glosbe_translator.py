@@ -1,3 +1,4 @@
+import unittest
 from unittest import TestCase
 from translators import GlosbeTranslator
 
@@ -16,3 +17,7 @@ class TestGlosbeTranslator(TestCase):
         translations = self.translator.translate("cama", "es", "en", 3)
         assert translations[0] == "bed"
         assert len(translations) == 3
+
+
+if __name__ == '__main__':
+    unittest.main()
