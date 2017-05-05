@@ -19,6 +19,7 @@ class TestCollinsTranslator(TestCase):
                           target_language='en')
 
     def test_invalid_destination_language(self):
+        # Collins API can not translate Spanish to Dutch
         self.assertRaises(Exception,
                           CollinsTranslator.translate,
                           self.translator,
