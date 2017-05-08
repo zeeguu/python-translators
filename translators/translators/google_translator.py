@@ -5,24 +5,20 @@ import re
 import HTMLParser
 from googleapiclient.discovery import build
 import xml.etree.ElementTree as ET
+import cgi
 
-
-from translator import Translator
-from config_parsing import get_key_from_config
+from context_aware_translator import ContextAwareTranslator
 
 re_opening_tag = re.compile(r"<[\s]*[sS]pan[\s]*>(.*)", flags=re.DOTALL)  # <span> tag
 re_closing_tag = re.compile(r"(.*?)<[\s]*/[\s]*[sS]pan[\s]*>", flags=re.DOTALL)  # </span> tag
 
 
-class GoogleTranslator(Translator):
+class GoogleTranslator(ContextAwareTranslator):
 
     gt_instance = None
 
-    def __init__(self, source_language, target_language, key=None):
+    def __init__(self, source_language, target_language, key):
         super(GoogleTranslator, self).__init__(source_language, target_language)
-
-        if not key:
-            key = get_key_from_config('GOOGLE_TRANSLATE_API_KEY')
 
         self.key = key
         self.translation_service = build('translate', 'v2', developerKey=key)
@@ -34,8 +30,6 @@ class GoogleTranslator(Translator):
         :param after_context: 
         :param before_context: 
         :param query:
-        :param source_language:
-        :param target_language:
         :return:
         """
 
@@ -55,16 +49,19 @@ class GoogleTranslator(Translator):
 
         return unescaped_translation
 
-    def ca_translate(self, query, before_context='', after_context=''):
+    def _ca_translate(self, query, before_context='', after_context='', max_translations=1):
         """
         Function to translate a query by taking into account the context
+        :param max_translations: 
         :param query:
-        :param source_language:
-        :param target_language:
         :param before_context:
         :param after_context:
         :return:
         """
+        query = cgi.escape(query)
+        before_context = cgi.escape(query)
+        after_context = cgi.escape(query)
+
         query = u'%(before_context)s<span>%(query)s</span>%(after_context)s' % locals()  # enclose query in span tags
 
         translation = self.translate(query, self.source_language, self.target_language)
@@ -81,13 +78,8 @@ class GoogleTranslator(Translator):
 
     @staticmethod
     def parse_spanned_string(spanned_string):
+        print(spanned_string)
 
         xml_object = ET.fromstring('<s>' + spanned_string.encode('utf-8') + '</s>')
 
         return xml_object.find('span').text
-
-
-if __name__ == '__main__':
-    g = GoogleTranslator('en', 'de')
-    g.ca_translate(
-        before_context='The ', query='lion', after_context=' goes to the forrest.')

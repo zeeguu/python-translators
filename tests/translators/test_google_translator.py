@@ -1,16 +1,16 @@
 # -*- coding: utf8 -*-
 import unittest
 from unittest import TestCase
-from translators import GoogleTranslator
+from translators.factories.google_translator_factory import GoogleTranslatorFactory
 
 
 class TestGoogleTranslator(TestCase):
     def setUp(self):
         self.translators = {
-            'en-nl': GoogleTranslator('en', 'nl'),
-            'es-en': GoogleTranslator('es', 'en'),
-            'de-en': GoogleTranslator('de', 'en'),
-            'en-de': GoogleTranslator('en', 'de')
+            'en-nl': GoogleTranslatorFactory.build('en', 'nl'),
+            'es-en': GoogleTranslatorFactory.build('es', 'en'),
+            'de-en': GoogleTranslatorFactory.build('de', 'en'),
+            'en-de': GoogleTranslatorFactory.build('en', 'de')
         }
 
     def testContextMatters(self):
@@ -95,6 +95,7 @@ class TestGoogleTranslator(TestCase):
                                 query=u'Wadenkrampf erlitten',
                                 before_context=u'Offensichtlich hatte eine der Athletinnen während der Kür einen',
                                 after_context=u' .')
+
         self.assertEquals("leg cramp suffered", translation)
 
 if __name__ == '__main__':

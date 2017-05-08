@@ -22,7 +22,7 @@ class MicrosoftTranslator(ContextAwareTranslator):
         self.key = key
         self.token = self.request_token()
 
-    def ca_translate(self, query, before_context, after_context, max_translations=1):
+    def _ca_translate(self, query, before_context, after_context, max_translations=1):
 
         query = '%(before_context)s<span>%(query)s</span>%(after_context)s' % locals()  # enclose query in span tags
 

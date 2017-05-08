@@ -3,7 +3,7 @@ from unittest import TestCase
 from translators.context_processors.reduce_to_one_sentence import ReduceToOneSentence
 
 
-class TestReduceToOneSentence(TestCase):
+class TestRemoveUnnecessaryConjunctions(TestCase):
     def setUp(self):
         self.context_processor = ReduceToOneSentence()
 
