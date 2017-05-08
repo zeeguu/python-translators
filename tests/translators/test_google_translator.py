@@ -81,6 +81,21 @@ class TestGoogleTranslator(TestCase):
 
         self.assertNotIn('&#39;', translation)
 
+<<<<<<< HEAD
+    def testTwoWords(self):
+        translation = self.goog.ca_translate(u'Wadenkrampf erlitten', 'de', 'en',
+                                            u'Offensichtlich hatte eine der Athletinnen während der Kür einen',
+                                             u' genau .')
+        assert "leg cramp suffered" == translation
+
+        # However, if the sentence ends after our looked up word, we don't get the full translation!
+        translation = self.goog.ca_translate(u'Wadenkrampf erlitten', 'de', 'en',
+                                            u'Offensichtlich hatte eine der Athletinnen während der Kür einen',
+                                             u' .')
+        assert "leg cramp suffered" == translation
+
+=======
 
 if __name__ == '__main__':
     unittest.main()
+>>>>>>> bb3b6db30db629af93bc0293331f0e9959519802
