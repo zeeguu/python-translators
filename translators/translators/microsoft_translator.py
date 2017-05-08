@@ -13,51 +13,34 @@ TRANSLATION_SERVICE_URL = 'https://api.microsofttranslator.com/V2/Http.svc/Trans
 class MicrosoftTranslator(ContextAwareTranslator):
     gt_instance = None
 
-    def __init__(self, key=None):
+    def __init__(self, source_language, target_language, key=None):
+        super(MicrosoftTranslator, self).__init__(source_language, target_language)
+
         if not key:
             key = get_key_from_config('MICROSOFT_TRANSLATE_API_KEY')
 
         self.key = key
         self.token = self.request_token()
 
-    @classmethod
-    def unique_instance(cls, key=None):
-        """
-            The creation of a translator object is slow, since it requires
-            fetching a token!
-
-            This is a static class instance that caches a connection and 
-            reuses it.
-
-        :return: a cached MicrosoftTranslator object
-        """
-        if MicrosoftTranslator.gt_instance:
-            return MicrosoftTranslator.gt_instance
-
-        MicrosoftTranslator.gt_instance = MicrosoftTranslator(key)
-        return MicrosoftTranslator.gt_instance
-
-    def ca_translate(self, before_context, query, after_context, source_language, target_language, max_translations=1):
+    def ca_translate(self, query, before_context, after_context, max_translations=1):
 
         query = '%(before_context)s<span>%(query)s</span>%(after_context)s' % locals()  # enclose query in span tags
 
-        translation = self.send_translation_request(query, source_language, target_language, 'text/html')
+        translation = self.send_translation_request(query, 'text/html')
 
         # enclose in <s> tag to make it valid XML
         xml_object = ET.fromstring('<s>' + translation.encode('utf-8') + '</s>')
 
         return xml_object.find('span').text
 
-    def translate(self, query, source_language, target_language, max_translations=1):
-        return self.send_translation_request(query, source_language, target_language, 'text/plain')
+    def translate(self, query, max_translations=1):
+        return self.send_translation_request(query, 'text/plain')
 
-    def send_translation_request(self, query, source_language, target_language, content_type):
+    def send_translation_request(self, query, content_type):
         """
         Sends a translation request to the Microsoft Translation service, query parameters are 
         
         :param query: 
-        :param source_language: 
-        :param target_language: 
         :param content_type: 
         :return: 
         """
@@ -69,8 +52,8 @@ class MicrosoftTranslator(ContextAwareTranslator):
         # Build query parameters
         query_params = {
             'text': query.encode('utf-8'),
-            'from': source_language,
-            'to': target_language,
+            'from': self.source_language,
+            'to': self.target_language,
             'contentType': content_type,
         }
 

@@ -37,6 +37,5 @@ class TestReduceToOneSentence(TestCase):
         self.assertEquals(results['after_context'], ' en georganiseerde misdaad.')
 
 
-
 if __name__ == '__main__':
     unittest.main()

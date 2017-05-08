@@ -18,7 +18,8 @@ class GoogleTranslator(Translator):
 
     gt_instance = None
 
-    def __init__(self, key=None):
+    def __init__(self, source_language, target_language, key=None):
+        super(GoogleTranslator, self).__init__(source_language, target_language)
 
         if not key:
             key = get_key_from_config('GOOGLE_TRANSLATE_API_KEY')
@@ -26,26 +27,7 @@ class GoogleTranslator(Translator):
         self.key = key
         self.translation_service = build('translate', 'v2', developerKey=key)
 
-    @classmethod
-    def unique_instance(cls, key=None):
-        """
-            
-            The creation of a translator object is slow, since it requires
-            sending the secret key and authenticating!  
-            
-            This is a static class instance that caches a connection and 
-            reuses it.
-             
-        :return: a cached GoogleTranslator object
-        """
-        if GoogleTranslator.gt_instance:
-            return GoogleTranslator.gt_instance
-
-        GoogleTranslator.gt_instance = GoogleTranslator(key)
-        return GoogleTranslator.gt_instance
-
-    def translate(self, query, source_language, target_language, before_context='', after_context='',
-                  max_translations=1):
+    def translate(self, query, before_context='', after_context='', max_translations=1):
         """
         Translate a query from source language to target language
         :param max_translations: 
@@ -58,8 +40,8 @@ class GoogleTranslator(Translator):
         """
 
         params = {
-            'source': source_language,
-            'target': target_language,
+            'source': self.source_language,
+            'target': self.target_language,
             'q': query,
             'format': 'html'
         }
@@ -73,7 +55,7 @@ class GoogleTranslator(Translator):
 
         return unescaped_translation
 
-    def ca_translate(self, query, source_language, target_language, before_context='', after_context=''):
+    def ca_translate(self, query, before_context='', after_context=''):
         """
         Function to translate a query by taking into account the context
         :param query:
@@ -85,7 +67,7 @@ class GoogleTranslator(Translator):
         """
         query = u'%(before_context)s<span>%(query)s</span>%(after_context)s' % locals()  # enclose query in span tags
 
-        translation = self.translate(query, source_language, target_language)
+        translation = self.translate(query, self.source_language, self.target_language)
 
         translated_query = GoogleTranslator.parse_spanned_string(translation).strip()
 
@@ -106,5 +88,6 @@ class GoogleTranslator(Translator):
 
 
 if __name__ == '__main__':
-    g = GoogleTranslator()
-    g.ca_translate('lion', 'en', 'de', 'The ', ' goes to the forrest.')
+    g = GoogleTranslator('en', 'de')
+    g.ca_translate(
+        before_context='The ', query='lion', after_context=' goes to the forrest.')

@@ -4,24 +4,22 @@ from unittest import TestCase
 from translators import MicrosoftTranslator
 
 
-class TestGoogleTranslator(TestCase):
+class TestMicrosoftTranslator(TestCase):
     def setUp(self):
-        self.translator = MicrosoftTranslator.unique_instance()
+        self.translators = {
+            'en-nl': MicrosoftTranslator('en', 'nl'),
+            'nl-en': MicrosoftTranslator('nl', 'en'),
+            'es-en': MicrosoftTranslator('es', 'en'),
+            'de-en': MicrosoftTranslator('de', 'en'),
+            'en-de': MicrosoftTranslator('en', 'de'),
+        }
 
     def test_simple_translations(self):
-        translation = self.translator.translate(
-            query='hello',
-            source_language='en',
-            target_language='nl',
-        )
+        translation = self.translators['en-nl'].translate(query='hello')
 
         self.assertEquals(translation, 'Hallo')
 
-        translation = self.translator.translate(
-            query='De boom is groen',
-            source_language='nl',
-            target_language='en'
-        )
+        translation = self.translators['nl-en'].translate(query='De boom is groen')
 
         self.assertEquals(translation, 'The tree is green')
 
@@ -30,42 +28,30 @@ class TestGoogleTranslator(TestCase):
 
     def test_ca_translations(self):
 
-        translation = self.translator.ca_translate(
+        translation = self.translators['nl-en'].ca_translate(
             before_context='De directeur',
             query='treedt af',
-            after_context='',
-            source_language='nl',
-            target_language='en'
-        )
+            after_context='')
 
         self.assertEquals(translation, 'resigns')
 
-        translation = self.translator.ca_translate(
+        translation = self.translators['en-nl'].ca_translate(
             before_context='Dark',
             query='matter',
-            after_context='is an unidentified type of matter distinct from dark energy.',
-            source_language='en',
-            target_language='nl')
+            after_context='is an unidentified type of matter distinct from dark energy.')
 
         self.assertEquals(translation, 'materie')
 
     def test_unicode_outputs(self):
-        translation = self.translator.ca_translate(
+        translation = self.translators['en-de'].ca_translate(
             before_context='The ',
             query='lion',
-            after_context='goes to the forest',
-            source_language='en',
-            target_language='de'
-        )
+            after_context='goes to the forest')
 
         self.assertEquals(translation, u'Löwe')
 
     def test_unicode_inputs(self):
-        translation = self.translator.translate(
-            query=u'Löwe',
-            source_language='de',
-            target_language='en'
-        )
+        translation = self.translators['de-en'].translate(query=u'Löwe')
 
         self.assertEquals(translation, 'Lion')
 

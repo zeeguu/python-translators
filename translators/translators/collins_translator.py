@@ -3,7 +3,6 @@ import urllib
 import requests
 import xml.etree.ElementTree as ET
 
-import language_codes
 from language_codes import code_to_full_language
 from config_parsing import get_key_from_config
 
@@ -22,24 +21,26 @@ DEBUG = True
 class CollinsTranslator(Translator):
     gt_instance = None
 
-    def __init__(self, key=None):
+    def __init__(self, source_language, target_language, key=None):
+        super(CollinsTranslator, self).__init__(source_language, target_language)
+
         if not key:
             key = get_key_from_config('COLLINS_TRANSLATE_API_KEY')
 
         self.key = key
 
     @classmethod
-    def unique_instance(cls, key=None):
+    def unique_instance(cls, source_language, target_language, key=None):
         if CollinsTranslator.gt_instance:
             return CollinsTranslator.gt_instance
 
-        CollinsTranslator.gt_instance = CollinsTranslator(key)
+        CollinsTranslator.gt_instance = CollinsTranslator(source_language, target_language, key)
         return CollinsTranslator.gt_instance
 
-    def translate(self, query, source_language, target_language, max_translations=1):
-        CollinsTranslator.assert_languages_are_supported(source_language, target_language)
+    def translate(self, query, max_translations=1):
+        CollinsTranslator.assert_languages_are_supported(self.source_language, self.target_language)
 
-        dict_code = self.language_codes_to_dict_code(source_language, target_language)
+        dict_code = self.language_codes_to_dict_code(self.source_language, self.target_language)
 
         query_params = {
             'q': query,
@@ -90,7 +91,4 @@ class CollinsTranslator(Translator):
 
 if __name__ == '__main__':
     c = CollinsTranslator()
-    print(c.translate(query='tree',
-                source_language=language_codes.ENGLISH,
-                target_language=language_codes.ITALIAN,
-                max_translations=1))
+    print(c.translate(query='tree', max_translations=1))
