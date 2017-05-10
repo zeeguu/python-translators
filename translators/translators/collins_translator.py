@@ -15,8 +15,6 @@ SUPPORTED_TRANSLATIONS = {
 
 API_BASE_URL = 'https://api.collinsdictionary.com/api/v1'
 
-DEBUG = True
-
 
 class CollinsTranslator(Translator):
     gt_instance = None
@@ -58,10 +56,6 @@ class CollinsTranslator(Translator):
         xml_response = response.json()['entryContent']
 
         xml_tree = ET.ElementTree(ET.fromstring(xml_response.encode('utf-8')))
-
-        # Write to file
-        if DEBUG:
-            xml_tree.write('xml_outputs/%(dict_code)s-%(query)s.xml' % locals())
 
         return xml_tree.iter('quote').next().text
 
