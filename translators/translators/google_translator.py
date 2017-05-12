@@ -37,12 +37,11 @@ class GoogleTranslator(ContextAwareTranslator):
             'source': self.source_language,
             'target': self.target_language,
             'q': query,
-            'format': 'html'
+            'format': 'html',
         }
 
         translations = self.translation_service.translations().list(**params).execute()
         translation = translations['translations'][0][u'translatedText']
-
 
         # Unescape HTML characters
         unescaped_translation = HTMLParser.HTMLParser().unescape(translation)
@@ -65,6 +64,8 @@ class GoogleTranslator(ContextAwareTranslator):
         after_context = cgi.escape(after_context)
 
         query = u'%(before_context)s<span>%(query)s</span>%(after_context)s' % locals()  # enclose query in span tags
+
+        print(query)
 
         translation = self.translate(query)
 
@@ -89,3 +90,8 @@ class GoogleTranslator(ContextAwareTranslator):
             return spanned_string
 
         return found_span.text
+
+
+if __name__ == '__main__':
+    t = GoogleTranslator(source_language='en', target_language='nl', key='AIzaSyCaahQqG18a5ok1A6UE_XgpAXBGc7aI4KM')
+    print(t.ca_translate(before_context='He', query='leaves', after_context='the building'))
