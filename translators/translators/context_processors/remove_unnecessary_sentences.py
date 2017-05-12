@@ -25,13 +25,9 @@ class RemoveUnnecessarySentences(ContextProcessor):
         resource_url = NLTK_DATA_PATH % {'language': code_to_full_language(language_code)}
         resource_url = os.path.expanduser(resource_url)
 
-        try:
-            tokenizer = nltk.data.load(resource_url)
+        tokenizer = nltk.data.load(resource_url)
 
-        except:
-            raise Exception('Failed to load tokenizer.')
-
-        return nltk.data.load(resource_url)
+        return tokenizer
 
     def process_context(self, before_context, query, after_context):
 
