@@ -23,7 +23,7 @@ class GoogleTranslator(ContextAwareTranslator):
         self.key = key
         self.translation_service = build('translate', 'v2', developerKey=key)
 
-    def translate(self, query, before_context='', after_context='', max_translations=1):
+    def translate(self, query, max_translations=1):
         """
         Translate a query from source language to target language
         :param max_translations: 
@@ -41,8 +41,8 @@ class GoogleTranslator(ContextAwareTranslator):
         }
 
         translations = self.translation_service.translations().list(**params).execute()
-
         translation = translations['translations'][0][u'translatedText']
+
 
         # Unescape HTML characters
         unescaped_translation = HTMLParser.HTMLParser().unescape(translation)
@@ -58,13 +58,15 @@ class GoogleTranslator(ContextAwareTranslator):
         :param after_context:
         :return:
         """
+
+        # Escape HTML
         query = cgi.escape(query)
-        before_context = cgi.escape(query)
-        after_context = cgi.escape(query)
+        before_context = cgi.escape(before_context)
+        after_context = cgi.escape(after_context)
 
         query = u'%(before_context)s<span>%(query)s</span>%(after_context)s' % locals()  # enclose query in span tags
 
-        translation = self.translate(query, self.source_language, self.target_language)
+        translation = self.translate(query)
 
         translated_query = GoogleTranslator.parse_spanned_string(translation).strip()
 
@@ -78,8 +80,12 @@ class GoogleTranslator(ContextAwareTranslator):
 
     @staticmethod
     def parse_spanned_string(spanned_string):
-        print(spanned_string)
 
         xml_object = ET.fromstring('<s>' + spanned_string.encode('utf-8') + '</s>')
 
-        return xml_object.find('span').text
+        found_span = xml_object.find('span')
+
+        if found_span is None:
+            return spanned_string
+
+        return found_span.text

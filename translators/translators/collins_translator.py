@@ -81,8 +81,3 @@ class CollinsTranslator(Translator):
 
         if target_language not in SUPPORTED_TRANSLATIONS[source_language]:
             raise Exception('Can not translate %(full_source_language)s to %(full_target_language)s' % locals())
-
-
-if __name__ == '__main__':
-    c = CollinsTranslator()
-    print(c.translate(query='tree', max_translations=1))

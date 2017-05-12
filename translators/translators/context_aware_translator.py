@@ -16,6 +16,7 @@ class ContextAwareTranslator(Translator):
         pass
 
     def ca_translate(self, query, before_context, after_context, max_translations=1):
+
         params = {
             'before_context': before_context,
             'query': query,
@@ -25,6 +26,7 @@ class ContextAwareTranslator(Translator):
         # Pass params through all the context processors
         for context_processor in self.context_processors:
             params = context_processor.process_context(**params)
+
 
         # Add `max_translations` to the new dict of params
         params['max_translations'] = max_translations

@@ -1,6 +1,6 @@
 from translators.google_translator import GoogleTranslator
 from config_parsing import get_key_from_config
-from translators.context_processors.reduce_to_one_sentence import ReduceToOneSentence
+from translators.context_processors.remove_unnecessary_sentences import RemoveUnnecessarySentences
 from translators.context_processors.remove_unnecessary_conjunctions import RemoveUnnecessaryConjunctions
 
 conjunctions = {
@@ -26,10 +26,10 @@ class GoogleTranslatorFactory(object):
         translator = GoogleTranslatorFactory.build_clean(source_language, target_language, key)
 
         # Right now only apply the processor to Dutch, English, German and French
-        if source_language in ['nl', 'en', 'de', 'fr']:
-            translator.add_context_processor(ReduceToOneSentence())
+        if source_language in ['nl', 'en', 'de', 'fr', 'es']:
+            translator.add_context_processor(RemoveUnnecessarySentences(source_language))
 
-        if source_language in conjunctions:
+        if source_language in conjunctions.keys():
             translator.add_context_processor(RemoveUnnecessaryConjunctions(conjunctions[source_language]))
 
         return translator
@@ -48,16 +48,3 @@ class GoogleTranslatorFactory(object):
             key = get_key_from_config('GOOGLE_TRANSLATE_API_KEY')
 
         return GoogleTranslator(source_language, target_language, key)
-
-
-if __name__ == '__main__':
-    g = GoogleTranslatorFactory.build('nl', 'en')
-
-    before_context = 'Justitieminister Koen Geens (CD&V) werkt aan een wetsontwerp dat burgerinfiltranten mogelijk ' \
-                     'maakt in de strijd tegen'
-    after_context = 'en georganiseerde misdaad. Dat zegt hij woensdag in Knack, nadat Brussels procureur-generaal ' \
-                    'Johan Delmulle daar vorig najaar een lans voor had gebroken. Daarnaast werkt Geens ook aan een ' \
-                    'regeling ' \
-                    'rond spijtoptanten. Een akkoord binnen de meerderheid is er nog niet.'
-
-    print(g.ca_translate(query='terrorisme', before_context=before_context, after_context=after_context))
