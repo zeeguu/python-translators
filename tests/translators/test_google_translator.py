@@ -10,7 +10,8 @@ class TestGoogleTranslator(TestCase):
             'en-nl': GoogleTranslatorFactory.build('en', 'nl'),
             'es-en': GoogleTranslatorFactory.build('es', 'en'),
             'de-en': GoogleTranslatorFactory.build('de', 'en'),
-            'en-de': GoogleTranslatorFactory.build('en', 'de')
+            'en-de': GoogleTranslatorFactory.build('en', 'de'),
+            'nl-en': GoogleTranslatorFactory.build('nl', 'en')
         }
 
     def testContextMatters(self):
@@ -97,6 +98,19 @@ class TestGoogleTranslator(TestCase):
                                 after_context=u' .')
 
         #self.assertEquals("leg cramp suffered", translation)
+
+
+    def test_encoding_issue(self):
+        translation = self.translators['nl-en'].ca_translate(
+            before_context='De verkiezingscommissie   bestaat uit vertegenwoordigers uit verschillende geledingen van '
+                           'de universiteit en moet over de goede gang van zaken waken voor en tijdens de',
+            query='rectorverkiezing',
+            after_context='. De Leuvense studenten hebben deze ochtend laten weten er niet meer aan deel te willen '
+                          'nemen. Dat meldt het studentenblad Veto en wordt bevestigd aan onze redactie.'
+        )
+
+        self.assertEquals(translation, 'rector\'s election')
+
 
 if __name__ == '__main__':
     unittest.main()
