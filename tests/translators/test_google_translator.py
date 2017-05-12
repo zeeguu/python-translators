@@ -83,22 +83,22 @@ class TestGoogleTranslator(TestCase):
         self.assertNotIn('&#39;', translation)
 
     def testTwoWords(self):
-        #translation = self.translators['de-en'].ca_translate(
-       #                             before_context=u'Offensichtlich hatte eine der Athletinnen während der Kür einen',
-        #                            query=u'Wadenkrampf erlitten',
-         #                           after_context=u' genau .')
-
-        #self.assertEquals("leg cramp suffered", translation)
-
-        # However, if the sentence ends after our looked up word, we don't get the full translation!
-
-        translation = self.translators['de-en'].ca_translate(
-                                query=u'Wadenkrampf erlitten',
-                                before_context=u'Offensichtlich hatte eine der Athletinnen während der Kür einen',
-                                after_context=u' .')
-
-        #self.assertEquals("leg cramp suffered", translation)
-
+        # translation = self.translators['de-en'].ca_translate(
+        #     before_context=u'Offensichtlich hatte eine der Athletinnen während der Kür einen',
+        #     query=u'Wadenkrampf erlitten',
+        #     after_context=u' genau .')
+        #
+        # self.assertEquals("leg cramp suffered", translation)
+        #
+        # # However, if the sentence ends after our looked up word, we don't get the full translation!
+        #
+        # translation = self.translators['de-en'].ca_translate(
+        #     query=u'Wadenkrampf erlitten',
+        #     before_context=u'Offensichtlich hatte eine der Athletinnen während der Kür einen',
+        #     after_context=u' genau.')
+        #
+        # self.assertEquals("leg cramp suffered", translation)
+        pass
 
     def test_encoding_issue(self):
         translation = self.translators['nl-en'].ca_translate(
@@ -110,6 +110,9 @@ class TestGoogleTranslator(TestCase):
         )
 
         self.assertEquals(translation, 'rector\'s election')
+
+    def test_html_noise_in_translation(self):
+         pass # translation = self.
 
 
 if __name__ == '__main__':
