@@ -18,10 +18,10 @@ and glosbe translator. The GlosbeTranslator is a simple translator. It can only 
 Translating "treedt" in the sentence "De directeur treedt af":
 
 ```
->>> from google_translator import GoogleTranslator
->>> t = GoogleTranslator('<valid google API key>')
+>>> from translators.google_translator import GoogleTranslator
+>>> t = GoogleTranslator(source_language='nl', target_language='en', key='<valid google API key>')
 
->>> t.ca_translate(before_context='De directeur', query='treedt', after_context='af', source_language='nl', target_language='en')
+>>> t.ca_translate(before_context='De directeur', query='treedt', after_context='af')
 u'resigns'
 ```
 
@@ -36,19 +36,22 @@ This is a nonsensical translation whereas the context aware translation is quite
 
 ### English to Dutch
 
-Translating (the first occurrence of) "matter" in the sentence "Dark matter is an unidentified type of matter distinct from dark energy."
+Let's say we want to translate "leaves" in the sentence "He leaves the building". A context-less translation yields
 
-```
->>> t.ca_translate(before_context='Dark', query='matter', after_context='is an unidentified type of matter distinct from dark energy.', source_language='en', target_language='nl')
-u'materie'
-```
-
-whereas a context-less translation gives the following result:
-
-
-```
->>> t.translate(query='matter', source_language='en', target_language='nl')
-u'er toe doen'
+```python
+>>> from translators.google_translator import GoogleTranslator
+>>> gt = GoogleTranslator(key='<valid api key>', source_language='en', target_language='nl')
+>>> gt.translate('leaves')
+u'bladeren'
 ```
 
-This, again, is nonsensical.
+It translates to "bladeren" which means leaves as in leaves from a tree.
+
+Adding context gives us the right translation:
+
+```
+>>> from translators.google_translator import GoogleTranslator
+>>> gt = GoogleTranslator(key='<valid api key>', source_language='en', target_language='nl')
+>>> gt.ca_translate(before_context='He', query='leaves', after_context='the building')
+'verlaat'
+```
