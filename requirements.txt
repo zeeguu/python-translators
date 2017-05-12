@@ -2,6 +2,7 @@ appdirs==1.4.0
 configobj==5.0.6
 google-api-python-client==1.6.2
 httplib2==0.10.3
+nltk==3.2.2
 oauth2client==4.0.0
 packaging==16.8
 pyasn1==0.2.3
@@ -10,5 +11,5 @@ pyparsing==2.1.10
 requests==2.13.0
 rsa==3.4.2
 six==1.10.0
--e git+https://github.com/mircealungu/python-translators.git@6306f7b5e64a04f83d591fd3e6d85412a559211d#egg=translators&subdirectory=translators
+-e git+https://github.com/mircealungu/python-translators.git@caf2a93c9333e0d8faebd4541e4f7c047c9fc280#egg=translators&subdirectory=translators
 uritemplate==3.0.0
