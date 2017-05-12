@@ -17,5 +17,6 @@ setuptools.setup(
     install_requires=(
         "google-api-python-client",
         "configobj",
-        "requests")
+        "requests",
+        "nltk")
 )
