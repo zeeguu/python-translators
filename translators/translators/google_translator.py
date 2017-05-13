@@ -1,103 +1,73 @@
 # -*- coding: utf-8 -*-
 
-import os
 import re
 
 import HTMLParser
 from googleapiclient.discovery import build
-from configobj import ConfigObj
+import xml.etree.ElementTree as ET
+import cgi
 
 from context_aware_translator import ContextAwareTranslator
 
-CONFIG_FILE_PATH = '~/.config/translators.cfg'
-
 re_opening_tag = re.compile(r"<[\s]*[sS]pan[\s]*>(.*)", flags=re.DOTALL)  # <span> tag
 re_closing_tag = re.compile(r"(.*?)<[\s]*/[\s]*[sS]pan[\s]*>", flags=re.DOTALL)  # </span> tag
-
-
-def get_key_from_config():
-
-    if 'TRANSLATE_API_KEY' in os.environ:
-        return os.environ['TRANSLATE_API_KEY']
-
-    try:
-        config_file = os.path.expanduser(CONFIG_FILE_PATH)
-        config = ConfigObj(config_file)
-        key = config['TRANSLATE_API_KEY']
-        return key
-    except KeyError:
-        raise Exception('No config file found. Create config file or pass key as argument to constructor')
 
 
 class GoogleTranslator(ContextAwareTranslator):
 
     gt_instance = None
 
-    def __init__(self, key=None):
-
-        if not key:
-            key = get_key_from_config()
+    def __init__(self, source_language, target_language, key):
+        super(GoogleTranslator, self).__init__(source_language, target_language)
 
         self.key = key
         self.translation_service = build('translate', 'v2', developerKey=key)
 
-    @classmethod
-    def unique_instance(cls, key=None):
-        """
-            
-            The creation of a translator object is slow, since it requires
-            sending the secret key and authenticating!  
-            
-            This is a static class instance that caches a connection and 
-            reuses it.
-             
-        :return: a cached GoogleTranslator object
-        """
-        if GoogleTranslator.gt_instance:
-            return GoogleTranslator.gt_instance
-
-        GoogleTranslator.gt_instance = GoogleTranslator(key)
-        return GoogleTranslator.gt_instance
-
-    def translate(self, query, source_language, target_language):
+    def translate(self, query, max_translations=1):
         """
         Translate a query from source language to target language
+        :param max_translations: 
+        :param after_context: 
+        :param before_context: 
         :param query:
-        :param source_language:
-        :param target_language:
         :return:
         """
 
         params = {
-            'source': source_language,
-            'target': target_language,
+            'source': self.source_language,
+            'target': self.target_language,
             'q': query,
-            'format': 'html'
+            'format': 'html',
         }
 
         translations = self.translation_service.translations().list(**params).execute()
-
         translation = translations['translations'][0][u'translatedText']
 
         # Unescape HTML characters
         unescaped_translation = HTMLParser.HTMLParser().unescape(translation)
 
-
         return unescaped_translation
 
-    def ca_translate(self, query, source_language, target_language, before_context='', after_context=''):
+    def _ca_translate(self, query, before_context='', after_context='', max_translations=1):
         """
         Function to translate a query by taking into account the context
+        :param max_translations: 
         :param query:
-        :param source_language:
-        :param target_language:
         :param before_context:
         :param after_context:
         :return:
         """
-        query = before_context + '<span>' + query + '</span>' + after_context
 
-        translation = self.translate(query, source_language, target_language)
+        # Escape HTML
+        query = cgi.escape(query)
+        before_context = cgi.escape(before_context)
+        after_context = cgi.escape(after_context)
+
+        query = u'%(before_context)s<span>%(query)s</span>%(after_context)s' % locals()  # enclose query in span tags
+
+        print(query)
+
+        translation = self.translate(query)
 
         translated_query = GoogleTranslator.parse_spanned_string(translation).strip()
 
@@ -111,17 +81,17 @@ class GoogleTranslator(ContextAwareTranslator):
 
     @staticmethod
     def parse_spanned_string(spanned_string):
-        search_obj = re_opening_tag.search(spanned_string)
 
-        if not search_obj:
-            raise Exception('Failed to parse spanned string: no opening span tag found.')
+        xml_object = ET.fromstring('<s>' + spanned_string.encode('utf-8') + '</s>')
 
-        trail = search_obj.group(1)
-        search_obj = re_closing_tag.search(trail)
+        found_span = xml_object.find('span')
 
-        if not search_obj:
-            raise Exception('Failed to parse spanned string: no closing tag found.')
+        if found_span is None:
+            return spanned_string
 
-        result = search_obj.group(1)
+        return found_span.text
 
-        return result.strip()
+
+if __name__ == '__main__':
+    t = GoogleTranslator(source_language='en', target_language='nl', key='AIzaSyCaahQqG18a5ok1A6UE_XgpAXBGc7aI4KM')
+    print(t.ca_translate(before_context='He', query='leaves', after_context='the building'))

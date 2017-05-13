@@ -4,51 +4,57 @@
 
 # Python translators
 
-This library contains a few wrappers for translation services. As of now it contains two translators: google translator
-and glosbe translator. The GlosbeTranslator is a simple translator. It can only translates single words. The GoogleTranslator can also translate phrases and more importantly: words and phrases occurring within other phrases/sentences. We call these context aware translations.
+This library contains a few wrappers for translation services. The GlosbeTranslator is a simple translator. It can only translates single words. The GoogleTranslator can also 
+ translate phrases and more importantly: words and phrases occurring within other phrases/sentences. We call these context-aware translations.
 
 ## Installation
 
 1. (Optional) `virtualenv .`
-2. `pip install -r requirements`
+2. `pip install -r requirements.txt`
+3. `python setup.y install`
 
 ## Examples
 
-### Dutch to English
-Translating "treedt" in the sentence "De directeur treedt af":
+### Google - Dutch to English
+Translating "leer" in the phrase "het stevige leer":
 
-```
->>> from google_translator import GoogleTranslator
->>> t = GoogleTranslator('<valid google API key>')
+```python
+>>> from translators.google_translator import GoogleTranslator
+>>> gt = GoogleTranslator(source_language='nl', target_language='en', key='<valid google API key>')
 
->>> t.ca_translate(before_context='De directeur', query='treedt', after_context='af', source_language='nl', target_language='en')
-u'resigns'
-```
-
-Now a context-less translation:
-
-```
->>> t.translate(query='treedt', source_language='nl', target_language='en')
-u'occurs'
+>>> gt.translate('leer')
+u'Learn'
 ```
 
-This is a nonsensical translation whereas the context aware translation is quite accurate.
+Now after adding context:
 
-### English to Dutch
-
-Translating (the first occurrence of) "matter" in the sentence "Dark matter is an unidentified type of matter distinct from dark energy."
-
-```
->>> t.ca_translate(before_context='Dark', query='matter', after_context='is an unidentified type of matter distinct from dark energy.', source_language='en', target_language='nl')
-u'materie'
+```python
+>>> from translators.google_translator import GoogleTranslator
+>>> gt = GoogleTranslator(source_language='nl', target_language='en', key='<valid google API key>')
+>>> gt.ca_translate(before_context='het stevige', query='leer', after_context='')
+'leather'
 ```
 
-whereas a context-less translation gives the following result:
+This is a nonsensical translation whereas the context aware translation is accurate.
 
+### Google - English to Dutch
 
+Let's say we want to translate "leaves" in the sentence "He leaves the building". A context-less translation yields
+
+```python
+>>> from translators.google_translator import GoogleTranslator
+>>> gt = GoogleTranslator(source_language='en', target_language='nl', key='<valid api key>')
+>>> gt.translate('leaves')
+u'bladeren'
 ```
->>> t.translate(query='matter', source_language='en', target_language='nl')
-u'er toe doen'
-```
 
-This, again, is nonsensical.
+It translates to "bladeren" which means leaves as in leaves from a tree.
+
+Adding context gives us the right translation:
+
+```python
+>>> from translators.google_translator import GoogleTranslator
+>>> gt = GoogleTranslator(source_language='en', target_language='nl', key='<valid api key>')
+>>> gt.ca_translate(before_context='He', query='leaves', after_context='the building')
+'verlaat'
+```
