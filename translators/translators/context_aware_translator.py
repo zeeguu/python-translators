@@ -1,11 +1,9 @@
 from abc import ABCMeta, abstractmethod
 
-from translator import Translator
+from .translator import Translator
 
 
-class ContextAwareTranslator(Translator):
-    __metaclass__ = ABCMeta
-
+class ContextAwareTranslator(Translator, metaclass=ABCMeta):
     def __init__(self, source_language, target_language):
         super(ContextAwareTranslator, self).__init__(source_language, target_language)
 

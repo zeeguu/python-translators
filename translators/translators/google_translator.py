@@ -2,12 +2,12 @@
 
 import re
 
-import HTMLParser
+import html.parser
 from googleapiclient.discovery import build
 import xml.etree.ElementTree as ET
 import cgi
 
-from context_aware_translator import ContextAwareTranslator
+from .context_aware_translator import ContextAwareTranslator
 
 re_opening_tag = re.compile(r"<[\s]*[sS]pan[\s]*>(.*)", flags=re.DOTALL)  # <span> tag
 re_closing_tag = re.compile(r"(.*?)<[\s]*/[\s]*[sS]pan[\s]*>", flags=re.DOTALL)  # </span> tag
@@ -41,10 +41,10 @@ class GoogleTranslator(ContextAwareTranslator):
         }
 
         translations = self.translation_service.translations().list(**params).execute()
-        translation = translations['translations'][0][u'translatedText']
+        translation = translations['translations'][0]['translatedText']
 
         # Unescape HTML characters
-        unescaped_translation = HTMLParser.HTMLParser().unescape(translation)
+        unescaped_translation = html.parser.HTMLParser().unescape(translation)
 
         return unescaped_translation
 
@@ -63,7 +63,7 @@ class GoogleTranslator(ContextAwareTranslator):
         before_context = cgi.escape(before_context)
         after_context = cgi.escape(after_context)
 
-        query = u'%(before_context)s<span>%(query)s</span>%(after_context)s' % locals()  # enclose query in span tags
+        query = '%(before_context)s<span>%(query)s</span>%(after_context)s' % locals()  # enclose query in span tags
 
         print(query)
 
@@ -82,7 +82,7 @@ class GoogleTranslator(ContextAwareTranslator):
     @staticmethod
     def parse_spanned_string(spanned_string):
 
-        xml_object = ET.fromstring('<s>' + spanned_string.encode('utf-8') + '</s>')
+        xml_object = ET.fromstring('<s>' + spanned_string + '</s>')
 
         found_span = xml_object.find('span')
 
@@ -94,4 +94,4 @@ class GoogleTranslator(ContextAwareTranslator):
 
 if __name__ == '__main__':
     t = GoogleTranslator(source_language='en', target_language='nl', key='AIzaSyCaahQqG18a5ok1A6UE_XgpAXBGc7aI4KM')
-    print(t.ca_translate(before_context='He', query='leaves', after_context='the building'))
+    print((t.ca_translate(before_context='He', query='leaves', after_context='the building')))

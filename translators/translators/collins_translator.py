@@ -1,10 +1,10 @@
-from translator import Translator
-import urllib
+from .translator import Translator
+import urllib.request, urllib.parse, urllib.error
 import requests
 import xml.etree.ElementTree as ET
 
-from language_codes import code_to_full_language
-from config_parsing import get_key_from_config
+from .language_codes import code_to_full_language
+from .config_parsing import get_key_from_config
 
 SUPPORTED_TRANSLATIONS = {
     'es': ['en'],  # Spanish can only be translated to English
@@ -48,7 +48,7 @@ class CollinsTranslator(Translator):
         api_url = '%(base_url)s/dictionaries/%(dict_code)s/search/first?%(query_params)s' % {
             'base_url': API_BASE_URL,
             'dict_code': dict_code,
-            'query_params': urllib.urlencode(query_params)
+            'query_params': urllib.parse.urlencode(query_params)
         }
 
         response = requests.get(api_url, headers=self._get_base_headers())

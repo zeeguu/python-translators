@@ -1,5 +1,5 @@
 from translators.google_translator import GoogleTranslator
-from config_parsing import get_key_from_config
+from .config_parsing import get_key_from_config
 from translators.context_processors.remove_unnecessary_sentences import RemoveUnnecessarySentences
 from translators.context_processors.remove_unnecessary_conjunctions import RemoveUnnecessaryConjunctions
 
@@ -29,7 +29,7 @@ class GoogleTranslatorFactory(object):
         if source_language in ['nl', 'en', 'de', 'fr', 'es']:
             translator.add_context_processor(RemoveUnnecessarySentences(source_language))
 
-        if source_language in conjunctions.keys():
+        if source_language in list(conjunctions.keys()):
             translator.add_context_processor(RemoveUnnecessaryConjunctions(conjunctions[source_language]))
 
         return translator

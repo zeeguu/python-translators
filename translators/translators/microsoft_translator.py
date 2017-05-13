@@ -1,10 +1,10 @@
-from context_aware_translator import ContextAwareTranslator
-import urllib
+from .context_aware_translator import ContextAwareTranslator
+import urllib.request, urllib.parse, urllib.error
 import requests
 import time
 import xml.etree.ElementTree as ET
 
-from config_parsing import get_key_from_config
+from .config_parsing import get_key_from_config
 
 TOKEN_SERVICE_URL = 'https://api.cognitive.microsoft.com/sts/v1.0/issueToken'
 TRANSLATION_SERVICE_URL = 'https://api.microsofttranslator.com/V2/Http.svc/Translate'
@@ -29,7 +29,7 @@ class MicrosoftTranslator(ContextAwareTranslator):
         translation = self.send_translation_request(query, 'text/html')
 
         # enclose in <s> tag to make it valid XML
-        xml_object = ET.fromstring('<s>' + translation.encode('utf-8') + '</s>')
+        xml_object = ET.fromstring('<s>' + translation + '</s>')
 
         return xml_object.find('span').text
 
@@ -64,7 +64,7 @@ class MicrosoftTranslator(ContextAwareTranslator):
         }
 
         # Send request to API
-        response = requests.get(TRANSLATION_SERVICE_URL + '?' + urllib.urlencode(query_params), headers=headers)
+        response = requests.get(TRANSLATION_SERVICE_URL + '?' + urllib.parse.urlencode(query_params), headers=headers)
 
         xml_object = ET.fromstring(response.text.encode('utf-8'))
 

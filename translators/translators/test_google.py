@@ -19,17 +19,17 @@ class TestGoogleTranslator(TestCase):
         assert translation == "bed"
 
     def testUnicodeCharactersInContext(self):
-        translation = self.goog.ca_translate('klein', 'de', 'en', u'Ein', u'löwe')
+        translation = self.goog.ca_translate('klein', 'de', 'en', 'Ein', 'löwe')
         assert translation == "small"
 
     def testUnicodeCharactersInWordToTranslate(self):
-        translation = self.goog.ca_translate(u'löwen', 'de', 'en', u'Die schön', u' geht zum Wald')
-        print translation
+        translation = self.goog.ca_translate('löwen', 'de', 'en', 'Die schön', ' geht zum Wald')
+        print(translation)
         assert translation == "lion"
 
     def testUnicodeInResult(self):
         translation = self.goog.ca_translate('lion', 'en', 'de', 'The ', ' goes to the forrest.')
-        assert translation == u'Löwe'
+        assert translation == 'Löwe'
 
     def testSuffixStartsWithPunctuation(self):
         translation = self.goog.ca_translate('cama', 'es', 'en', 'Estoy en la', ', e soy dormiendo')
@@ -46,7 +46,7 @@ class TestGoogleTranslator(TestCase):
                                              source_language='es',
                                              target_language='en')
 
-        print translation
+        print(translation)
         assert translation == "bed,"
 
 
@@ -68,6 +68,6 @@ class TestGoogleTranslator(TestCase):
             source_language='de',
             target_language='en')
 
-        print translation
+        print(translation)
         assert '&#39;' not in translation
         assert '\'' in translation

@@ -1,5 +1,5 @@
-from translator import Translator
-import urllib
+from .translator import Translator
+import urllib.request, urllib.parse, urllib.error
 import requests
 
 
@@ -44,5 +44,5 @@ class GlosbeTranslator(Translator):
             'phrase': query.encode('utf-8')
         }
 
-        url = GlosbeTranslator.API_BASE_URL + urllib.urlencode(query_params)
+        url = GlosbeTranslator.API_BASE_URL + urllib.parse.urlencode(query_params)
         return url

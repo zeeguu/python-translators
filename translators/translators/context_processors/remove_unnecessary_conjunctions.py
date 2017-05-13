@@ -1,4 +1,4 @@
-from context_processor import ContextProcessor
+from .context_processor import ContextProcessor
 import re
 
 
@@ -10,7 +10,7 @@ def wordlist_to_regex(words):
     :param words: a list of words that needs to be searched for
     :return: 
     """
-    escaped = map(re.escape, words)
+    escaped = list(map(re.escape, words))
     combined = '|'.join(sorted(escaped, key=len, reverse=True))
     return re.compile(combined)
 
@@ -24,7 +24,7 @@ def find_last_occurrence(substrings, s):
     :param s: 
     :return: 
     """
-    substrings = map(lambda w: w[::-1], substrings)  # reverse each word in `substrings`
+    substrings = [w[::-1] for w in substrings]  # reverse each word in `substrings`
     s = s[::-1]  # reverse the haystack as well
 
     regex = wordlist_to_regex(substrings)
@@ -44,7 +44,7 @@ class RemoveUnnecessaryConjunctions(ContextProcessor):
 
     @staticmethod
     def _surround_words_with_spaces(words):
-        return map(lambda w: ' %(w)s ' % {'w': w}, words)
+        return [' %(w)s ' % {'w': w} for w in words]
 
     def _process_before_context(self, before_context):
         """
