@@ -23,7 +23,7 @@ Translating "leer" in the phrase "het stevige leer":
 >>> gt = GoogleTranslator(source_language='nl', target_language='en', key='<valid google API key>')
 
 >>> gt.translate('leer')
-u'Learn'
+[u'Learn']
 ```
 
 Now after adding context:
@@ -32,7 +32,7 @@ Now after adding context:
 >>> from translators.google_translator import GoogleTranslator
 >>> gt = GoogleTranslator(source_language='nl', target_language='en', key='<valid google API key>')
 >>> gt.ca_translate(before_context='het stevige', query='leer', after_context='')
-'leather'
+['leather']
 ```
 
 This is a nonsensical translation whereas the context aware translation is accurate.
@@ -45,7 +45,7 @@ Let's say we want to translate "leaves" in the sentence "He leaves the building"
 >>> from translators.google_translator import GoogleTranslator
 >>> gt = GoogleTranslator(source_language='en', target_language='nl', key='<valid api key>')
 >>> gt.translate('leaves')
-u'bladeren'
+[u'bladeren']
 ```
 
 It translates to "bladeren" which means leaves as in leaves from a tree.
@@ -56,5 +56,5 @@ Adding context gives us the right translation:
 >>> from translators.google_translator import GoogleTranslator
 >>> gt = GoogleTranslator(source_language='en', target_language='nl', key='<valid api key>')
 >>> gt.ca_translate(before_context='He', query='leaves', after_context='the building')
-'verlaat'
+['verlaat']
 ```
