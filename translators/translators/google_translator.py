@@ -64,8 +64,6 @@ class GoogleTranslator(ContextAwareTranslator):
 
         query = '%(before_context)s<span>%(query)s</span>%(after_context)s' % locals()  # enclose query in span tags
 
-        print(query)
-
         translation = self.translate(query)
 
         translated_query = GoogleTranslator.parse_spanned_string(translation).strip()
@@ -89,8 +87,3 @@ class GoogleTranslator(ContextAwareTranslator):
             return spanned_string
 
         return found_span.text
-
-
-if __name__ == '__main__':
-    t = GoogleTranslator(source_language='en', target_language='nl', key='AIzaSyCaahQqG18a5ok1A6UE_XgpAXBGc7aI4KM')
-    print((t.ca_translate(before_context='He', query='leaves', after_context='the building')))
