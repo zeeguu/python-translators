@@ -27,8 +27,6 @@ class GoogleTranslator(ContextAwareTranslator):
         """
         Translate a query from source language to target language
         :param max_translations: 
-        :param after_context: 
-        :param before_context: 
         :param query:
         :return:
         """
@@ -44,7 +42,7 @@ class GoogleTranslator(ContextAwareTranslator):
         translation = translations['translations'][0]['translatedText']
 
         # Unescape HTML characters
-        unescaped_translation = html.parser.HTMLParser().unescape(translation)
+        unescaped_translation = html.unescape(translation)
 
         return unescaped_translation
 
@@ -60,9 +58,9 @@ class GoogleTranslator(ContextAwareTranslator):
         """
 
         # Escape HTML
-        query = cgi.escape(query)
-        before_context = cgi.escape(before_context)
-        after_context = cgi.escape(after_context)
+        query = html.escape(query)
+        before_context = html.escape(before_context)
+        after_context = html.escape(after_context)
 
         query = '%(before_context)s<span>%(query)s</span>%(after_context)s' % locals()  # enclose query in span tags
 
