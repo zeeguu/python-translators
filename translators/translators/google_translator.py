@@ -5,7 +5,6 @@ import re
 import html.parser
 from googleapiclient.discovery import build
 import xml.etree.ElementTree as ET
-import cgi
 
 from .context_aware_translator import ContextAwareTranslator
 
