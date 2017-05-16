@@ -17,11 +17,11 @@ class TestMicrosoftTranslator(TestCase):
     def test_simple_translations(self):
         translation = self.translators['en-nl'].translate(query='hello')
 
-        self.assertEquals(translation, 'Hallo')
+        self.assertEqual(translation[0], 'Hallo')
 
         translation = self.translators['nl-en'].translate(query='De boom is groen')
 
-        self.assertEquals(translation, 'The tree is green')
+        self.assertEqual(translation[0], 'The tree is green')
 
     def test_invalid_microsoft_key(self):
         self.assertRaises(Exception, MicrosoftTranslator, '<this is an invalid key>')
@@ -33,14 +33,14 @@ class TestMicrosoftTranslator(TestCase):
             query='treedt af',
             after_context='')
 
-        self.assertEquals(translation, 'resigns')
+        self.assertEqual(translation[0], 'resigns')
 
         translation = self.translators['en-nl'].ca_translate(
             before_context='Dark',
             query='matter',
             after_context='is an unidentified type of matter distinct from dark energy.')
 
-        self.assertEquals(translation, 'materie')
+        self.assertEqual(translation[0], 'materie')
 
     def test_unicode_outputs(self):
         translation = self.translators['en-de'].ca_translate(
@@ -48,12 +48,12 @@ class TestMicrosoftTranslator(TestCase):
             query='lion',
             after_context='goes to the forest')
 
-        self.assertEquals(translation, u'Löwe')
+        self.assertEqual(translation[0], u'Löwe')
 
     def test_unicode_inputs(self):
         translation = self.translators['de-en'].translate(query=u'Löwe')
 
-        self.assertEquals(translation, 'Lion')
+        self.assertEqual(translation[0], 'Lion')
 
 if __name__ == '__main__':
     unittest.main()

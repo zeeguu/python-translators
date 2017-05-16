@@ -17,13 +17,13 @@ class GoogleTranslator(ContextAwareTranslator):
 
     gt_instance = None
 
-    def __init__(self, source_language, target_language, key):
+    def __init__(self, source_language: str, target_language: str, key: str) -> None:
         super(GoogleTranslator, self).__init__(source_language, target_language)
 
         self.key = key
         self.translation_service = build('translate', 'v2', developerKey=key)
 
-    def translate(self, query, max_translations=1):
+    def translate(self, query: str, max_translations: int = 1) -> [str]:
         """
         Translate a query from source language to target language
         :param max_translations: 
@@ -48,7 +48,8 @@ class GoogleTranslator(ContextAwareTranslator):
 
         return unescaped_translation
 
-    def _ca_translate(self, query, before_context='', after_context='', max_translations=1):
+    def _ca_translate(self, query, before_context: str = '', after_context: str = '', max_translations: str = 1) \
+            -> [str]:
         """
         Function to translate a query by taking into account the context
         :param max_translations: 
@@ -77,10 +78,10 @@ class GoogleTranslator(ContextAwareTranslator):
                 and translated_query[-1] == stripped_after_context[0]:
             translated_query = translated_query[:-1]
 
-        return translated_query
+        return [translated_query]
 
     @staticmethod
-    def parse_spanned_string(spanned_string):
+    def parse_spanned_string(spanned_string: str) -> str:
 
         xml_object = ET.fromstring('<s>' + spanned_string + '</s>')
 

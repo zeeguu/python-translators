@@ -7,10 +7,10 @@ class GlosbeTranslator(Translator):
 
     API_BASE_URL = 'https://glosbe.com/gapi/translate?'
 
-    def __init__(self, source_language, target_language):
+    def __init__(self, source_language: str, target_language: str) -> None:
         super(GlosbeTranslator, self).__init__(source_language, target_language)
 
-    def translate(self, query, max_translations=2):
+    def translate(self, query: str, max_translations: int = 2) -> [str]:
 
         """
 
@@ -36,7 +36,7 @@ class GlosbeTranslator(Translator):
         return translations
 
     @staticmethod
-    def build_url(query, source_language, target_language):
+    def build_url(query: str, source_language: str, target_language: str) -> str:
         query_params = {
             'from': source_language,
             'dest': target_language,

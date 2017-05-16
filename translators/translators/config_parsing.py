@@ -4,7 +4,7 @@ import os
 CONFIG_FILE_PATH = '~/.config/translators.cfg'
 
 
-def get_key_from_config(key_name):
+def get_key_from_config(key_name: str) -> str:
 
     if key_name in os.environ:
         return os.environ[key_name]

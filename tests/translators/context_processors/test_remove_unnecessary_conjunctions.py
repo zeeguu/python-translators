@@ -16,9 +16,9 @@ class TestRemoveUnnecessaryConjunctions(TestCase):
 
         results = self.context_processor.process_context(**params)
 
-        self.assertEquals(results['before_context'], 'Amsterdam is the')
-        self.assertEquals(results['query'], 'capital city')  # query is unchanged
-        self.assertEquals(results['after_context'], 'of the Netherlands')
+        self.assertEqual(results['before_context'], 'Amsterdam is the')
+        self.assertEqual(results['query'], 'capital city')  # query is unchanged
+        self.assertEqual(results['after_context'], 'of the Netherlands')
 
 if __name__ == '__main__':
     unittest.main()

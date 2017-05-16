@@ -38,7 +38,7 @@ LANGUAGE_CODE_MAPPING = {
 }
 
 
-def code_to_full_language(language_code):
+def code_to_full_language(language_code: str) -> str:
     if language_code not in LANGUAGE_CODE_MAPPING:
         raise Exception('This language code is not supported!')
 

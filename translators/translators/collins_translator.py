@@ -19,7 +19,7 @@ API_BASE_URL = 'https://api.collinsdictionary.com/api/v1'
 class CollinsTranslator(Translator):
     gt_instance = None
 
-    def __init__(self, source_language, target_language, key=None):
+    def __init__(self, source_language: str, target_language: str, key=None):
         super(CollinsTranslator, self).__init__(source_language, target_language)
 
         if not key:
@@ -28,14 +28,14 @@ class CollinsTranslator(Translator):
         self.key = key
 
     @classmethod
-    def unique_instance(cls, source_language, target_language, key=None):
+    def unique_instance(cls, source_language: str, target_language: str, key: str = None) -> 'CollinsTranslator':
         if CollinsTranslator.gt_instance:
             return CollinsTranslator.gt_instance
 
         CollinsTranslator.gt_instance = CollinsTranslator(source_language, target_language, key)
         return CollinsTranslator.gt_instance
 
-    def translate(self, query, max_translations=1):
+    def translate(self, query: str, max_translations: int = 1):
         CollinsTranslator.assert_languages_are_supported(self.source_language, self.target_language)
 
         dict_code = self.language_codes_to_dict_code(self.source_language, self.target_language)
@@ -59,20 +59,20 @@ class CollinsTranslator(Translator):
 
         return xml_tree.iter('quote').next().text
 
-    def _get_base_headers(self):
+    def _get_base_headers(self) -> dict:
         return {
             'accessKey': self.key
         }
 
     @staticmethod
-    def language_codes_to_dict_code(code1, code2):
+    def language_codes_to_dict_code(code1: str, code2: str) -> str:
         return '%(language1)s-%(language2)s' % {
             'language1': code_to_full_language(code1),
             'language2': code_to_full_language(code2),
         }
 
     @staticmethod
-    def assert_languages_are_supported(source_language, target_language):
+    def assert_languages_are_supported(source_language: str, target_language: str):
         full_source_language = code_to_full_language(source_language)
         full_target_language = code_to_full_language(target_language)
 

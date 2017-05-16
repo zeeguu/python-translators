@@ -16,7 +16,7 @@ class TestRemoveUnnecessarySentences(TestCase):
 
         results = self.context_processor.process_context(**params)
 
-        self.assertEquals(params, results)
+        self.assertEqual(params, results)
 
     def test_multiple_sentences(self):
         params = {
@@ -31,10 +31,10 @@ class TestRemoveUnnecessarySentences(TestCase):
 
         results = self.context_processor.process_context(**params)
 
-        self.assertEquals(results['before_context'], params['before_context'])  # before context should remain the same
-        self.assertEquals(results['query'], params['query'])  # query should be untouched
+        self.assertEqual(results['before_context'], params['before_context'])  # before context should remain the same
+        self.assertEqual(results['query'], params['query'])  # query should be untouched
 
-        self.assertEquals(results['after_context'], 'en georganiseerde misdaad.')
+        self.assertEqual(results['after_context'], 'en georganiseerde misdaad.')
 
 
 

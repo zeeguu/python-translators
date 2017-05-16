@@ -19,20 +19,20 @@ class TestGoogleTranslator(TestCase):
                                                              query='matter',
                                                              after_context='is to be found in the universe')
 
-        self.assertEqual(translation, 'materie')
+        self.assertEqual(translation[0], 'materie')
 
     def testSuffixIsEmpty(self):
         translation = self.translators['es-en'].ca_translate(before_context='Estoy en la',
                                                              query='cama',
                                                              after_context='')
-        self.assertEqual(translation, 'bed')
+        self.assertEqual(translation[0], 'bed')
 
     def testUnicodeCharactersInContext(self):
         translation = self.translators['de-en'].ca_translate(before_context='Ein',
                                                              query='klein',
                                                              after_context=u'löwe')
 
-        self.assertEqual(translation, "small")
+        self.assertEqual(translation[0], "small")
 
     def testUnicodeCharactersInWordToTranslate(self):
         translation = self.translators['de-en'].ca_translate(before_context=u'Die schön',
@@ -40,39 +40,39 @@ class TestGoogleTranslator(TestCase):
                                                              after_context=u' geht zum Wald'
                                                              )
 
-        self.assertIn(translation, ['lion', 'beautiful lion'])
+        self.assertIn(translation[0], ['lion', 'beautiful lion'])
 
     def testUnicodeInResult(self):
         translation = self.translators['en-de'].ca_translate(before_context='The ',
                                                              query='lion',
                                                              after_context=' goes to the forrest.')
 
-        self.assertEqual(translation, u'Löwe')
+        self.assertEqual(translation[0], u'Löwe')
 
     def testSuffixStartsWithPunctuation(self):
         translation = self.translators['es-en'].ca_translate(before_context='Estoy en la',
                                                              query='cama',
                                                              after_context=', e soy dormiendo')
 
-        self.assertEqual(translation, 'bed')
+        self.assertEqual(translation[0], 'bed')
 
         translation = self.translators['es-en'].ca_translate(before_context='Estoy en la',
                                                              query='cama',
                                                              after_context=' , e soy dormiendo')
-        self.assertEqual(translation, 'bed')
+        self.assertEqual(translation[0], 'bed')
 
     def testQueryEndsWithPunctuation(self):
         translation = self.translators['es-en'].ca_translate(before_context='Estoy en la',
                                                              query='cama,',
                                                              after_context=' e soy dormiendo')
 
-        self.assertIn(translation, ['bed,', 'bed'])
+        self.assertIn(translation[0], ['bed,', 'bed'])
 
     def test_strange_span_in_return(self):
         translation = self.translators['de-en'].ca_translate(before_context='Ich hatte mich',
                                                              query='eigentlich schon',
                                                              after_context=' mit dem 1:1-Unentschieden abgefunden')
-        assert "</span>" not in translation
+        assert "</span>" not in translation[0]
 
     def test_escaped_characters_in_translation(self):
         translation = self.translators['de-en'].ca_translate(
@@ -80,7 +80,7 @@ class TestGoogleTranslator(TestCase):
             query='konzerneigene Flaggschiff',
             after_context=u'ICE straßentauglich zu machen. ')
 
-        self.assertNotIn('&#39;', translation)
+        self.assertNotIn('&#39;', translation[0])
 
     def testTwoWords(self):
         # translation = self.translators['de-en'].ca_translate(
@@ -88,7 +88,7 @@ class TestGoogleTranslator(TestCase):
         #     query=u'Wadenkrampf erlitten',
         #     after_context=u' genau .')
         #
-        # self.assertEquals("leg cramp suffered", translation)
+        # self.assertEqual("leg cramp suffered", translation)
         #
         # # However, if the sentence ends after our looked up word, we don't get the full translation!
         #
@@ -97,7 +97,7 @@ class TestGoogleTranslator(TestCase):
         #     before_context=u'Offensichtlich hatte eine der Athletinnen während der Kür einen',
         #     after_context=u' genau.')
         #
-        # self.assertEquals("leg cramp suffered", translation)
+        # self.assertEqual("leg cramp suffered", translation)
         pass
 
     def test_encoding_issue(self):
@@ -109,7 +109,7 @@ class TestGoogleTranslator(TestCase):
                           'nemen. Dat meldt het studentenblad Veto en wordt bevestigd aan onze redactie.'
         )
 
-        self.assertEquals(translation, 'rector\'s election')
+        self.assertEqual(translation[0], 'rector\'s election')
 
     def test_html_noise_in_translation(self):
          pass # translation = self.

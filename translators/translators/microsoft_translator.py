@@ -4,6 +4,7 @@ import requests
 import time
 import xml.etree.ElementTree as ET
 
+from typing import Dict
 from .config_parsing import get_key_from_config
 
 TOKEN_SERVICE_URL = 'https://api.cognitive.microsoft.com/sts/v1.0/issueToken'
@@ -13,7 +14,7 @@ TRANSLATION_SERVICE_URL = 'https://api.microsofttranslator.com/V2/Http.svc/Trans
 class MicrosoftTranslator(ContextAwareTranslator):
     gt_instance = None
 
-    def __init__(self, source_language, target_language, key=None):
+    def __init__(self, source_language: str, target_language: str, key: str = None) -> None:
         super(MicrosoftTranslator, self).__init__(source_language, target_language)
 
         if not key:
@@ -22,7 +23,7 @@ class MicrosoftTranslator(ContextAwareTranslator):
         self.key = key
         self.token = self.request_token()
 
-    def _ca_translate(self, query, before_context, after_context, max_translations=1):
+    def _ca_translate(self, query: str, before_context: str, after_context: str, max_translations: int = 1) -> [str]:
 
         query = '%(before_context)s<span>%(query)s</span>%(after_context)s' % locals()  # enclose query in span tags
 
@@ -31,12 +32,12 @@ class MicrosoftTranslator(ContextAwareTranslator):
         # enclose in <s> tag to make it valid XML
         xml_object = ET.fromstring('<s>' + translation + '</s>')
 
-        return xml_object.find('span').text
+        return [xml_object.find('span').text]
 
-    def translate(self, query, max_translations=1):
-        return self.send_translation_request(query, 'text/plain')
+    def translate(self, query: str, max_translations: int = 1) -> [str]:
+        return [self.send_translation_request(query, 'text/plain')]
 
-    def send_translation_request(self, query, content_type):
+    def send_translation_request(self, query: str, content_type: str) -> str:
         """
         Sends a translation request to the Microsoft Translation service, query parameters are 
         
@@ -70,10 +71,10 @@ class MicrosoftTranslator(ContextAwareTranslator):
 
         return xml_object.text
 
-    def refresh_token(self):
+    def refresh_token(self) -> None:
         self.token = self.request_token()
 
-    def request_token(self):
+    def request_token(self) -> Dict:
         headers = {
             "Ocp-Apim-Subscription-Key": self.key,
             "Accept": 'application/jwt',
