@@ -1,7 +1,7 @@
 from abc import ABCMeta, abstractmethod
 
-from .translator import Translator
-from .context_processors.context_processor import ContextProcessor
+from translators.translator import Translator
+from translators.context_processors.context_processor import ContextProcessor
 
 
 class ContextAwareTranslator(Translator, metaclass=ABCMeta):

@@ -6,7 +6,7 @@ import html.parser
 from googleapiclient.discovery import build
 import xml.etree.ElementTree as ET
 
-from .context_aware_translator import ContextAwareTranslator
+from translators.context_aware_translator import ContextAwareTranslator
 
 re_opening_tag = re.compile(r"<[\s]*[sS]pan[\s]*>(.*)", flags=re.DOTALL)  # <span> tag
 re_closing_tag = re.compile(r"(.*?)<[\s]*/[\s]*[sS]pan[\s]*>", flags=re.DOTALL)  # </span> tag

@@ -1,4 +1,4 @@
-from .context_aware_translator import ContextAwareTranslator
+from translators.context_aware_translator import ContextAwareTranslator
 import urllib.request, urllib.parse, urllib.error
 import requests
 import time

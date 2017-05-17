@@ -1,4 +1,4 @@
-from .translator import Translator
+from translators.translator import Translator
 import urllib.request, urllib.parse, urllib.error
 import requests
 
