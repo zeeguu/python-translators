@@ -35,7 +35,7 @@ class CollinsTranslator(Translator):
         CollinsTranslator.gt_instance = CollinsTranslator(source_language, target_language, key)
         return CollinsTranslator.gt_instance
 
-    def translate(self, query: str, max_translations: int = 1):
+    def _translate(self, query: str, max_translations: int = 1):
         CollinsTranslator.assert_languages_are_supported(self.source_language, self.target_language)
 
         dict_code = self.language_codes_to_dict_code(self.source_language, self.target_language)

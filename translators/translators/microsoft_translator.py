@@ -34,7 +34,7 @@ class MicrosoftTranslator(ContextAwareTranslator):
 
         return [xml_object.find('span').text]
 
-    def translate(self, query: str, max_translations: int = 1) -> [str]:
+    def _translate(self, query: str, max_translations: int = 1) -> [str]:
         return [self.send_translation_request(query, 'text/plain')]
 
     def send_translation_request(self, query: str, content_type: str) -> str:

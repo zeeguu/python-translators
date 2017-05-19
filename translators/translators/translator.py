@@ -7,5 +7,8 @@ class Translator(object, metaclass=ABCMeta):
         self.target_language = target_language
 
     @abstractmethod
-    def translate(self, query: str, max_translations: int = 1) -> [str]:
+    def _translate(self, query: str, max_translations: int = 1) -> [str]:
         pass
+
+    def translate(self, query: str, max_translations: int = 1) -> [str]:
+        return self._translate(query, max_translations)

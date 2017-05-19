@@ -10,7 +10,7 @@ class GlosbeTranslator(Translator):
     def __init__(self, source_language: str, target_language: str) -> None:
         super(GlosbeTranslator, self).__init__(source_language, target_language)
 
-    def translate(self, query: str, max_translations: int = 2) -> [str]:
+    def _translate(self, query: str, max_translations: int = 2) -> [str]:
 
         """
 

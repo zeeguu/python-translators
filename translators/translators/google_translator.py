@@ -12,6 +12,12 @@ re_opening_tag = re.compile(r"<[\s]*[sS]pan[\s]*>(.*)", flags=re.DOTALL)  # <spa
 re_closing_tag = re.compile(r"(.*?)<[\s]*/[\s]*[sS]pan[\s]*>", flags=re.DOTALL)  # </span> tag
 
 
+class ExpenseTracker(object):
+    def __init__(self, max_time=300, max_entries=3000):
+        self.max_time = max_time
+        self.max_entries = max_entries
+
+
 class GoogleTranslator(ContextAwareTranslator):
 
     gt_instance = None
@@ -22,7 +28,7 @@ class GoogleTranslator(ContextAwareTranslator):
         self.key = key
         self.translation_service = build('translate', 'v2', developerKey=key)
 
-    def translate(self, query: str, max_translations: int = 1) -> [str]:
+    def _translate(self, query: str, max_translations: int = 1) -> [str]:
         """
         Translate a query from source language to target language
         :param max_translations: 
@@ -43,7 +49,7 @@ class GoogleTranslator(ContextAwareTranslator):
         # Unescape HTML characters
         unescaped_translation = html.unescape(translation)
 
-        return unescaped_translation
+        return [unescaped_translation]
 
     def _ca_translate(self, query, before_context: str = '', after_context: str = '', max_translations: str = 1) \
             -> [str]:
@@ -63,7 +69,7 @@ class GoogleTranslator(ContextAwareTranslator):
 
         query = '%(before_context)s<span>%(query)s</span>%(after_context)s' % locals()  # enclose query in span tags
 
-        translation = self.translate(query)
+        [translation] = self.translate(query)
 
         translated_query = GoogleTranslator.parse_spanned_string(translation).strip()
 
