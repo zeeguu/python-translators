@@ -1,6 +1,6 @@
 import unittest
 from unittest import TestCase
-from translators.context_processors.remove_unnecessary_sentences import RemoveUnnecessarySentences
+from python_translators.context_processors.remove_unnecessary_sentences import RemoveUnnecessarySentences
 
 
 class TestRemoveUnnecessarySentences(TestCase):

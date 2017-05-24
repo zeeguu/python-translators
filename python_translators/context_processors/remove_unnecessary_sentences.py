@@ -1,6 +1,6 @@
 from .context_processor import ContextProcessor
 import nltk.data
-from translators.language_codes import code_to_full_language
+from python_translators.utils import code_to_full_language
 import os.path
 
 NLTK_DATA_PATH = "~/nltk_data/tokenizers/punkt/%(language)s.pickle"

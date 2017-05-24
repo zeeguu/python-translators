@@ -1,5 +1,0 @@
-from translators.google_translator import GoogleTranslator
-from translators.collins_translator import CollinsTranslator
-from translators.glosbe_translator import GlosbeTranslator
-from translators.microsoft_translator import MicrosoftTranslator
-

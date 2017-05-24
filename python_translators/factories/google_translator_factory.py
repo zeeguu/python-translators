@@ -1,7 +1,7 @@
 from translators.google_translator import GoogleTranslator
-from .config_parsing import get_key_from_config
-from translators.context_processors.remove_unnecessary_sentences import RemoveUnnecessarySentences
-from translators.context_processors.remove_unnecessary_conjunctions import RemoveUnnecessaryConjunctions
+from python_translators.utils import get_key_from_config
+from python_translators.context_processors.remove_unnecessary_sentences import RemoveUnnecessarySentences
+from python_translators.context_processors.remove_unnecessary_conjunctions import RemoveUnnecessaryConjunctions
 
 conjunctions = {
     'nl': {'en', 'of'},

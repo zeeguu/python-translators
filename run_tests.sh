@@ -1,3 +1,3 @@
 #!/bin/bash
-export PYTHONPATH=./translators
+export PYTHONPATH=./python_translators
 python -m unittest discover -v -s ./tests/translators

@@ -1,6 +1,6 @@
 import unittest
 from unittest import TestCase
-from translators import GlosbeTranslator
+from python_translators.translators.glosbe_translator import GlosbeTranslator
 
 
 class TestGlosbeTranslator(TestCase):

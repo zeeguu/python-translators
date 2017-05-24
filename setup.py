@@ -3,9 +3,8 @@
 
 import setuptools
 
-
 setuptools.setup(
-    name="translators",
+    name="python_translators",
     version="0.1",
     packages=setuptools.find_packages(),
     include_package_data=True,

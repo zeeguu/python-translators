@@ -1,4 +1,4 @@
-from .context_processor import ContextProcessor
+from python_translators.context_processors.context_processor import ContextProcessor
 import re
 
 

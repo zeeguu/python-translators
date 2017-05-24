@@ -1,11 +1,13 @@
-from translators.context_aware_translator import ContextAwareTranslator
-import urllib.request, urllib.parse, urllib.error
+from python_translators.translators.context_aware_translator import ContextAwareTranslator
+import urllib.request
+import urllib.parse
+import urllib.error
 import requests
 import time
 import xml.etree.ElementTree as ET
 
 from typing import Dict
-from .config_parsing import get_key_from_config
+from python_translators.utils import get_key_from_config
 
 TOKEN_SERVICE_URL = 'https://api.cognitive.microsoft.com/sts/v1.0/issueToken'
 TRANSLATION_SERVICE_URL = 'https://api.microsofttranslator.com/V2/Http.svc/Translate'

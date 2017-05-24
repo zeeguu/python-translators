@@ -1,7 +1,7 @@
 # -*- coding: utf8 -*-
 import unittest
 from unittest import TestCase
-from translators.factories.google_translator_factory import GoogleTranslatorFactory
+from python_translators.factories.google_translator_factory import GoogleTranslatorFactory
 
 
 class TestGoogleTranslator(TestCase):

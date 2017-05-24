@@ -1,6 +1,6 @@
 import unittest
 from unittest import TestCase
-from translators import CollinsTranslator
+from python_translators.translators.collins_translator import CollinsTranslator
 
 
 class TestCollinsTranslator(TestCase):

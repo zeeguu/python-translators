@@ -12,3 +12,5 @@ class Translator(object, metaclass=ABCMeta):
 
     def translate(self, query: str, max_translations: int = 1) -> [str]:
         return self._translate(query, max_translations)
+
+

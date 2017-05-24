@@ -6,16 +6,10 @@ import html.parser
 from googleapiclient.discovery import build
 import xml.etree.ElementTree as ET
 
-from translators.context_aware_translator import ContextAwareTranslator
+from python_translators.translators.context_aware_translator import ContextAwareTranslator
 
 re_opening_tag = re.compile(r"<[\s]*[sS]pan[\s]*>(.*)", flags=re.DOTALL)  # <span> tag
 re_closing_tag = re.compile(r"(.*?)<[\s]*/[\s]*[sS]pan[\s]*>", flags=re.DOTALL)  # </span> tag
-
-
-class ExpenseTracker(object):
-    def __init__(self, max_time=300, max_entries=3000):
-        self.max_time = max_time
-        self.max_entries = max_entries
 
 
 class GoogleTranslator(ContextAwareTranslator):
@@ -27,6 +21,7 @@ class GoogleTranslator(ContextAwareTranslator):
 
         self.key = key
         self.translation_service = build('translate', 'v2', developerKey=key)
+        self.time_expenses = []
 
     def _translate(self, query: str, max_translations: int = 1) -> [str]:
         """
