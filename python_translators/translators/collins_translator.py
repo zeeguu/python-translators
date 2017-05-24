@@ -1,4 +1,8 @@
 from python_translators.translators.translator import Translator
+from python_translators.translation_query import TranslationQuery
+from python_translators.translation_response import TranslationResponse
+from python_translators.translation_costs import TranslationCosts
+
 import urllib.request
 import urllib.parse
 import urllib.error
@@ -23,6 +27,8 @@ class CollinsTranslator(Translator):
     def __init__(self, source_language: str, target_language: str, key=None):
         super(CollinsTranslator, self).__init__(source_language, target_language)
 
+        CollinsTranslator.assert_languages_are_supported(self.source_language, self.target_language)
+
         if not key:
             key = get_key_from_config('COLLINS_TRANSLATE_API_KEY')
 
@@ -36,13 +42,11 @@ class CollinsTranslator(Translator):
         CollinsTranslator.gt_instance = CollinsTranslator(source_language, target_language, key)
         return CollinsTranslator.gt_instance
 
-    def _translate(self, query: str, max_translations: int = 1):
-        CollinsTranslator.assert_languages_are_supported(self.source_language, self.target_language)
-
+    def _translate(self, query: TranslationQuery) -> TranslationResponse:
         dict_code = self.language_codes_to_dict_code(self.source_language, self.target_language)
 
         query_params = {
-            'q': query,
+            'q': query.query,
             'format': 'xml'
         }
 
@@ -58,7 +62,10 @@ class CollinsTranslator(Translator):
 
         xml_tree = ET.ElementTree(ET.fromstring(xml_response.encode('utf-8')))
 
-        return xml_tree.iter('quote').next().text
+        return TranslationResponse(
+            translations=[xml_tree.iter('quote').next().text],
+            costs=TranslationCosts(money=0)  # also a free API (sort of)
+        )
 
     def _get_base_headers(self) -> dict:
         return {

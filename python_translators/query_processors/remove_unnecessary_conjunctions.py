@@ -1,5 +1,8 @@
-from python_translators.context_processors.context_processor import ContextProcessor
+from python_translators.query_processors.query_processor import QueryProcessor
 import re
+import copy
+
+from python_translators.translation_query import TranslationQuery
 
 
 def wordlist_to_regex(words):
@@ -38,7 +41,8 @@ def find_last_occurrence(substrings, s):
     return len(s) - indices[1], len(s) - indices[0]  # subtract from `len(s)` to account for the reversing
 
 
-class RemoveUnnecessaryConjunctions(ContextProcessor):
+class RemoveUnnecessaryConjunctions(QueryProcessor):
+
     def __init__(self, conjunctions):
         self.substrings = RemoveUnnecessaryConjunctions._surround_words_with_spaces(conjunctions)
 
@@ -80,9 +84,10 @@ class RemoveUnnecessaryConjunctions(ContextProcessor):
 
         return after_context[:indices[0]]
 
-    def process_context(self, before_context, query, after_context):
-        return {
-            'before_context': self._process_before_context(before_context),
-            'query': query,
-            'after_context': self._process_after_context(after_context)
-        }
+    def process_query(self, query: TranslationQuery) -> TranslationQuery:
+        new_query = copy.copy(query)
+
+        new_query.before_context = self._process_before_context(query.before_context)
+        new_query.after_context = self._process_after_context(query.after_context)
+
+        return new_query

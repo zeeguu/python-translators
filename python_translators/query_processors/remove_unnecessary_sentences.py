@@ -1,12 +1,14 @@
-from .context_processor import ContextProcessor
+from python_translators.query_processors.query_processor import QueryProcessor
+from python_translators.translation_query import TranslationQuery
 import nltk.data
 from python_translators.utils import code_to_full_language
 import os.path
+import copy
 
 NLTK_DATA_PATH = "~/nltk_data/tokenizers/punkt/%(language)s.pickle"
 
 
-class RemoveUnnecessarySentences(ContextProcessor):
+class RemoveUnnecessarySentences(QueryProcessor):
     # Global storage of tokenizers indexed by language code to prevent reloading of tokenizers
     tokenizers = {}
 
@@ -29,23 +31,17 @@ class RemoveUnnecessarySentences(ContextProcessor):
 
         return tokenizer
 
-    def process_context(self, before_context, query, after_context):
+    def _process_context(self, context: str, token_index: -1):
+        tokenized_context = self.tokenizer.tokenize(context)
 
+        try:
+            return tokenized_context[token_index]
+        except IndexError:
+            return context
 
-        # Process before_context
-        tokenized_before_context = self.tokenizer.tokenize(before_context)
+    def process_query(self, query: TranslationQuery) -> TranslationQuery:
+        new_query = copy.copy(query)
+        new_query.before_context = self._process_context(query.before_context, -1)  # last token
+        new_query.after_context = self._process_context(query.after_context, 0)  # first token
 
-        if len(tokenized_before_context) > 0:
-            before_context = tokenized_before_context[-1]
-
-        # Process after_context
-        tokenized_after_context = self.tokenizer.tokenize(after_context)
-
-        if len(tokenized_after_context) > 0:
-            after_context = tokenized_after_context[0]
-
-        return {
-            'before_context': before_context,
-            'query': query,
-            'after_context': after_context
-        }
+        return new_query

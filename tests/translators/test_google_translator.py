@@ -1,7 +1,7 @@
 # -*- coding: utf8 -*-
-import unittest
 from unittest import TestCase
 from python_translators.factories.google_translator_factory import GoogleTranslatorFactory
+from python_translators.translation_query import TranslationQuery
 
 
 class TestGoogleTranslator(TestCase):
@@ -15,105 +15,105 @@ class TestGoogleTranslator(TestCase):
         }
 
     def testContextMatters(self):
-        translation = self.translators['en-nl'].ca_translate(before_context='Dark',
-                                                             query='matter',
-                                                             after_context='is to be found in the universe')
+        response = self.translators['en-nl'].translate(TranslationQuery(
+            before_context='Dark',
+            query='matter',
+            after_context='is to be found in the universe'))
 
-        self.assertEqual(translation[0], 'materie')
+        self.assertEqual(response.translations[0], 'materie')
+
+    def testWithoutContext(self):
+        response = self.translators['nl-en'].translate(TranslationQuery(
+            query='boom'
+        ))
+
+        self.assertEquals(response.translations[0], 'tree')
 
     def testSuffixIsEmpty(self):
-        translation = self.translators['es-en'].ca_translate(before_context='Estoy en la',
-                                                             query='cama',
-                                                             after_context='')
-        self.assertEqual(translation[0], 'bed')
+        response = self.translators['es-en'].translate(TranslationQuery(
+            before_context='Estoy en la',
+            query='cama',
+            after_context=''))
+
+        self.assertEqual(response.translations[0], 'bed')
 
     def testUnicodeCharactersInContext(self):
-        translation = self.translators['de-en'].ca_translate(before_context='Ein',
-                                                             query='klein',
-                                                             after_context=u'löwe')
+        response = self.translators['de-en'].translate(TranslationQuery(
+            before_context='Ein',
+            query='klein',
+            after_context=u'löwe'))
 
-        self.assertEqual(translation[0], "small")
+        self.assertEqual(response.translations[0], "small")
 
     def testUnicodeCharactersInWordToTranslate(self):
-        translation = self.translators['de-en'].ca_translate(before_context=u'Die schön',
-                                                             query=u'löwen',
-                                                             after_context=u' geht zum Wald'
-                                                             )
+        response = self.translators['de-en'].translate(TranslationQuery(
+            before_context=u'Die schön',
+            query=u'löwen',
+            after_context=u' geht zum Wald'))
 
-        self.assertIn(translation[0], ['lion', 'beautiful lion'])
+        self.assertIn(response.translations[0], ['lion', 'beautiful lion'])
 
     def testUnicodeInResult(self):
-        translation = self.translators['en-de'].ca_translate(before_context='The ',
-                                                             query='lion',
-                                                             after_context=' goes to the forrest.')
+        response = self.translators['en-de'].translate(TranslationQuery(
+            before_context='The ',
+            query='lion',
+            after_context=' goes to the forrest.'))
 
-        self.assertEqual(translation[0], u'Löwe')
+        self.assertEqual(response.translations[0], u'Löwe')
 
     def testSuffixStartsWithPunctuation(self):
-        translation = self.translators['es-en'].ca_translate(before_context='Estoy en la',
-                                                             query='cama',
-                                                             after_context=', e soy dormiendo')
+        response = self.translators['es-en'].translate(TranslationQuery(
+            before_context='Estoy en la',
+            query='cama',
+            after_context=', e soy dormiendo'))
 
-        self.assertEqual(translation[0], 'bed')
+        self.assertEqual(response.translations[0], 'bed')
 
-        translation = self.translators['es-en'].ca_translate(before_context='Estoy en la',
-                                                             query='cama',
-                                                             after_context=' , e soy dormiendo')
-        self.assertEqual(translation[0], 'bed')
+        response = self.translators['es-en'].translate(TranslationQuery(
+            before_context='Estoy en la',
+            query='cama',
+            after_context=' , e soy dormiendo'))
+
+        self.assertEqual(response.translations[0], 'bed')
 
     def testQueryEndsWithPunctuation(self):
-        translation = self.translators['es-en'].ca_translate(before_context='Estoy en la',
-                                                             query='cama,',
-                                                             after_context=' e soy dormiendo')
+        translation = self.translators['es-en'].translate(TranslationQuery(
+            before_context='Estoy en la',
+            query='cama,',
+            after_context=' e soy dormiendo'))
 
-        self.assertIn(translation[0], ['bed,', 'bed'])
+        self.assertIn(translation.translations[0], ['bed,', 'bed'])
 
     def test_strange_span_in_return(self):
-        translation = self.translators['de-en'].ca_translate(before_context='Ich hatte mich',
-                                                             query='eigentlich schon',
-                                                             after_context=' mit dem 1:1-Unentschieden abgefunden')
-        assert "</span>" not in translation[0]
+        response = self.translators['de-en'].translate(TranslationQuery(
+            before_context='Ich hatte mich',
+            query='eigentlich schon',
+            after_context=' mit dem 1:1-Unentschieden abgefunden'))
+
+        self.assertNotIn("</span>", response.translations[0])
 
     def test_escaped_characters_in_translation(self):
-        translation = self.translators['de-en'].ca_translate(
+        response = self.translators['de-en'].translate(TranslationQuery(
             before_context=u'Um Fernbusse aus dem Geschäft zu drängen, hat das Unternehmen damit begonnen, das',
             query='konzerneigene Flaggschiff',
-            after_context=u'ICE straßentauglich zu machen. ')
+            after_context=u'ICE straßentauglich zu machen. '))
 
-        self.assertNotIn('&#39;', translation[0])
-
-    def testTwoWords(self):
-        # translation = self.translators['de-en'].ca_translate(
-        #     before_context=u'Offensichtlich hatte eine der Athletinnen während der Kür einen',
-        #     query=u'Wadenkrampf erlitten',
-        #     after_context=u' genau .')
-        #
-        # self.assertEqual("leg cramp suffered", translation)
-        #
-        # # However, if the sentence ends after our looked up word, we don't get the full translation!
-        #
-        # translation = self.translators['de-en'].ca_translate(
-        #     query=u'Wadenkrampf erlitten',
-        #     before_context=u'Offensichtlich hatte eine der Athletinnen während der Kür einen',
-        #     after_context=u' genau.')
-        #
-        # self.assertEqual("leg cramp suffered", translation)
-        pass
+        self.assertNotIn('&#39;', response.translations[0])
 
     def test_encoding_issue(self):
-        translation = self.translators['nl-en'].ca_translate(
-            before_context='De verkiezingscommissie   bestaat uit vertegenwoordigers uit verschillende geledingen van '
+        response = self.translators['nl-en'].translate(TranslationQuery(
+            before_context='De verkiezingscommissie bestaat uit vertegenwoordigers uit verschillende geledingen van '
                            'de universiteit en moet over de goede gang van zaken waken voor en tijdens de',
             query='rectorverkiezing',
             after_context='. De Leuvense studenten hebben deze ochtend laten weten er niet meer aan deel te willen '
                           'nemen. Dat meldt het studentenblad Veto en wordt bevestigd aan onze redactie.'
-        )
+        ))
 
-        self.assertEqual(translation[0], 'rector\'s election')
+        self.assertEqual(response.translations[0], 'rector\'s election')
 
-    def test_html_noise_in_translation(self):
-         pass # translation = self.
+    def test_html_in_query(self):
+        response = self.translators['nl-en'].translate(TranslationQuery(
+            query='m\'n maat'
+        ))
 
-
-if __name__ == '__main__':
-    unittest.main()
+        self.assertEqual(response.translations[0], 'My partner')

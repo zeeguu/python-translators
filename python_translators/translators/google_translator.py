@@ -6,13 +6,18 @@ import html.parser
 from googleapiclient.discovery import build
 import xml.etree.ElementTree as ET
 
-from python_translators.translators.context_aware_translator import ContextAwareTranslator
+from python_translators.translators.translator import Translator
+from python_translators.translation_query import TranslationQuery
+from python_translators.translation_response import TranslationResponse
+from python_translators.translation_costs import TranslationCosts
 
 re_opening_tag = re.compile(r"<[\s]*[sS]pan[\s]*>(.*)", flags=re.DOTALL)  # <span> tag
 re_closing_tag = re.compile(r"(.*?)<[\s]*/[\s]*[sS]pan[\s]*>", flags=re.DOTALL)  # </span> tag
 
+COST_PER_CHARACTER = 2000 / 1_000_000  # 20 euro per 1 million characters
 
-class GoogleTranslator(ContextAwareTranslator):
+
+class GoogleTranslator(Translator):
 
     gt_instance = None
 
@@ -23,58 +28,39 @@ class GoogleTranslator(ContextAwareTranslator):
         self.translation_service = build('translate', 'v2', developerKey=key)
         self.time_expenses = []
 
-    def _translate(self, query: str, max_translations: int = 1) -> [str]:
-        """
-        Translate a query from source language to target language
-        :param max_translations: 
-        :param query:
-        :return:
-        """
+    def _translate(self, query: TranslationQuery) -> TranslationResponse:
+        if not query.is_context_aware_request():
+            return TranslationResponse(
+                translations=[self._simple_translate(query.query)],
+                costs=TranslationCosts(
+                    money=len(query.query) * COST_PER_CHARACTER
+                )
+            )
 
+        google_query = f'{query.before_context}<span>{query.query}</span>{query.after_context}'
+
+        costs = TranslationCosts(money=len(google_query) * COST_PER_CHARACTER)
+
+        translation = self._simple_translate(f'{query.before_context}<span>{query.query}</span>{query.after_context}')
+
+        unescaped_translation = html.unescape(translation)
+
+        return TranslationResponse(
+            translations=[GoogleTranslator.parse_spanned_string(unescaped_translation)],
+            costs=costs
+        )
+
+    def _simple_translate(self, text: str) -> str:
         params = {
             'source': self.source_language,
             'target': self.target_language,
-            'q': query,
-            'format': 'html',
+            'q': f'{text}'
         }
 
-        translations = self.translation_service.translations().list(**params).execute()
-        translation = translations['translations'][0]['translatedText']
+        translation = self.translation_service.translations().list(**params).execute()
 
-        # Unescape HTML characters
-        unescaped_translation = html.unescape(translation)
-
-        return [unescaped_translation]
-
-    def _ca_translate(self, query, before_context: str = '', after_context: str = '', max_translations: str = 1) \
-            -> [str]:
-        """
-        Function to translate a query by taking into account the context
-        :param max_translations: 
-        :param query:
-        :param before_context:
-        :param after_context:
-        :return:
-        """
-
-        # Escape HTML
-        query = html.escape(query)
-        before_context = html.escape(before_context)
-        after_context = html.escape(after_context)
-
-        query = '%(before_context)s<span>%(query)s</span>%(after_context)s' % locals()  # enclose query in span tags
-
-        [translation] = self.translate(query)
-
-        translated_query = GoogleTranslator.parse_spanned_string(translation).strip()
-
-        stripped_after_context = after_context.strip()
-
-        if stripped_after_context and translated_query and stripped_after_context[0] in ",;'.\"-" \
-                and translated_query[-1] == stripped_after_context[0]:
-            translated_query = translated_query[:-1]
-
-        return [translated_query]
+        # parse
+        return translation['translations'][0]['translatedText']
 
     @staticmethod
     def parse_spanned_string(spanned_string: str) -> str:

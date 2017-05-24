@@ -1,7 +1,7 @@
 import unittest
 from unittest import TestCase
 from python_translators.translators.glosbe_translator import GlosbeTranslator
-
+from python_translators.translation_query import TranslationQuery
 
 class TestGlosbeTranslator(TestCase):
 
@@ -10,13 +10,21 @@ class TestGlosbeTranslator(TestCase):
 
     def testNumberOfTranslationsWorks(self):
 
-        translations = self.translator.translate("cama", 5)
-        assert translations[0] == "bed"
-        assert len(translations) == 5
+        response = self.translator.translate(TranslationQuery(
+            query="cama",
+            max_translations=5
+        ))
 
-        translations = self.translator.translate("cama", 3)
-        assert translations[0] == "bed"
-        assert len(translations) == 3
+        self.assertEqual(response.translations[0], 'bed')
+        self.assertEqual(len(response.translations), 5)
+
+        response = self.translator.translate(TranslationQuery(
+            query="cama",
+            max_translations=3
+        ))
+
+        self.assertEqual(response.translations[0], 'bed')
+        self.assertEqual(len(response.translations), 3)
 
 
 if __name__ == '__main__':

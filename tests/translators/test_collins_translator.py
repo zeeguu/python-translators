@@ -1,12 +1,12 @@
 import unittest
 from unittest import TestCase
 from python_translators.translators.collins_translator import CollinsTranslator
+from python_translators.translation_query import TranslationQuery
 
 
 class TestCollinsTranslator(TestCase):
-
     def setUp(self):
-        self.translator = CollinsTranslator(source_language='nl', target_language='en')
+        self.translator = CollinsTranslator(source_language='en', target_language='es')
 
     def test_invalid_source_language(self):
 
@@ -22,6 +22,13 @@ class TestCollinsTranslator(TestCase):
                           CollinsTranslator.translate,
                           self.translator,
                           query='hola')
+
+    def test_translation(self):
+
+        self.translator.translate(TranslationQuery(
+            query='boom'
+        ))
+
 
 if __name__ == '__main__':
     unittest.main()
