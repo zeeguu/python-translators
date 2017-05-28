@@ -6,6 +6,15 @@ from translators.factories.google_translator_factory import GoogleTranslatorFact
 
 class BestEffortTranslator(ContextAwareTranslator):
 
+    """
+        
+        Best effort means that here we should try to always prioritize
+        giving the best translation to the user. (As opposed to other 
+        possible composite translators, like for example, LeastExpensesTranslator).
+
+    
+    """
+
     GOOGLE_CONFIDENCE = 70
     # we'll assume this to be the default value of the google translate
     # this will allow us to rank higher translations that are provided by users we trust
