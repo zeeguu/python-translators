@@ -50,7 +50,12 @@ class BestEffortTranslator(ContextAwareTranslator):
         :return: [dict(translation=..., likelihood=...)]
         """
 
-        contextual_google_translation = self.google.ca_translate(query, before_context, after_context, 1)[0]
+        try: 
+        	contextual_google_translation = self.google.ca_translate(query, before_context, after_context, 1)[0]
+        except Exception as e: 
+                print(str(e))
+                contextual_google_translation = None
+
         non_contextual_google = self.google.translate(query, 1)
 
         translations = [
@@ -60,13 +65,14 @@ class BestEffortTranslator(ContextAwareTranslator):
             )
         ]
 
-        if contextual_google_translation.lower() != non_contextual_google.lower():
-            translations.append(
-                dict(
-                    translation=contextual_google_translation,
-                    likelihood=self.GOOGLE_CONTEXT_AWARE_CONFIDENCE
+        if contextual_google_translation:
+            if contextual_google_translation.lower() != non_contextual_google.lower():
+                translations.append(
+                    dict(
+                        translation=contextual_google_translation,
+                        likelihood=self.GOOGLE_CONTEXT_AWARE_CONFIDENCE
+                    )
                 )
-            )
 
         try:
             likelihood = self.BEST_GLOSBE_CONFIDENCE
