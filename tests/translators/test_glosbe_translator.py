@@ -7,6 +7,7 @@ class TestGlosbeTranslator(TestCase):
 
     def setUp(self):
         self.translator = GlosbeTranslator(source_language='es', target_language='en')
+        self.de_translator = GlosbeTranslator(source_language='de', target_language='en')
 
     def testNumberOfTranslationsWorks(self):
 

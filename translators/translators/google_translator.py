@@ -59,6 +59,14 @@ class GoogleTranslator(ContextAwareTranslator):
         :return:
         """
 
+        # TODO: Replace the next print with proper logging
+        # Previously I used to log these things about translations from the zeeguu code.
+        # We could either inject a logger from outside to which the translate
+        # functions to append their logging info, or maybe translators should setup its own logging
+        # Logging is important for the auditing the translation quality
+        print ("Google Contextual Translation\n--Word: {2}\n--Before: {0}\n--After: {1}".
+               format(before_context, after_context,query))
+
         # Escape HTML
         query = cgi.escape(query)
         before_context = cgi.escape(before_context)
