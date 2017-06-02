@@ -1,5 +1,5 @@
 class TranslationQuery(object):
-    def __init__(self, query: str, before_context: str = '', after_context: str = '', max_translations: int = 10):
+    def __init__(self, query: str, before_context: str = '', after_context: str = '', max_translations: int = 1):
         self.query = query
         self.before_context = before_context
         self.after_context = after_context
