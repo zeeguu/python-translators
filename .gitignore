@@ -8,3 +8,7 @@ include/
 pip-selfcheck.json
 
 venv/
+
+dist/
+build/
+python_translators.egg-info

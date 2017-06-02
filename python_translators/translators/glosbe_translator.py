@@ -9,6 +9,7 @@ import requests
 
 
 class GlosbeTranslator(Translator):
+
     API_BASE_URL = 'https://glosbe.com/gapi/translate?'
 
     def __init__(self, source_language: str, target_language: str) -> None:
@@ -28,13 +29,21 @@ class GlosbeTranslator(Translator):
         response = requests.get(api_url).json()['tuc']
 
         # Extract the translations (thanks @SAMSUNG)
-        translations = [translation['phrase']['text'] for translation in response[:query.max_translations]]
+        try:
+            translations = [translation['phrase']['text'] for translation in response[:query.max_translations]]
+        except KeyError:
+            translations = []
 
         return TranslationResponse(
             translations=translations,
             costs=TranslationCosts(
                 money=0  # API is free
             )
+        )
+
+    def _estimate_costs(self, query: TranslationQuery) -> TranslationCosts:
+        return TranslationCosts(
+            money=0
         )
 
     @staticmethod

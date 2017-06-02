@@ -56,15 +56,24 @@ class CollinsTranslator(Translator):
             'query_params': urllib.parse.urlencode(query_params)
         }
 
-        response = requests.get(api_url, headers=self._get_base_headers())
+        # Decode JSON response
+        json_response = requests.get(api_url, headers=self._get_base_headers()).json()
 
-        xml_response = response.json()['entryContent']
+        # Make sure key is valid
+        if 'errorCode' in json_response:
+            raise Exception(json_response['errorMessage'])
 
-        xml_tree = ET.ElementTree(ET.fromstring(xml_response.encode('utf-8')))
+        # Construct XML object
+        xml_tree = ET.ElementTree(ET.fromstring(json_response['entryContent'].encode('utf-8')))
 
         return TranslationResponse(
             translations=[xml_tree.iter('quote').next().text],
-            costs=TranslationCosts(money=0)  # also a free API (sort of)
+            costs=TranslationCosts(money=0)  # a (limited) free API
+        )
+
+    def _estimate_costs(self, query: TranslationQuery) -> TranslationCosts:
+        return TranslationCosts(
+            money=0
         )
 
     def _get_base_headers(self) -> dict:

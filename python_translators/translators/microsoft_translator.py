@@ -1,4 +1,3 @@
-from python_translators.translators.context_aware_translator import ContextAwareTranslator
 import urllib.request
 import urllib.parse
 import urllib.error
@@ -6,38 +5,48 @@ import requests
 import time
 import xml.etree.ElementTree as ET
 
-from typing import Dict
-from python_translators.utils import get_key_from_config
+
+from python_translators.translators.translator import Translator
+from python_translators.translation_query import TranslationQuery
+from python_translators.translation_response import TranslationResponse
+from python_translators.translation_costs import TranslationCosts
 
 TOKEN_SERVICE_URL = 'https://api.cognitive.microsoft.com/sts/v1.0/issueToken'
 TRANSLATION_SERVICE_URL = 'https://api.microsofttranslator.com/V2/Http.svc/Translate'
 
+HTML_TAG = 'span'
 
-class MicrosoftTranslator(ContextAwareTranslator):
+
+class MicrosoftTranslator(Translator):
     gt_instance = None
+    token = None
 
-    def __init__(self, source_language: str, target_language: str, key: str = None) -> None:
+    def __init__(self, source_language: str, target_language: str, key: str) -> None:
         super(MicrosoftTranslator, self).__init__(source_language, target_language)
 
-        if not key:
-            key = get_key_from_config('MICROSOFT_TRANSLATE_API_KEY')
-
         self.key = key
-        self.token = self.request_token()
+        self.refresh_token_if_needed()
 
-    def _ca_translate(self, query: str, before_context: str, after_context: str, max_translations: int = 1) -> [str]:
+    def _translate(self, query: TranslationQuery) -> TranslationResponse:
 
-        query = '%(before_context)s<span>%(query)s</span>%(after_context)s' % locals()  # enclose query in span tags
+        api_query = f'{query.before_context}<{HTML_TAG}>{query.query}</{HTML_TAG}>{query.after_context}'
 
-        translation = self.send_translation_request(query, 'text/html')
+        translation = self.send_translation_request(api_query, 'text/html')
 
-        # enclose in <s> tag to make it valid XML
-        xml_object = ET.fromstring('<s>' + translation + '</s>')
+        # Enclose in <s> tag to make it valid XML (<s> is arbitrarily chosen)
+        xml_object = ET.fromstring(f'<s>{translation}</s>')
 
-        return [xml_object.find('span').text]
+        return TranslationResponse(
+            translations=[xml_object.find(HTML_TAG).text],
+            costs=TranslationCosts(
+                money=0
+            )
+        )
 
-    def _translate(self, query: str, max_translations: int = 1) -> [str]:
-        return [self.send_translation_request(query, 'text/plain')]
+    def _estimate_costs(self, query: TranslationQuery) -> TranslationCosts:
+        return TranslationCosts(
+            money=0
+        )
 
     def send_translation_request(self, query: str, content_type: str) -> str:
         """
@@ -48,9 +57,7 @@ class MicrosoftTranslator(ContextAwareTranslator):
         :return: 
         """
 
-        # Refresh token if necessary
-        if time.time() <= self.token['expiresAt']:
-            self.refresh_token()
+        self.refresh_token_if_needed()
 
         # Build query parameters
         query_params = {
@@ -67,18 +74,21 @@ class MicrosoftTranslator(ContextAwareTranslator):
         }
 
         # Send request to API
-        response = requests.get(TRANSLATION_SERVICE_URL + '?' + urllib.parse.urlencode(query_params), headers=headers)
+        encoded_params = urllib.parse.urlencode(query_params)
+        response = requests.get(f'{TRANSLATION_SERVICE_URL}?{encoded_params}', headers=headers)
 
         xml_object = ET.fromstring(response.text.encode('utf-8'))
 
         return xml_object.text
 
-    def refresh_token(self) -> None:
-        self.token = self.request_token()
+    def refresh_token_if_needed(self) -> None:
+        if MicrosoftTranslator.token_is_invalid():
+            MicrosoftTranslator.token = MicrosoftTranslator.request_token(self.key)
 
-    def request_token(self) -> Dict:
+    @staticmethod
+    def request_token(key) -> dict:
         headers = {
-            "Ocp-Apim-Subscription-Key": self.key,
+            "Ocp-Apim-Subscription-Key": key,
             "Accept": 'application/jwt',
             'Content-Type': 'application/json',
         }
@@ -96,3 +106,7 @@ class MicrosoftTranslator(ContextAwareTranslator):
             'expiresAt': time.time() + (60 * 8),  # expire after 8 minutes
             'token': response.text,
         }
+
+    @staticmethod
+    def token_is_invalid():
+        return MicrosoftTranslator.token is None or time.time() >= MicrosoftTranslator.token['expiresAt']

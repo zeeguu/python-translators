@@ -113,7 +113,7 @@ class TestGoogleTranslator(TestCase):
 
     def test_html_in_query(self):
         response = self.translators['nl-en'].translate(TranslationQuery(
-            query='m\'n maat'
+               query='m\'n maat'
         ))
 
         self.assertEqual(response.translations[0], 'My partner')

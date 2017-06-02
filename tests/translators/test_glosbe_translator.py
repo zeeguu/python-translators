@@ -3,6 +3,7 @@ from unittest import TestCase
 from python_translators.translators.glosbe_translator import GlosbeTranslator
 from python_translators.translation_query import TranslationQuery
 
+
 class TestGlosbeTranslator(TestCase):
 
     def setUp(self):

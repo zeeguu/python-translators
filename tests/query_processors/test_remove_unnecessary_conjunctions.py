@@ -19,7 +19,7 @@ class TestRemoveUnnecessaryConjunctions(TestCase):
 
         self.assertEqual(result.before_context, 'Amsterdam is the')
         self.assertEqual(result.query, 'capital city')  # query is unchanged
-        self.assertEqual(result.after_context, 'of the Nethderlands')
+        self.assertEqual(result.after_context, 'of the Netherlands')
 
 
 if __name__ == '__main__':

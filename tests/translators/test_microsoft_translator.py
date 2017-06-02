@@ -1,59 +1,70 @@
 # -*- coding: utf8 -*-
 import unittest
 from unittest import TestCase
-from translators import MicrosoftTranslator
+from python_translators.translators.microsoft_translator import MicrosoftTranslator
+from python_translators.translation_query import TranslationQuery
+from python_translators.factories.microsoft_translator_factory import MicrosoftTranslatorFactory
 
 
 class TestMicrosoftTranslator(TestCase):
     def setUp(self):
         self.translators = {
-            'en-nl': MicrosoftTranslator('en', 'nl'),
-            'nl-en': MicrosoftTranslator('nl', 'en'),
-            'es-en': MicrosoftTranslator('es', 'en'),
-            'de-en': MicrosoftTranslator('de', 'en'),
-            'en-de': MicrosoftTranslator('en', 'de'),
+            'en-nl': MicrosoftTranslatorFactory.build('en', 'nl'),
+            'nl-en': MicrosoftTranslatorFactory.build('nl', 'en'),
+            'es-en': MicrosoftTranslatorFactory.build('es', 'en'),
+            'de-en': MicrosoftTranslatorFactory.build('de', 'en'),
+            'en-de': MicrosoftTranslatorFactory.build('en', 'de'),
         }
 
     def test_simple_translations(self):
-        translation = self.translators['en-nl'].translate(query='hello')
+        translation = self.translators['en-nl'].translate(TranslationQuery(
+            query='hello'))
 
-        self.assertEqual(translation[0], 'Hallo')
-
-        translation = self.translators['nl-en'].translate(query='De boom is groen')
-
-        self.assertEqual(translation[0], 'The tree is green')
+        self.assertEquals(translation.translations[0], 'Hallo')
 
     def test_invalid_microsoft_key(self):
         self.assertRaises(Exception, MicrosoftTranslator, '<this is an invalid key>')
 
     def test_ca_translations(self):
 
-        translation = self.translators['nl-en'].ca_translate(
+        response = self.translators['nl-en'].translate(TranslationQuery(
             before_context='De directeur',
             query='treedt af',
-            after_context='')
+            after_context=''
+        ))
 
-        self.assertEqual(translation[0], 'resigns')
+        self.assertEqual(response.translations[0], 'resigns')
 
-        translation = self.translators['en-nl'].ca_translate(
+        response = self.translators['en-nl'].translate(TranslationQuery(
             before_context='Dark',
             query='matter',
-            after_context='is an unidentified type of matter distinct from dark energy.')
+            after_context='is an unidentified type of matter distinct from dark energy.'
+        ))
 
-        self.assertEqual(translation[0], 'materie')
+        self.assertEqual(response.translations[0], 'materie')
 
     def test_unicode_outputs(self):
-        translation = self.translators['en-de'].ca_translate(
+        response = self.translators['en-de'].translate(TranslationQuery(
             before_context='The ',
             query='lion',
-            after_context='goes to the forest')
+            after_context='goes to the forest'
+        ))
 
-        self.assertEqual(translation[0], u'Löwe')
+        self.assertEqual(response.translations[0], u'Löwe')
 
     def test_unicode_inputs(self):
-        translation = self.translators['de-en'].translate(query=u'Löwe')
+        response = self.translators['de-en'].translate(TranslationQuery(
+            query=u'Löwe'
+        ))
 
-        self.assertEqual(translation[0], 'Lion')
+        self.assertEqual(response.translations[0], 'Lion')
+
+    def test_html_chars(self):
+        response = self.translators['nl-en'].translate(TranslationQuery(
+            query="m'n maat"
+        ))
+
+
 
 if __name__ == '__main__':
     unittest.main()
