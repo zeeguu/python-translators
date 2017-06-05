@@ -30,8 +30,8 @@ class BestEffortTranslator(Translator):
         # t.add_query_processor(RemoveAllContext())
         # self.translators.append(t)
         #
-        # # Add a Glosbe translator
-        # self.translators.append(GlosbeTranslator(source_language, target_language))
+        # Add a Glosbe translator
+        self.translators.append(GlosbeTranslator(source_language, target_language))
 
     def _estimate_costs(self, query: TranslationQuery) -> TranslationCosts:
         return TranslationCosts(
