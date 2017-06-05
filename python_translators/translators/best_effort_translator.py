@@ -22,16 +22,16 @@ class BestEffortTranslator(Translator):
         t.add_query_processor(RemoveAllContext())
         self.translators.append(t)
 
-        # Add a microsoft translator
-        self.translators.append(MicrosoftTranslatorFactory.build(source_language, target_language))
-
-        # Add a microsoft translator that ignores context
-        t = MicrosoftTranslatorFactory.build(source_language, target_language)
-        t.add_query_processor(RemoveAllContext())
-        self.translators.append(t)
-
-        # Add a Glosbe translator
-        self.translators.append(GlosbeTranslator(source_language, target_language))
+        # # Add a microsoft translator
+        # self.translators.append(MicrosoftTranslatorFactory.build(source_language, target_language))
+        #
+        # # Add a microsoft translator that ignores context
+        # t = MicrosoftTranslatorFactory.build(source_language, target_language)
+        # t.add_query_processor(RemoveAllContext())
+        # self.translators.append(t)
+        #
+        # # Add a Glosbe translator
+        # self.translators.append(GlosbeTranslator(source_language, target_language))
 
     def _estimate_costs(self, query: TranslationQuery) -> TranslationCosts:
         return TranslationCosts(
