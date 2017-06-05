@@ -9,7 +9,6 @@ from python_translators.translators.glosbe_translator import GlosbeTranslator
 
 
 class BestEffortTranslator(Translator):
-
     def __init__(self, source_language: str, target_language: str) -> None:
         super(BestEffortTranslator, self).__init__(source_language, target_language)
 
@@ -68,8 +67,17 @@ class BestEffortTranslator(Translator):
             # Add costs
             costs.money += response.costs.money
 
+        confidence = 80
+        _translations = []
+        for each in translations:
+            confidence -= 5
+            _translations.append(dict(
+                translation=each,
+                likelihood=confidence
+            ))
+
         return TranslationResponse(
-            translations=translations,
+            translations=_translations,
             costs=costs
         )
 
