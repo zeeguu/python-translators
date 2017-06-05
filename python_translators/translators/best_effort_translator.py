@@ -9,7 +9,6 @@ from python_translators.translators.glosbe_translator import GlosbeTranslator
 
 
 class BestEffortTranslator(Translator):
-
     def __init__(self, source_language: str, target_language: str) -> None:
         super(BestEffortTranslator, self).__init__(source_language, target_language)
 
@@ -23,14 +22,14 @@ class BestEffortTranslator(Translator):
         t.add_query_processor(RemoveAllContext())
         self.translators.append(t)
 
-        # Add a microsoft translator
-        self.translators.append(MicrosoftTranslatorFactory.build(source_language, target_language))
-
-        # Add a microsoft translator that ignores context
-        t = MicrosoftTranslatorFactory.build(source_language, target_language)
-        t.add_query_processor(RemoveAllContext())
-        self.translators.append(t)
-
+        # # Add a microsoft translator
+        # self.translators.append(MicrosoftTranslatorFactory.build(source_language, target_language))
+        #
+        # # Add a microsoft translator that ignores context
+        # t = MicrosoftTranslatorFactory.build(source_language, target_language)
+        # t.add_query_processor(RemoveAllContext())
+        # self.translators.append(t)
+        #
         # Add a Glosbe translator
         self.translators.append(GlosbeTranslator(source_language, target_language))
 
@@ -68,8 +67,17 @@ class BestEffortTranslator(Translator):
             # Add costs
             costs.money += response.costs.money
 
+        confidence = 80
+        _translations = []
+        for each in translations:
+            confidence -= 5
+            _translations.append(dict(
+                translation=each,
+                likelihood=confidence
+            ))
+
         return TranslationResponse(
-            translations=translations,
+            translations=_translations,
             costs=costs
         )
 
