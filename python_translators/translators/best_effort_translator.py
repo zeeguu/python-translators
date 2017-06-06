@@ -54,18 +54,23 @@ class BestEffortTranslator(Translator):
             query.max_translations = max_translations - len(translations)
 
             # Perform translation
-            response = translator.translate(query)
+            try:
+                response = translator.translate(query)                
 
-            assert len(response.translations) <= query.max_translations
+                assert len(response.translations) <= query.max_translations
 
-            # Add translations
-            for translation in response.translations:
+                # Add translations
+                for translation in response.translations:
 
-                if translation.lower() not in map(lambda s: s.lower(), translations):
-                    translations.append(translation)
+                    if translation.lower() not in map(lambda s: s.lower(), translations):
+                        translations.append(translation)
 
-            # Add costs
-            costs.money += response.costs.money
+                # Add costs
+                costs.money += response.costs.money
+            except:
+                # If a given translator fails, the best effort translator
+                # should not!
+                pass
 
         confidence = 80
         _translations = []
