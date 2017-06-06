@@ -14,16 +14,16 @@ class BestEffortTranslator(Translator):
 
         self.translators = []
 
-        # Add a regular google translator
-        self.translators.append(GoogleTranslatorFactory.build(source_language, target_language))
-
         # Add a google translator that ignores context
         t = GoogleTranslatorFactory.build(source_language, target_language)
         t.add_query_processor(RemoveAllContext())
         self.translators.append(t)
 
+        # Add a regular google translator
+        # self.translators.append(GoogleTranslatorFactory.build(source_language, target_language))
+
         # # Add a microsoft translator
-        # self.translators.append(MicrosoftTranslatorFactory.build(source_language, target_language))
+        self.translators.append(MicrosoftTranslatorFactory.build(source_language, target_language))
         #
         # # Add a microsoft translator that ignores context
         # t = MicrosoftTranslatorFactory.build(source_language, target_language)
