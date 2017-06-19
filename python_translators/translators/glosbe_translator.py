@@ -4,6 +4,7 @@ from python_translators.translation_query import TranslationQuery
 from python_translators.translation_response import TranslationResponse
 from python_translators.translation_costs import TranslationCosts
 
+import time
 import urllib.request, urllib.parse, urllib.error
 import requests
 
@@ -26,7 +27,10 @@ class GlosbeTranslator(Translator):
         api_url = GlosbeTranslator.build_url(query.query, self.source_language, self.target_language)
 
         # Send request
+        print(f'GLOSBE: sending request at t={time.time()}')
         response = requests.get(api_url).json()['tuc']
+        print(f'GLOSBE: received request at t={time.time()}')
+
 
         # Extract the translations (thanks @SAMSUNG)
         try:

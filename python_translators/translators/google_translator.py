@@ -18,37 +18,46 @@ HTML_TAG = 'span'
 
 
 class GoogleTranslator(Translator):
-    def __init__(self, source_language: str, target_language: str, key: str) -> None:
-        super(GoogleTranslator, self).__init__(source_language, target_language)
+    def __init__(self, source_language: str, target_language: str, key: str, quality: int = 50,
+                 source: str = 'Google') -> None:
+
+        super(GoogleTranslator, self).__init__(
+            source_language=source_language,
+            target_language=target_language,
+            source=source,
+            quality=quality
+        )
 
         self.key = key
         self.translation_service = build('translate', 'v2', developerKey=key)
 
+    @staticmethod
+    def _cost_of_query(query: str):
+        return len(query) * COST_PER_CHARACTER
+
     def _translate(self, query: TranslationQuery) -> TranslationResponse:
         if not query.is_context_aware_request():
             return TranslationResponse(
-                translations=[self._simple_translate(query.query)],
-                costs=TranslationCosts(
-                    money=len(query.query) * COST_PER_CHARACTER
-                )
+                costs=TranslationCosts(money=GoogleTranslator._cost_of_query(query.query)),
+                translations=[self.make_translation(translation=self._simple_translate(query.query))]
             )
 
         google_query = f'{query.before_context}<{HTML_TAG}>{query.query}</{HTML_TAG}>{query.after_context}'
 
-        costs = TranslationCosts(money=len(google_query) * COST_PER_CHARACTER)
+        costs = TranslationCosts(money=GoogleTranslator._cost_of_query(query.query))
 
         translation = self._simple_translate(google_query)
 
+        translation_response = TranslationResponse(costs=costs)
+
         try:
             result = GoogleTranslator.parse_spanned_string(translation)
+            translation_response.add_translation(self.make_translation(result))
 
         except ValueError:
-            return TranslationResponse(translations=[], costs=costs)
+            pass
 
-        return TranslationResponse(
-            translations=[result],
-            costs=costs
-        )
+        return translation_response
 
     def _estimate_costs(self, query: TranslationQuery) -> TranslationCosts:
         costs = TranslationCosts()

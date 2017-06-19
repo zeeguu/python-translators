@@ -76,10 +76,10 @@ class BestEffortTranslator(Translator):
 
 if __name__ == '__main__':
     t = BestEffortTranslator(source_language='nl', target_language='en')
-    response = t.translate(TranslationQuery(
+    r = t.translate(TranslationQuery(
         before_context='De directeur',
         query='treedt af',
         after_context='',
     ))
 
-    print(vars(response))
+    print(vars(r))

@@ -22,7 +22,7 @@ class GoogleTranslatorFactory(object):
         :param source_language: 
         :param target_language: 
         :param key: 
-        :return: 
+        :return:
         """
 
         translator = GoogleTranslatorFactory.build_clean(source_language, target_language, key)
@@ -52,4 +52,8 @@ class GoogleTranslatorFactory(object):
         if key is None:
             key = get_key_from_config('GOOGLE_TRANSLATE_API_KEY')
 
-        return GoogleTranslator(source_language, target_language, key)
+        return GoogleTranslator(source_language=source_language,
+                                target_language=target_language,
+                                key=key,
+                                source='Google'
+                                )

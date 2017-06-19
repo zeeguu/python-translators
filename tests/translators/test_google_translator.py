@@ -3,7 +3,6 @@ from unittest import TestCase
 from python_translators.factories.google_translator_factory import GoogleTranslatorFactory
 from python_translators.translation_query import TranslationQuery
 
-
 class TestGoogleTranslator(TestCase):
     def setUp(self):
         self.translators = {
@@ -20,14 +19,14 @@ class TestGoogleTranslator(TestCase):
             query='matter',
             after_context='is to be found in the universe'))
 
-        self.assertEqual(response.translations[0], 'materie')
+        self.assertEqual(response.get_raw_translations()[0], 'materie')
 
     def testWithoutContext(self):
         response = self.translators['nl-en'].translate(TranslationQuery(
             query='boom'
         ))
 
-        self.assertEquals(response.translations[0], 'tree')
+        self.assertEquals(response.get_raw_translations()[0], 'tree')
 
     def testSuffixIsEmpty(self):
         response = self.translators['es-en'].translate(TranslationQuery(
@@ -35,7 +34,7 @@ class TestGoogleTranslator(TestCase):
             query='cama',
             after_context=''))
 
-        self.assertEqual(response.translations[0], 'bed')
+        self.assertEqual(response.get_raw_translations()[0], 'bed')
 
     def testUnicodeCharactersInContext(self):
         response = self.translators['de-en'].translate(TranslationQuery(
@@ -43,7 +42,7 @@ class TestGoogleTranslator(TestCase):
             query='klein',
             after_context=u'löwe'))
 
-        self.assertEqual(response.translations[0], "small")
+        self.assertEqual(response.get_raw_translations()[0], "small")
 
     def testUnicodeCharactersInWordToTranslate(self):
         response = self.translators['de-en'].translate(TranslationQuery(
@@ -51,7 +50,7 @@ class TestGoogleTranslator(TestCase):
             query=u'löwen',
             after_context=u' geht zum Wald'))
 
-        self.assertIn(response.translations[0], ['lion', 'beautiful lion'])
+        self.assertIn(response.get_raw_translations()[0], ['lion', 'beautiful lion'])
 
     def testUnicodeInResult(self):
         response = self.translators['en-de'].translate(TranslationQuery(
@@ -59,7 +58,7 @@ class TestGoogleTranslator(TestCase):
             query='lion',
             after_context=' goes to the forrest.'))
 
-        self.assertEqual(response.translations[0], u'Löwe')
+        self.assertEqual(response.get_raw_translations()[0], u'Löwe')
 
     def testSuffixStartsWithPunctuation(self):
         response = self.translators['es-en'].translate(TranslationQuery(
@@ -67,14 +66,14 @@ class TestGoogleTranslator(TestCase):
             query='cama',
             after_context=', e soy dormiendo'))
 
-        self.assertEqual(response.translations[0], 'bed')
+        self.assertEqual(response.get_raw_translations()[0], 'bed')
 
         response = self.translators['es-en'].translate(TranslationQuery(
             before_context='Estoy en la',
             query='cama',
             after_context=' , e soy dormiendo'))
 
-        self.assertEqual(response.translations[0], 'bed')
+        self.assertEqual(response.get_raw_translations()[0], 'bed')
 
     def testQueryEndsWithPunctuation(self):
         translation = self.translators['es-en'].translate(TranslationQuery(
@@ -82,7 +81,7 @@ class TestGoogleTranslator(TestCase):
             query='cama,',
             after_context=' e soy dormiendo'))
 
-        self.assertIn(translation.translations[0], ['bed,', 'bed'])
+        self.assertIn(translation.get_raw_translations()[0], ['bed,', 'bed'])
 
     def test_strange_span_in_return(self):
         response = self.translators['de-en'].translate(TranslationQuery(
@@ -90,7 +89,7 @@ class TestGoogleTranslator(TestCase):
             query='eigentlich schon',
             after_context=' mit dem 1:1-Unentschieden abgefunden'))
 
-        self.assertNotIn("</span>", response.translations[0])
+        self.assertNotIn("</span>", response.get_raw_translations()[0])
 
     def test_escaped_characters_in_translation(self):
         response = self.translators['de-en'].translate(TranslationQuery(
@@ -98,7 +97,7 @@ class TestGoogleTranslator(TestCase):
             query='konzerneigene Flaggschiff',
             after_context=u'ICE straßentauglich zu machen. '))
 
-        self.assertNotIn('&#39;', response.translations[0])
+        self.assertNotIn('&#39;', response.get_raw_translations()[0])
 
     def test_encoding_issue(self):
         response = self.translators['nl-en'].translate(TranslationQuery(
@@ -109,11 +108,11 @@ class TestGoogleTranslator(TestCase):
                           'nemen. Dat meldt het studentenblad Veto en wordt bevestigd aan onze redactie.'
         ))
 
-        self.assertEqual(response.translations[0], 'rector\'s election')
+        self.assertEqual(response.get_raw_translations()[0], 'rector\'s election')
 
     def test_html_in_query(self):
         response = self.translators['nl-en'].translate(TranslationQuery(
                query='m\'n maat'
         ))
 
-        self.assertEqual(response.translations[0], 'My partner')
+        self.assertEqual(response.get_raw_translations()[0], 'My partner')

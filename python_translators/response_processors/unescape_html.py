@@ -10,6 +10,7 @@ class UnescapeHtml(ResponseProcessor):
     def process_response(self, response: TranslationResponse) -> TranslationResponse:
         new_query = copy.deepcopy(response)
 
-        new_query.translations = [html.unescape(t) for t in new_query.translations]
+        for translation in response.translations:
+            translation['translation'] = html.unescape(translation['translation'])
 
         return new_query

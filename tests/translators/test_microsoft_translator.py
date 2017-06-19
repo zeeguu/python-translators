@@ -17,10 +17,10 @@ class TestMicrosoftTranslator(TestCase):
         }
 
     def test_simple_translations(self):
-        translation = self.translators['en-nl'].translate(TranslationQuery(
+        response = self.translators['en-nl'].translate(TranslationQuery(
             query='hello'))
 
-        self.assertEquals(translation.translations[0], 'Hallo')
+        self.assertEquals(response.get_raw_translations()[0], 'Hallo')
 
     def test_invalid_microsoft_key(self):
         self.assertRaises(Exception, MicrosoftTranslator, '<this is an invalid key>')
@@ -33,7 +33,7 @@ class TestMicrosoftTranslator(TestCase):
             after_context=''
         ))
 
-        self.assertEqual(response.translations[0], 'resigns')
+        self.assertEqual(response.get_raw_translations()[0], 'resigns')
 
         response = self.translators['en-nl'].translate(TranslationQuery(
             before_context='Dark',
@@ -41,7 +41,7 @@ class TestMicrosoftTranslator(TestCase):
             after_context='is an unidentified type of matter distinct from dark energy.'
         ))
 
-        self.assertEqual(response.translations[0], 'materie')
+        self.assertEqual(response.get_raw_translations()[0], 'materie')
 
     def test_unicode_outputs(self):
         response = self.translators['en-de'].translate(TranslationQuery(
@@ -50,21 +50,19 @@ class TestMicrosoftTranslator(TestCase):
             after_context='goes to the forest'
         ))
 
-        self.assertEqual(response.translations[0], u'Löwe')
+        self.assertEqual(response.get_raw_translations()[0], u'Löwe')
 
     def test_unicode_inputs(self):
         response = self.translators['de-en'].translate(TranslationQuery(
             query=u'Löwe'
         ))
 
-        self.assertEqual(response.translations[0], 'Lion')
+        self.assertEqual(response.get_raw_translations()[0], 'Lion')
 
     def test_html_chars(self):
         response = self.translators['nl-en'].translate(TranslationQuery(
             query="m'n maat"
         ))
-
-
 
 if __name__ == '__main__':
     unittest.main()

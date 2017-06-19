@@ -5,7 +5,6 @@ import requests
 import time
 import xml.etree.ElementTree as ET
 
-
 from python_translators.translators.translator import Translator
 from python_translators.translation_query import TranslationQuery
 from python_translators.translation_response import TranslationResponse
@@ -36,8 +35,10 @@ class MicrosoftTranslator(Translator):
         # Enclose in <s> tag to make it valid XML (<s> is arbitrarily chosen)
         xml_object = ET.fromstring(f'<s>{translation}</s>')
 
+        parsed_translation = xml_object.find(HTML_TAG).text
+
         return TranslationResponse(
-            translations=[xml_object.find(HTML_TAG).text],
+            translations=[self.make_translation(parsed_translation)],
             costs=TranslationCosts(
                 money=0
             )
@@ -50,11 +51,11 @@ class MicrosoftTranslator(Translator):
 
     def send_translation_request(self, query: str, content_type: str) -> str:
         """
-        Sends a translation request to the Microsoft Translation service, query parameters are 
-        
-        :param query: 
-        :param content_type: 
-        :return: 
+        Sends a translation request to the Microsoft Translation service, query parameters are
+
+        :param query:
+        :param content_type:
+        :return:
         """
 
         self.refresh_token_if_needed()
@@ -75,6 +76,7 @@ class MicrosoftTranslator(Translator):
 
         # Send request to API
         encoded_params = urllib.parse.urlencode(query_params)
+
         response = requests.get(f'{TRANSLATION_SERVICE_URL}?{encoded_params}', headers=headers)
 
         xml_object = ET.fromstring(response.text.encode('utf-8'))

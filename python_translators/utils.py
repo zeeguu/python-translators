@@ -4,6 +4,7 @@ A file containing some utility functions used across the project
 import time
 from configobj import ConfigObj
 import os
+import copy
 
 CONFIG_FILE_PATH = '~/.config/translators.cfg'
 
@@ -72,3 +73,31 @@ def code_to_full_language(language_code: str) -> str:
         raise Exception('This language code is not supported!')
 
     return LANGUAGE_CODE_MAPPING[language_code]
+
+
+def merge_unique(arr1: [], arr2: [], eq) -> []:
+    """
+    Merges two arrays. The new array will not contain duplicates. This function runs in O(N^2). Do not use for large
+    lists. Equality is defined by the function `eq`. `eq` should be a function that takes two parameters. If the two
+    arguments passed to `eq` are considered equal, return true. Otherwise return false.
+    :param arr1:
+    :param arr2:
+    :param eq:
+    :return:
+    """
+
+    new_arr = copy.copy(arr1)
+
+    for a2 in arr2:
+        for a1 in arr1:
+            if eq(a1, a2):
+                break
+        else:
+            new_arr.append(a2)
+
+    return new_arr
+
+
+def merge_translations(translations1: [], translations2: [[]]):
+    return merge_unique(translations1, translations2, lambda x, y: x.lower() == y.lower())
+

@@ -10,10 +10,11 @@ from python_translators.utils import current_milli_time
 
 
 class Translator(object, metaclass=ABCMeta):
-
-    def __init__(self, source_language: str, target_language: str) -> None:
+    def __init__(self, source_language: str, target_language: str, quality: int = None, source: str = None) -> None:
         self.source_language = source_language
         self.target_language = target_language
+        self.quality = quality
+        self.source = source
 
         self.query_processors = []
         self.response_processors = []
@@ -61,6 +62,19 @@ class Translator(object, metaclass=ABCMeta):
             return 60  # if nothing has been measured yet, return (arbitrary) 60 ms
 
         return sum(self.time_expenses) / len(self.time_expenses)
+
+    def get_quality(self):
+        return self.quality
+
+    def get_source(self):
+        return self.source
+
+    def make_translation(self, translation):
+        return dict(
+            translation=translation,
+            source=self.get_source(),
+            quality=self.get_quality()
+        )
 
     def estimate_costs(self, query: TranslationQuery) -> TranslationCosts:
         costs = self._estimate_costs(query)
