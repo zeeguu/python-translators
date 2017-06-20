@@ -21,7 +21,7 @@ class TestCollinsTranslator(TestCase):
     def setUp(self):
         self.translator = CompositeTranslator(source_language='nl', target_language='en')
 
-        self.translator.add_translator(GoogleTranslatorFactory.build(source_language='nl', target_language='en'))
+        self.translator.add_translator(GoogleTranslatorFactory.build_with_context(source_language='nl', target_language='en'))
         self.translator.add_translator(GlosbeTranslator(source_language='nl', target_language='en'))
 
     @ignore_warnings

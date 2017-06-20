@@ -6,11 +6,11 @@ from python_translators.translation_query import TranslationQuery
 class TestGoogleTranslator(TestCase):
     def setUp(self):
         self.translators = {
-            'en-nl': GoogleTranslatorFactory.build('en', 'nl'),
-            'es-en': GoogleTranslatorFactory.build('es', 'en'),
-            'de-en': GoogleTranslatorFactory.build('de', 'en'),
-            'en-de': GoogleTranslatorFactory.build('en', 'de'),
-            'nl-en': GoogleTranslatorFactory.build('nl', 'en')
+            'en-nl': GoogleTranslatorFactory.build_with_context('en', 'nl'),
+            'es-en': GoogleTranslatorFactory.build_with_context('es', 'en'),
+            'de-en': GoogleTranslatorFactory.build_with_context('de', 'en'),
+            'en-de': GoogleTranslatorFactory.build_with_context('en', 'de'),
+            'nl-en': GoogleTranslatorFactory.build_with_context('nl', 'en')
         }
 
     def testContextMatters(self):

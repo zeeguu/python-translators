@@ -1,9 +1,14 @@
 from python_translators.utils import get_key_from_config
 from python_translators.translators.microsoft_translator import MicrosoftTranslator
-from python_translators.query_processors.escape_html import EscapeHtml
+
+# response processors
 from python_translators.response_processors.unescape_html import UnescapeHtml
+
+# query processors
+from python_translators.query_processors.escape_html import EscapeHtml
 from python_translators.query_processors.remove_unnecessary_conjunctions import RemoveUnnecessaryConjunctions
 from python_translators.query_processors.remove_unnecessary_sentences import RemoveUnnecessarySentences
+from python_translators.query_processors.remove_all_context import RemoveAllContext
 
 conjunctions = {
     'nl': {'en', 'of'},
@@ -37,6 +42,27 @@ class MicrosoftTranslatorFactory(object):
         translator.add_response_processor(UnescapeHtml())
 
         translator.translator_name = 'Microsoft - with context'
+
+        return translator
+
+    @staticmethod
+    def build_contextless(source_language: str, target_language: str, key=None) -> MicrosoftTranslator:
+        """
+        Builds a Google translator that ignores all context.
+
+        :param source_language:
+        :param target_language:
+        :param key:
+        :return:
+        """
+        translator = MicrosoftTranslatorFactory.build_clean(source_language, target_language, key)
+
+        translator.add_query_processor(RemoveAllContext())
+        translator.add_query_processor(EscapeHtml())
+
+        translator.add_response_processor(UnescapeHtml())
+
+        translator.translator_name = 'Microsoft - without context'
 
         return translator
 

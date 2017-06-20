@@ -21,8 +21,7 @@ class CompositeTranslator(Translator):
                 assert t.target_language == target_language
 
     def get_translator_name(self):
-        return 'Composite(' + ', '.join(map(lambda t: t.get_translator_name(), self.translators)) + ')'
-
+        return 'Composite(' + self.translator_list_text() + ')'
 
     def add_translator(self, translator: Translator):
         assert translator.source_language == self.source_language
@@ -37,3 +36,6 @@ class CompositeTranslator(Translator):
         responses = map(lambda translator: translator.translate(query), self.translators)
 
         return merge_responses(responses)
+
+    def translator_list_text(self):
+        return ', '.join(map(lambda t: t.get_translator_name(), self.translators))

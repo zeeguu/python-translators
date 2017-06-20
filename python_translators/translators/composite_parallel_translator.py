@@ -45,3 +45,6 @@ class CompositeParallelTranslator(CompositeTranslator):
                 money=money_costs
             )
         )
+
+    def get_translator_name(self):
+        return 'CompositeParallel(' + self.translator_list_text() + ')'

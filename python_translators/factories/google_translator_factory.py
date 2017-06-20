@@ -18,7 +18,7 @@ conjunctions = {
 class GoogleTranslatorFactory(object):
 
     @staticmethod
-    def build(source_language: str, target_language: str, key=None) -> GoogleTranslator:
+    def build_with_context(source_language: str, target_language: str, key=None) -> GoogleTranslator:
         """
         Builds a Google translator with suitable context processors for the given source and target languages.
 
