@@ -14,7 +14,7 @@ conjunctions = {
 
 class MicrosoftTranslatorFactory(object):
     @staticmethod
-    def build(source_language: str, target_language: str, key=None) -> MicrosoftTranslator:
+    def build_with_context(source_language: str, target_language: str, key=None) -> MicrosoftTranslator:
         """
         Builds a Microsoft translator with suitable context processors for the given source and target language.
 
@@ -35,6 +35,8 @@ class MicrosoftTranslatorFactory(object):
 
         translator.add_query_processor(EscapeHtml())
         translator.add_response_processor(UnescapeHtml())
+
+        translator.translator_name = 'Microsoft - with context'
 
         return translator
 

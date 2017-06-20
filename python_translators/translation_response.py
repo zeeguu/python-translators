@@ -17,6 +17,29 @@ class TranslationResponse(object):
         """
         return [t['translation'] for t in self.translations]
 
+    def get_raw_qualities(self):
+        return [t['quality'] for t in self.translations]
 
-def merge_translations(translations1: [], translations2: [[]]):
-    return merge_unique(translations1, translations2, lambda x, y: x.lower() == y.lower())
+    def get_raw_service_names(self):
+        return [t['service_name'] for t in self.translations]
+
+
+def merge_responses(responses: [TranslationResponse]) -> TranslationResponse:
+    new_translations = []
+    money_costs = 0
+
+    for response in responses:
+        new_translations = merge_translations(new_translations, response.translations)
+        money_costs += response.costs.money
+
+    return TranslationResponse(
+        translations=new_translations,
+        costs=TranslationCosts(
+            money=money_costs
+        )
+    )
+
+
+def merge_translations(translations1: [dict], translations2: [dict]) -> [dict]:
+    return merge_unique(translations1, translations2,
+                        lambda t1, t2: t1['translation'].lower() == t2['translation'].lower())

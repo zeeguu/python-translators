@@ -13,8 +13,9 @@ class GlosbeTranslator(Translator):
 
     API_BASE_URL = 'https://glosbe.com/gapi/translate?'
 
-    def __init__(self, source_language: str, target_language: str) -> None:
-        super(GlosbeTranslator, self).__init__(source_language, target_language)
+    def __init__(self, source_language: str, target_language: str, translator_name: str = 'Glosbe', quality: int = '50',
+                 service_name: str = 'Glosbe') -> None:
+        super(GlosbeTranslator, self).__init__(source_language, target_language, translator_name, quality, service_name)
 
     def _translate(self, query: TranslationQuery) -> TranslationResponse:
         """
@@ -27,14 +28,11 @@ class GlosbeTranslator(Translator):
         api_url = GlosbeTranslator.build_url(query.query, self.source_language, self.target_language)
 
         # Send request
-        print(f'GLOSBE: sending request at t={time.time()}')
         response = requests.get(api_url).json()['tuc']
-        print(f'GLOSBE: received request at t={time.time()}')
-
 
         # Extract the translations (thanks @SAMSUNG)
         try:
-            translations = [translation['phrase']['text'] for translation in response[:query.max_translations]]
+            translations = [self.make_translation(translation['phrase']['text']) for translation in response[:query.max_translations]]
         except KeyError:
             translations = []
 

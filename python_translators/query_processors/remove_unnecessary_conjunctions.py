@@ -44,6 +44,7 @@ def find_last_occurrence(substrings, s):
 class RemoveUnnecessaryConjunctions(QueryProcessor):
 
     def __init__(self, conjunctions):
+        super(RemoveUnnecessaryConjunctions, self).__init__(name='remove_unnecessary_conjunctions')
         self.substrings = RemoveUnnecessaryConjunctions._surround_words_with_spaces(conjunctions)
 
     @staticmethod

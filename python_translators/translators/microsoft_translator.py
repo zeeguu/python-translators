@@ -15,13 +15,23 @@ TRANSLATION_SERVICE_URL = 'https://api.microsofttranslator.com/V2/Http.svc/Trans
 
 HTML_TAG = 'span'
 
+from python_translators.utils import format_dict_for_logging, current_milli_time
+from python_translators import logger
+
 
 class MicrosoftTranslator(Translator):
     gt_instance = None
     token = None
 
-    def __init__(self, source_language: str, target_language: str, key: str) -> None:
-        super(MicrosoftTranslator, self).__init__(source_language, target_language)
+    def __init__(self, source_language: str, target_language: str, key: str, translator_name: str = 'Microsoft',
+                 quality: int = 50, service_name: str = 'Microsoft') -> None:
+        super(MicrosoftTranslator, self).__init__(
+            source_language=source_language,
+            target_language=target_language,
+            quality=quality,
+            service_name=service_name,
+            translator_name=translator_name,
+        )
 
         self.key = key
         self.refresh_token_if_needed()
@@ -89,6 +99,9 @@ class MicrosoftTranslator(Translator):
 
     @staticmethod
     def request_token(key) -> dict:
+        logger.info(format_dict_for_logging(dict(EVENT='MICROSOFT_REQUEST_TOKEN')))
+        t1 = current_milli_time()
+
         headers = {
             "Ocp-Apim-Subscription-Key": key,
             "Accept": 'application/jwt',
@@ -97,6 +110,9 @@ class MicrosoftTranslator(Translator):
 
         response = requests.post('https://api.cognitive.microsoft.com/sts/v1.0/issueToken', headers=headers)
 
+        time_passed = current_milli_time() - t1
+
+        logger.info(format_dict_for_logging(dict(EVENT='MICROSOFT_RECEIVED_TOKEN', TIME_PASSED=time_passed)))
         if response.status_code == 401:
             raise Exception('Access denied due to invalid subscription key. Make sure to provide a valid key for an '
                             'active subscription.')

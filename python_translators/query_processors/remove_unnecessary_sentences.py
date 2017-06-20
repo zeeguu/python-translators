@@ -13,6 +13,7 @@ class RemoveUnnecessarySentences(QueryProcessor):
     tokenizers = {}
 
     def __init__(self, language_code):
+        super(RemoveUnnecessarySentences, self).__init__(name='remove_unnecessary_sentences')
 
         # if a tokenizer was already in our global storage
         if language_code in RemoveUnnecessarySentences.tokenizers:

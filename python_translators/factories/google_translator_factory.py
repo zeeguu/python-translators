@@ -2,8 +2,11 @@ from python_translators.translators.google_translator import GoogleTranslator
 from python_translators.utils import get_key_from_config
 from python_translators.query_processors.remove_unnecessary_sentences import RemoveUnnecessarySentences
 from python_translators.query_processors.remove_unnecessary_conjunctions import RemoveUnnecessaryConjunctions
+from python_translators.query_processors.remove_all_context import RemoveAllContext
+
 from python_translators.query_processors.escape_html import EscapeHtml
 from python_translators.response_processors.unescape_html import UnescapeHtml
+
 
 conjunctions = {
     'nl': {'en', 'of'},
@@ -37,6 +40,28 @@ class GoogleTranslatorFactory(object):
         translator.add_query_processor(EscapeHtml())
         translator.add_response_processor(UnescapeHtml())
 
+        translator.translator_name = 'Google - with context'
+
+        return translator
+
+    @staticmethod
+    def build_contextless(source_language: str, target_language: str, key=None) -> GoogleTranslator:
+        """
+        Builds a Google translator that ignores all context.
+
+        :param source_language:
+        :param target_language:
+        :param key:
+        :return:
+        """
+        translator = GoogleTranslatorFactory.build_clean(source_language, target_language, key)
+
+        translator.add_query_processor(RemoveAllContext())
+        translator.add_query_processor(EscapeHtml())
+        translator.add_response_processor(UnescapeHtml())
+
+        translator.translator_name = 'Google - without context'
+
         return translator
 
     @staticmethod
@@ -55,5 +80,6 @@ class GoogleTranslatorFactory(object):
         return GoogleTranslator(source_language=source_language,
                                 target_language=target_language,
                                 key=key,
-                                source='Google'
+                                service_name='Google',
+                                translator_name='Google'
                                 )

@@ -7,6 +7,9 @@ import html
 
 class UnescapeHtml(ResponseProcessor):
 
+    def __init__(self):
+        super(UnescapeHtml, self).__init__(name='unescape_html')
+
     def process_response(self, response: TranslationResponse) -> TranslationResponse:
         new_query = copy.deepcopy(response)
 

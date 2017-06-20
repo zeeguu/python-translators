@@ -101,3 +101,7 @@ def merge_unique(arr1: [], arr2: [], eq) -> []:
 def merge_translations(translations1: [], translations2: [[]]):
     return merge_unique(translations1, translations2, lambda x, y: x.lower() == y.lower())
 
+
+def format_dict_for_logging(d: dict) -> str:
+    return '\n' + '\n'.join(f'\t{key}: {value}' for key, value in d.items())
+

@@ -1,4 +1,4 @@
-from python_translators.translators.composite_parallel_translator import CompositeAsyncTranslator
+from python_translators.translators.composite_translator import CompositeTranslator
 import asyncio
 import time
 
@@ -9,24 +9,27 @@ from python_translators.factories.microsoft_translator_factory import MicrosoftT
 from python_translators.translators.glosbe_translator import GlosbeTranslator
 
 lang_config = dict(
-    source_language='nl',
-    target_language='en'
+    source_language='en',
+    target_language='nl'
 )
 
 
-ca_t = CompositeAsyncTranslator(**lang_config)
+ca_t = CompositeTranslator(**lang_config)
 
-
-google = Composite
+ca_t.add_translator(GoogleTranslatorFactory.build_contextless(**lang_config))
 ca_t.add_translator(GoogleTranslatorFactory.build(**lang_config))
-ca_t.add_translator(MicrosoftTranslatorFactory.build(**lang_config))
+ca_t.add_translator(MicrosoftTranslatorFactory.build_with_context(**lang_config))
 ca_t.add_translator(GlosbeTranslator(**lang_config))
 
 response = ca_t.translate(TranslationQuery(
-    before_context='De directeur',
-    query='treedt af',
+    before_context='Dark',
+    query='matter',
     after_context=''
 ))
 
-
-print('test.')
+response2 = ca_t.translate(TranslationQuery(
+    before_context='He',
+    query='leaves',
+    after_context='the building'
+))
+print('hi')

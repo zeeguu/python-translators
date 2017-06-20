@@ -18,13 +18,14 @@ HTML_TAG = 'span'
 
 
 class GoogleTranslator(Translator):
-    def __init__(self, source_language: str, target_language: str, key: str, quality: int = 50,
-                 source: str = 'Google') -> None:
+    def __init__(self, source_language: str, target_language: str, key: str, translator_name: str = 'Google',
+                 quality: int = 50, service_name: str = 'Google') -> None:
 
         super(GoogleTranslator, self).__init__(
             source_language=source_language,
             target_language=target_language,
-            source=source,
+            service_name=service_name,
+            translator_name=translator_name,
             quality=quality
         )
 

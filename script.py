@@ -1,3 +1,5 @@
+import logging
+
 from python_translators.translators.google_translator import GoogleTranslator
 from python_translators.factories.google_translator_factory import GoogleTranslatorFactory
 from python_translators.translation_query import TranslationQuery
@@ -8,4 +10,4 @@ tr = gt.translate(TranslationQuery(
     query='hallo'
 ))
 
-print(tr)
+print('Done.')

@@ -2,7 +2,7 @@ from python_translators.translators.translator import Translator
 from python_translators.translation_query import TranslationQuery
 from python_translators.translation_response import TranslationResponse
 from python_translators.translation_costs import TranslationCosts
-from python_translators.translation_response import merge_translations
+from python_translators.translation_response import merge_responses
 
 
 class CompositeTranslator(Translator):
@@ -20,6 +20,10 @@ class CompositeTranslator(Translator):
                 assert t.source_language == source_language
                 assert t.target_language == target_language
 
+    def get_translator_name(self):
+        return 'Composite(' + ', '.join(map(lambda t: t.get_translator_name(), self.translators)) + ')'
+
+
     def add_translator(self, translator: Translator):
         assert translator.source_language == self.source_language
         assert translator.target_language == self.target_language
@@ -30,12 +34,6 @@ class CompositeTranslator(Translator):
         pass
 
     def _translate(self, query: TranslationQuery) -> TranslationResponse:
-        translations = []
-        money_costs = 0
+        responses = map(lambda translator: translator.translate(query), self.translators)
 
-        for t in self.translators:
-            response = t.translate(query)
-            translations = merge_translations(translations, response.translations)
-            money_costs += response.costs.money
-
-        return TranslationResponse(translations, costs=TranslationCosts(money=money_costs))
+        return merge_responses(responses)
