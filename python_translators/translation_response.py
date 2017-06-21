@@ -10,17 +10,17 @@ class TranslationResponse(object):
     def add_translation(self, translation) -> None:
         self.translations.append(translation)
 
-    def get_raw_translations(self):
+    def get_raw_translations(self) -> [str]:
         """
         Returns a list of translations where each translation is a string.
         :return:
         """
         return [t['translation'] for t in self.translations]
 
-    def get_raw_qualities(self):
+    def get_raw_qualities(self) -> [int]:
         return [t['quality'] for t in self.translations]
 
-    def get_raw_service_names(self):
+    def get_raw_service_names(self) -> [str]:
         return [t['service_name'] for t in self.translations]
 
 
