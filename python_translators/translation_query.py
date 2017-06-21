@@ -16,6 +16,7 @@ class TranslationQuery(object):
         before_context, after_context = context.split(query, word_index_for_query)
         return cls(query, before_context=before_context, after_context=after_context, max_translations=max_translations)
 
+    @classmethod
     def for_word_at_index(cls, query: str, context: str, char_index: int, max_translations: int = 1):
 
         """
