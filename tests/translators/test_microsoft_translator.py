@@ -9,18 +9,18 @@ from python_translators.factories.microsoft_translator_factory import MicrosoftT
 class TestMicrosoftTranslator(TestCase):
     def setUp(self):
         self.translators = {
-            'en-nl': MicrosoftTranslatorFactory.build('en', 'nl'),
-            'nl-en': MicrosoftTranslatorFactory.build('nl', 'en'),
-            'es-en': MicrosoftTranslatorFactory.build('es', 'en'),
-            'de-en': MicrosoftTranslatorFactory.build('de', 'en'),
-            'en-de': MicrosoftTranslatorFactory.build('en', 'de'),
+            'en-nl': MicrosoftTranslatorFactory.build_with_context('en', 'nl'),
+            'nl-en': MicrosoftTranslatorFactory.build_with_context('nl', 'en'),
+            'es-en': MicrosoftTranslatorFactory.build_with_context('es', 'en'),
+            'de-en': MicrosoftTranslatorFactory.build_with_context('de', 'en'),
+            'en-de': MicrosoftTranslatorFactory.build_with_context('en', 'de'),
         }
 
     def test_simple_translations(self):
         response = self.translators['en-nl'].translate(TranslationQuery(
             query='hello'))
 
-        self.assertEquals(response.get_raw_translations()[0], 'Hallo')
+        self.assertEqual(response.get_raw_translations()[0], 'Hallo')
 
     def test_invalid_microsoft_key(self):
         self.assertRaises(Exception, MicrosoftTranslator, '<this is an invalid key>')
