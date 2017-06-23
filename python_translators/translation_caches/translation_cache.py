@@ -13,9 +13,10 @@ class TranslationCache(object, metaclass=ABCMeta):
         return self.translator_type
 
     @abstractmethod
-    def store(self, query: TranslationQuery, source_language: str, target_language: str, response: TranslationResponse):
+    def store(self, query: TranslationQuery, source_language: str, target_language: str,
+              translations: [dict]) -> None:
         pass
 
     @abstractmethod
-    def fetch(self, query: TranslationQuery, source_language: str, target_language: str):
+    def fetch(self, query: TranslationQuery, source_language: str, target_language: str) -> [dict]:
         pass

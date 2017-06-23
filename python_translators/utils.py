@@ -98,8 +98,8 @@ def merge_unique(arr1: [], arr2: [], eq) -> []:
     return new_arr
 
 
-def merge_translations(translations1: [], translations2: [[]]):
-    return merge_unique(translations1, translations2, lambda x, y: x.lower() == y.lower())
+#def merge_translations(translations1: [], translations2: [[]]):
+#    return merge_unique(translations1, translations2, lambda x, y: x.lower() == y.lower())
 
 
 def format_dict_for_logging(d: dict) -> str:

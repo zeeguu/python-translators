@@ -2,17 +2,25 @@
 from unittest import TestCase
 from python_translators.translation_query import TranslationQuery
 from python_translators.factories.google_translator_factory import GoogleTranslatorFactory
+from python_translators.translators.translator import Translator
 
 
 class TestGoogleTranslator(TestCase):
     def setUp(self):
-        self.translators = {
+        self.translators: [Translator] = {
             'en-nl': GoogleTranslatorFactory.build_with_context('en', 'nl'),
             'es-en': GoogleTranslatorFactory.build_with_context('es', 'en'),
             'de-en': GoogleTranslatorFactory.build_with_context('de', 'en'),
             'en-de': GoogleTranslatorFactory.build_with_context('en', 'de'),
             'nl-en': GoogleTranslatorFactory.build_with_context('nl', 'en')
         }
+
+    def tearDown(self):
+        for lang, translator in self.translators.items():
+            tracker = translator.get_time_expense_tracker()
+            print(tracker.mean(default=-1))
+            print(tracker.median(default=-1))
+            print(tracker.sorted_values())
 
     def testContextMatters(self):
         response = self.translators['en-nl'].translate(TranslationQuery(

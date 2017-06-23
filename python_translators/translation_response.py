@@ -43,3 +43,11 @@ def merge_responses(responses: [TranslationResponse]) -> TranslationResponse:
 def merge_translations(translations1: [dict], translations2: [dict]) -> [dict]:
     return merge_unique(translations1, translations2,
                         lambda t1, t2: t1['translation'].lower() == t2['translation'].lower())
+
+
+def make_translation(translation: str, quality: int, service_name: str) -> dict:
+    return dict(
+        translation=translation,
+        quality=quality,
+        service_name=service_name
+    )
