@@ -7,7 +7,7 @@ from collections import defaultdict
 
 import random
 
-MAX_CACHE_SIZE = 1
+MAX_CACHE_SIZE = 1000
 
 
 class MemoryCache(TranslationCache):
@@ -22,7 +22,6 @@ class MemoryCache(TranslationCache):
 
         if len(self.translations) > MAX_CACHE_SIZE:
             self.translations.pop(random.choice(self.translations.keys()))
-
 
     def fetch(self, query: TranslationQuery, source_language: str, target_language: str) -> [dict]:
         key = CacheKey(query, source_language, target_language)
