@@ -3,9 +3,13 @@ from python_translators.translation_query import TranslationQuery
 from python_translators.translation_response import TranslationResponse
 from python_translators.translation_costs import TranslationCosts
 from python_translators.translation_response import merge_responses
+from python_translators.utils import current_milli_time
 
 
 class CompositeTranslator(Translator):
+    def compute_money_costs(self, query: TranslationQuery) -> float:
+        return sum(translator.compute_money_costs() for translator in self.translators)
+
     def __init__(self, source_language: str, target_language: str, translators: [Translator] = None) -> None:
         super(CompositeTranslator, self).__init__(source_language, target_language)
 
@@ -29,11 +33,17 @@ class CompositeTranslator(Translator):
 
         self.translators.append(translator)
 
-    def _estimate_costs(self, query: TranslationQuery) -> TranslationCosts:
-        pass
-
     def _translate(self, query: TranslationQuery) -> TranslationResponse:
-        responses = map(lambda translator: translator.translate(query), self.translators)
+        responses = []
+
+        for translator in self.translators:
+            t1 = current_milli_time()
+            responses.append(translator.translate(query))
+            t2 = current_milli_time()
+
+            query.budget.subtract_time(t2 - t1)
+
+        responses = map(lambda t: t.translate(query), self.translators)
 
         return merge_responses(responses)
 

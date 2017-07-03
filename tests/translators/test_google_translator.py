@@ -15,13 +15,6 @@ class TestGoogleTranslator(TestCase):
             'nl-en': GoogleTranslatorFactory.build_with_context('nl', 'en')
         }
 
-    def tearDown(self):
-        for lang, translator in self.translators.items():
-            tracker = translator.get_time_expense_tracker()
-            print(tracker.mean(default=-1))
-            print(tracker.median(default=-1))
-            print(tracker.sorted_values())
-
     def testContextMatters(self):
         response = self.translators['en-nl'].translate(TranslationQuery(
             before_context='Dark',

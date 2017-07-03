@@ -10,6 +10,9 @@ from python_translators.translation_query import TranslationQuery
 from python_translators.translation_response import TranslationResponse
 from python_translators.translation_costs import TranslationCosts
 
+from python_translators.query_processors.escape_html import EscapeHtml
+from python_translators.response_processors.unescape_html import UnescapeHtml
+
 re_opening_tag = re.compile(r"<[\s]*[sS]pan[\s]*>(.*)", flags=re.DOTALL)  # <span> tag
 re_closing_tag = re.compile(r"(.*?)<[\s]*/[\s]*[sS]pan[\s]*>", flags=re.DOTALL)  # </span> tag
 
@@ -31,6 +34,8 @@ class GoogleTranslator(Translator):
 
         self.key = key
         self.translation_service = build('translate', 'v2', developerKey=key)
+
+        self.add_query_processor(EscapeHTML())
 
     @staticmethod
     def _cost_of_query(query: str):
@@ -60,17 +65,13 @@ class GoogleTranslator(Translator):
 
         return translation_response
 
-    def _estimate_costs(self, query: TranslationQuery) -> TranslationCosts:
-        costs = TranslationCosts()
-
-        costs.money = len(query.query) * COST_PER_CHARACTER
+    def compute_money_costs(self, query: TranslationQuery) -> float:
+        money = len(query.query) * COST_PER_CHARACTER
 
         if query.is_context_aware_request():
+            money += (len(f'<{HTML_TAG}>') + len(f'</{HTML_TAG}>')) * COST_PER_CHARACTER
 
-            # add cost of the opening and closing tag
-            costs.money += (len(f'<{HTML_TAG}>') + len(f'</{HTML_TAG}>')) * COST_PER_CHARACTER
-
-        return costs
+        return money
 
     def _simple_translate(self, text: str) -> str:
         params = {

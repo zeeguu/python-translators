@@ -15,6 +15,9 @@ from python_translators.translation_caches.translation_cache import TranslationC
 
 N_TIME_ELEMENTS = 100
 
+REQUEST_ACCEPTANCE_PROBABILITY = 0.95
+MIN_ACCEPTANCE_ENTRIES = 15
+
 
 class Translator(object, metaclass=ABCMeta):
     def __init__(self,
@@ -35,18 +38,39 @@ class Translator(object, metaclass=ABCMeta):
 
         self.cache: TranslationCache = None
 
-        self.time_expense_tracker = StatTracker(max_elements=100)
+        self.time_expense_tracker = StatTracker(max_elements=1000)
 
     @abstractmethod
     def _translate(self, query: TranslationQuery) -> TranslationResponse:
         pass
 
     @abstractmethod
-    def _estimate_costs(self, query: TranslationQuery) -> TranslationCosts:
+    def compute_money_costs(self, query: TranslationQuery) -> float:
         pass
+
+    def _should_reject_request(self, query: TranslationQuery) -> bool:
+        if query.has_no_budget():
+            return False
+
+        if self.time_expense_tracker.size() > MIN_ACCEPTANCE_ENTRIES and \
+           self.time_expense_tracker.probability_of_being_lower(query.budget.time) < REQUEST_ACCEPTANCE_PROBABILITY:
+            return True
+
+        if self.estimate_costs(query).money > query.budget.money:
+            return True
+
+        return False
 
     def translate(self, query: TranslationQuery) -> TranslationResponse:
         start_time = current_milli_time()
+
+        if self._should_reject_request(query):
+            return TranslationResponse(
+                translations=[],
+                costs=TranslationCosts(
+                    time=current_milli_time() - start_time
+                )
+            )
 
         if self.cache:
             results = self.cache.fetch(
@@ -73,6 +97,8 @@ class Translator(object, metaclass=ABCMeta):
                     QUALITIES=[r['quality'] for r in results],
                     SERVICE_NAMES=[r['service_name'] for r in results],
                 )))
+
+                self.time_expense_tracker.track(time_passed)
 
                 return TranslationResponse(
                     translations=results,
@@ -165,9 +191,10 @@ class Translator(object, metaclass=ABCMeta):
         self.cache = cache
 
     def estimate_costs(self, query: TranslationQuery) -> TranslationCosts:
-        costs = self._estimate_costs(query)
+        costs = self.compute_money_costs()
 
-        # set the time costs
+        costs = TranslationCosts()
+        costs.money = self.compute_money_costs()
         costs.time = self.time_expense_tracker.mean(default=100)
 
         return costs

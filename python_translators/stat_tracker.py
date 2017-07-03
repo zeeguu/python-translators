@@ -19,6 +19,9 @@ class StatTracker(object):
 
         return statistics.median(self.values)
 
+    def size(self):
+        return len(self.values)
+
     def mean(self, default=None):
         if not self.values and default:
             return default
@@ -38,3 +41,12 @@ class StatTracker(object):
         idx = int(q * len(self.values))
 
         return self.sorted_values()[idx]
+
+    def probability_of_being_lower(self, num) -> float:
+        """
+        Computes the probability that the next statistics to be tracked is less than or equal to the given number,
+        computed based on the previously recorded values.
+        :param num:
+        :return:
+        """
+        return len([x for x in self.values if x <= num]) / len(self.values)

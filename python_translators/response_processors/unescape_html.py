@@ -11,9 +11,9 @@ class UnescapeHtml(ResponseProcessor):
         super(UnescapeHtml, self).__init__(name='unescape_html')
 
     def process_response(self, response: TranslationResponse) -> TranslationResponse:
-        new_query = copy.deepcopy(response)
+        new_response = copy.deepcopy(response)
 
-        for translation in response.translations:
+        for translation in new_response.translations:
             translation['translation'] = html.unescape(translation['translation'])
 
-        return new_query
+        return new_response

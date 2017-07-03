@@ -4,6 +4,7 @@ from python_translators.factories.google_translator_factory import GoogleTransla
 from python_translators.factories.microsoft_translator_factory import MicrosoftTranslatorFactory
 
 from python_translators.translators.glosbe_translator import GlosbeTranslator
+from python_translators.translation_caches.memory_cache import MemoryCache
 
 
 class BestEffortTranslator(CompositeParallelTranslator):
@@ -39,3 +40,5 @@ class BestEffortTranslator(CompositeParallelTranslator):
         t = GlosbeTranslator(**lang_config)
         t.quality = 30
         self.add_translator(t)
+
+        self.set_cache(MemoryCache(translator_type='best_effort_translator'))
