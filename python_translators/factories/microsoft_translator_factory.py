@@ -38,9 +38,6 @@ class MicrosoftTranslatorFactory(object):
         if source_language in list(conjunctions.keys()):
             translator.add_query_processor(RemoveUnnecessaryConjunctions(conjunctions[source_language]))
 
-        translator.add_query_processor(EscapeHtml())
-        translator.add_response_processor(UnescapeHtml())
-
         translator.translator_name = 'Microsoft - with context'
 
         return translator

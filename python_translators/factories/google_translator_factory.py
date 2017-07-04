@@ -37,9 +37,6 @@ class GoogleTranslatorFactory(object):
         if source_language in list(conjunctions.keys()):
             translator.add_query_processor(RemoveUnnecessaryConjunctions(conjunctions[source_language]))
 
-        translator.add_query_processor(EscapeHtml())
-        translator.add_response_processor(UnescapeHtml())
-
         translator.translator_name = 'Google - with context'
 
         return translator
@@ -57,8 +54,6 @@ class GoogleTranslatorFactory(object):
         translator = GoogleTranslatorFactory.build_clean(source_language, target_language, key)
 
         translator.add_query_processor(RemoveAllContext())
-        translator.add_query_processor(EscapeHtml())
-        translator.add_response_processor(UnescapeHtml())
 
         translator.translator_name = 'Google - without context'
 

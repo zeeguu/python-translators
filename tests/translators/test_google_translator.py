@@ -118,3 +118,12 @@ class TestGoogleTranslator(TestCase):
         ))
 
         self.assertEqual(response.get_raw_translations()[0], 'My partner')
+
+    def test_issue_29(self):
+        response = self.translators['nl-en'].translate(TranslationQuery(
+            query='je nog speuren'
+        ))
+
+        self.assertEqual(response.get_raw_translations()[0], "You're still looking")
+
+        print(response.translations)

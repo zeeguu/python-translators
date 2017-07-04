@@ -17,7 +17,8 @@ HTML_TAG = 'span'
 
 from python_translators.utils import format_dict_for_logging, current_milli_time
 from python_translators import logger
-
+from python_translators.query_processors.escape_html import EscapeHtml
+from python_translators.response_processors.unescape_html import UnescapeHtml
 
 class MicrosoftTranslator(Translator):
     gt_instance = None
@@ -35,6 +36,9 @@ class MicrosoftTranslator(Translator):
 
         self.key = key
         self.refresh_token_if_needed()
+
+        self.add_query_processor(EscapeHtml())
+        self.add_response_processor(UnescapeHtml())
 
     def _translate(self, query: TranslationQuery) -> TranslationResponse:
 

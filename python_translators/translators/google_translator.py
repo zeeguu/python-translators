@@ -35,7 +35,8 @@ class GoogleTranslator(Translator):
         self.key = key
         self.translation_service = build('translate', 'v2', developerKey=key)
 
-        self.add_query_processor(EscapeHTML())
+        self.add_query_processor(EscapeHtml())
+        self.add_response_processor(UnescapeHtml())
 
     @staticmethod
     def _cost_of_query(query: str):
