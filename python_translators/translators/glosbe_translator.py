@@ -43,10 +43,8 @@ class GlosbeTranslator(Translator):
             )
         )
 
-    def _estimate_costs(self, query: TranslationQuery) -> TranslationCosts:
-        return TranslationCosts(
-            money=0
-        )
+    def compute_money_costs(self, query: TranslationQuery) -> float:
+        return .0
 
     @staticmethod
     def build_url(query: str, source_language: str, target_language: str) -> str:

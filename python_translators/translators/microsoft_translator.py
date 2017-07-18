@@ -15,6 +15,8 @@ TRANSLATION_SERVICE_URL = 'https://api.microsofttranslator.com/V2/Http.svc/Trans
 
 HTML_TAG = 'span'
 
+COST_PER_CHARACTER = 1000 / 1_000_000  # 10 euro per 1 million characters
+
 from python_translators.utils import format_dict_for_logging, current_milli_time
 from python_translators import logger
 from python_translators.query_processors.escape_html import EscapeHtml
@@ -40,9 +42,13 @@ class MicrosoftTranslator(Translator):
         self.add_query_processor(EscapeHtml())
         self.add_response_processor(UnescapeHtml())
 
+    @staticmethod
+    def _build_raw_query(query: TranslationQuery) -> str:
+        return f'{query.before_context}<{HTML_TAG}>{query.query}</{HTML_TAG}>{query.after_context}'
+
     def _translate(self, query: TranslationQuery) -> TranslationResponse:
 
-        api_query = f'{query.before_context}<{HTML_TAG}>{query.query}</{HTML_TAG}>{query.after_context}'
+        api_query = MicrosoftTranslator._build_raw_query(query)
 
         translation = self.send_translation_request(api_query, 'text/html')
 
@@ -58,10 +64,8 @@ class MicrosoftTranslator(Translator):
             )
         )
 
-    def _estimate_costs(self, query: TranslationQuery) -> TranslationCosts:
-        return TranslationCosts(
-            money=0
-        )
+    def compute_money_costs(self, query: TranslationQuery) -> float:
+        return len(MicrosoftTranslator._build_raw_query(query)) * COST_PER_CHARACTER
 
     def send_translation_request(self, query: str, content_type: str) -> str:
         """

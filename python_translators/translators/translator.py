@@ -49,7 +49,7 @@ class Translator(object, metaclass=ABCMeta):
         pass
 
     def _should_reject_request(self, query: TranslationQuery) -> bool:
-        if query.has_no_budget():
+        if query.budget_is_unconstrained():
             return False
 
         if self.time_expense_tracker.size() > MIN_ACCEPTANCE_ENTRIES and \
@@ -191,10 +191,8 @@ class Translator(object, metaclass=ABCMeta):
         self.cache = cache
 
     def estimate_costs(self, query: TranslationQuery) -> TranslationCosts:
-        costs = self.compute_money_costs()
-
         costs = TranslationCosts()
-        costs.money = self.compute_money_costs()
+        costs.money = self.compute_money_costs(query=query)
         costs.time = self.time_expense_tracker.mean(default=100)
 
         return costs

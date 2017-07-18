@@ -9,6 +9,9 @@ class TranslationBudget(object):
     def subtract_time(self, time):
         self.time -= time
 
+    def is_unconstrained(self):
+        return self.money == math.inf and self.time == math.inf
+
 
 class TranslationQuery(object):
     def __init__(self,
@@ -23,8 +26,14 @@ class TranslationQuery(object):
         self.max_translations = max_translations
         self.budget = budget
 
-    def has_no_budget(self):
-        return self.budget is None
+        if self.budget is None:
+            self.budget = TranslationBudget(
+                time=math.inf,
+                money=math.inf,
+            )
+
+    def budget_is_unconstrained(self):
+        return self.budget.is_unconstrained()
 
     @classmethod
     def for_word_occurrence(cls, query: str, context: str, word_index_for_query: int, max_translations: int = 1):

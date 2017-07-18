@@ -9,10 +9,7 @@ from python_translators.translation_costs import TranslationCosts
 from python_translators.translation_response import merge_translations
 from python_translators.translators.composite_translator import CompositeTranslator
 from python_translators.utils import current_milli_time
-
-
-def translate_worker(translator: Translator, query: TranslationQuery, responses: [TranslationResponse], idx: int):
-    responses[idx] = translator.translate(query)
+from python_translators.translators.composite_translator import translate_worker
 
 
 def join_threads(threads: [threading.Thread], timeout_ms=None) -> None:
@@ -47,7 +44,7 @@ class CompositeParallelTranslator(CompositeTranslator):
             threads.append(translate_thread)
 
         # Wait for all threads to complete
-        if query.has_no_budget():
+        if query.budget_is_unconstrained():
             join_threads(threads)
         else:
             join_threads(threads, timeout_ms=query.budget.time)

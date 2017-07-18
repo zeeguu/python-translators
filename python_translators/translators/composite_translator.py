@@ -1,3 +1,6 @@
+import threading
+import time
+
 from python_translators.translators.translator import Translator
 from python_translators.translation_query import TranslationQuery
 from python_translators.translation_response import TranslationResponse
@@ -6,9 +9,13 @@ from python_translators.translation_response import merge_responses
 from python_translators.utils import current_milli_time
 
 
+def translate_worker(translator: Translator, query: TranslationQuery, responses: [TranslationResponse], idx: int):
+    responses[idx] = translator.translate(query)
+
+
 class CompositeTranslator(Translator):
     def compute_money_costs(self, query: TranslationQuery) -> float:
-        return sum(translator.compute_money_costs() for translator in self.translators)
+        return sum(translator.compute_money_costs(query) for translator in self.translators)
 
     def __init__(self, source_language: str, target_language: str, translators: [Translator] = None) -> None:
         super(CompositeTranslator, self).__init__(source_language, target_language)
@@ -34,16 +41,28 @@ class CompositeTranslator(Translator):
         self.translators.append(translator)
 
     def _translate(self, query: TranslationQuery) -> TranslationResponse:
-        responses = []
+        responses = [None] * len(self.translators)
 
-        for translator in self.translators:
-            t1 = current_milli_time()
-            responses.append(translator.translate(query))
-            t2 = current_milli_time()
+        t_start = current_milli_time()
+        initial_time_budget = query.budget.time
+        print('budget', initial_time_budget)
 
-            query.budget.subtract_time(t2 - t1)
+        for idx, translator in enumerate(self.translators):
+            # Start a thread for each translator
+            translate_thread = threading.Thread(target=translate_worker, args=(translator, query, responses, idx))
+            translate_thread.start()
 
-        responses = map(lambda t: t.translate(query), self.translators)
+            while translate_thread.is_alive() and current_milli_time() - t_start < initial_time_budget:
+                time.sleep(0.05)
+
+            print('cmt - start', current_milli_time() - t_start)
+
+            if translate_thread.is_alive():
+                break
+
+            query.budget.subtract_time(current_milli_time() - t_start)
+
+        responses = [t.translate(query) for t in self.translators]
 
         return merge_responses(responses)
 
