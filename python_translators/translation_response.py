@@ -1,3 +1,5 @@
+import json
+
 from python_translators.translation_costs import TranslationCosts
 from python_translators.utils import merge_unique
 
@@ -22,6 +24,15 @@ class TranslationResponse(object):
 
     def get_raw_service_names(self) -> [str]:
         return [t['service_name'] for t in self.translations]
+
+    def to_json(self) -> str:
+        return json.dumps({
+            'costs': {
+                'money': self.costs.money,
+                'time': self.costs.time
+            },
+            'translations': self.translations
+        })
 
 
 def merge_responses(responses: [TranslationResponse]) -> TranslationResponse:
