@@ -22,7 +22,7 @@ class UnresponsiveTranslator(Translator):
             service_name='Unknown')
 
     def _translate(self, query: TranslationQuery) -> TranslationResponse:
-        time.sleep(3000) # very unresponsive translator
+        time.sleep(3) # very unresponsive translator
         return TranslationResponse(
             costs=TranslationCosts(
                 time=3000,
