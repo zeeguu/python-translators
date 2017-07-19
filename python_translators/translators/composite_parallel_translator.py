@@ -13,7 +13,7 @@ from python_translators.translators.composite_translator import translate_worker
 
 
 def join_threads(threads: [threading.Thread], timeout_ms=None) -> None:
-    assert timeout_ms >= 0
+    assert timeout_ms is None or timeout_ms >= 0
 
     if timeout_ms is None:
         [t.join() for t in threads]
