@@ -16,3 +16,5 @@ python_translators.egg-info
 errors.translators.log
 translators.log
 script.py
+
+translators/translators.egg-info/*
