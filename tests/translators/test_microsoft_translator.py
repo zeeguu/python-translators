@@ -25,6 +25,16 @@ class TestMicrosoftTranslator(TestCase):
     def test_invalid_microsoft_key(self):
         self.assertRaises(Exception, MicrosoftTranslator, '<this is an invalid key>')
 
+    def test_chinese(self):
+        query = TranslationQuery(
+            before_context='Dark',
+            query='matter',
+            after_context='is to be found in the universe')
+
+        microcn2en = MicrosoftTranslatorFactory.build_with_context('en', 'zh-CN')
+        response = microcn2en.translate(query)
+        print(response.get_raw_translations())
+
     def test_ca_translations(self):
 
         response = self.translators['nl-en'].translate(TranslationQuery(
