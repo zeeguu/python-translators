@@ -1,3 +1,5 @@
+import json
+
 from python_translators.translation_costs import TranslationCosts
 from python_translators.utils import merge_unique
 
@@ -10,18 +12,27 @@ class TranslationResponse(object):
     def add_translation(self, translation) -> None:
         self.translations.append(translation)
 
-    def get_raw_translations(self):
+    def get_raw_translations(self) -> [str]:
         """
         Returns a list of translations where each translation is a string.
         :return:
         """
         return [t['translation'] for t in self.translations]
 
-    def get_raw_qualities(self):
+    def get_raw_qualities(self) -> [int]:
         return [t['quality'] for t in self.translations]
 
-    def get_raw_service_names(self):
+    def get_raw_service_names(self) -> [str]:
         return [t['service_name'] for t in self.translations]
+
+    def to_json(self) -> str:
+        return json.dumps({
+            'costs': {
+                'money': self.costs.money,
+                'time': self.costs.time
+            },
+            'translations': self.translations
+        })
 
 
 def merge_responses(responses: [TranslationResponse]) -> TranslationResponse:
@@ -43,3 +54,11 @@ def merge_responses(responses: [TranslationResponse]) -> TranslationResponse:
 def merge_translations(translations1: [dict], translations2: [dict]) -> [dict]:
     return merge_unique(translations1, translations2,
                         lambda t1, t2: t1['translation'].lower() == t2['translation'].lower())
+
+
+def make_translation(translation: str, quality: int, service_name: str) -> dict:
+    return dict(
+        translation=translation,
+        quality=quality,
+        service_name=service_name
+    )

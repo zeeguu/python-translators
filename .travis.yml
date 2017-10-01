@@ -3,9 +3,9 @@ python:
   - "3.6"
 
 install:
-  - "python translators/setup.py develop"
+  - "python setup.py develop"
   - "python -m nltk.downloader -d ~/nltk_data all "
 
 # script: "python -m unittest discover -v tests/translators"
 script: "./run_tests.sh"
-
+# tr

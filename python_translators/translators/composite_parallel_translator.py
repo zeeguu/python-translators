@@ -1,5 +1,6 @@
 import asyncio
 import threading
+import time
 
 from python_translators.translators.translator import Translator
 from python_translators.translation_query import TranslationQuery
@@ -7,10 +8,25 @@ from python_translators.translation_response import TranslationResponse
 from python_translators.translation_costs import TranslationCosts
 from python_translators.translation_response import merge_translations
 from python_translators.translators.composite_translator import CompositeTranslator
+from python_translators.utils import current_milli_time
+from python_translators.translators.composite_translator import translate_worker
 
 
-def translate_worker(translator: Translator, query: TranslationQuery, responses: [TranslationResponse], idx: int):
-    responses[idx] = translator.translate(query)
+def join_threads(threads: [threading.Thread], timeout_ms=None) -> None:
+    assert timeout_ms is None or timeout_ms >= 0
+
+    if timeout_ms is None:
+        [t.join() for t in threads]
+    else:
+        start_time = current_milli_time()
+
+        idx = 0
+
+        while current_milli_time() - start_time < timeout_ms and idx < len(threads):
+            if not threads[idx].is_alive():
+                idx += 1
+
+            time.sleep(0.01)
 
 
 class CompositeParallelTranslator(CompositeTranslator):
@@ -23,21 +39,24 @@ class CompositeParallelTranslator(CompositeTranslator):
 
         # Start a thread for each translator
         for idx, translator in enumerate(self.translators):
-            t = threading.Thread(target=translate_worker, args=(translator, query, responses, idx))
-            t.start()
-            threads.append(t)
+            translate_thread = threading.Thread(target=translate_worker, args=(translator, query, responses, idx))
+            translate_thread.start()
+            threads.append(translate_thread)
 
         # Wait for all threads to complete
-        for t in threads:
-            t.join()
+        if query.budget_is_unconstrained():
+            join_threads(threads)
+        else:
+            join_threads(threads, timeout_ms=query.budget.time)
 
         translations = []
         money_costs = 0
 
         # Process all the responses
-        for resp in responses:
-            translations = merge_translations(translations, resp.translations)
-            money_costs += resp.costs.money
+        for idx, resp in enumerate(responses):
+            if not threads[idx].is_alive():
+                translations = merge_translations(translations, resp.translations)
+                money_costs += resp.costs.money
 
         return TranslationResponse(
             translations=translations,
