@@ -23,19 +23,6 @@ class TestGoogleTranslator(TestCase):
 
         self.assertEqual(response.get_raw_translations()[0], 'materie')
 
-    def test_chinese(self):
-        query = TranslationQuery(
-            before_context='Dark',
-            query='matter',
-            after_context='is to be found in the universe')
-
-        goog_cn2en = GoogleTranslatorFactory.build_with_context('en', 'zh-CN')
-        response = goog_cn2en.translate(query)
-        print (response.get_raw_translations())
-
-        # language codes for google from: https://ctrlq.org/code/19899-google-translate-languages
-
-
     def testWithoutContext(self):
         response = self.translators['nl-en'].translate(TranslationQuery(
             query='boom'
@@ -127,7 +114,7 @@ class TestGoogleTranslator(TestCase):
 
     def test_html_in_query(self):
         response = self.translators['nl-en'].translate(TranslationQuery(
-               query='m\'n maat'
+            query='m\'n maat'
         ))
 
         self.assertEqual(response.get_raw_translations()[0], 'My partner')
