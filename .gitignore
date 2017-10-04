@@ -12,3 +12,7 @@ venv/
 dist/
 build/
 python_translators.egg-info
+
+errors.translators.log
+translators.log
+script.py

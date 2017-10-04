@@ -5,6 +5,9 @@ import copy
 
 
 class RemoveAllContext(QueryProcessor):
+    def __init__(self):
+        super(RemoveAllContext, self).__init__(name='remove_all_context')
+
     def process_query(self, query: TranslationQuery) -> TranslationQuery:
         new_query = copy.copy(query)
 

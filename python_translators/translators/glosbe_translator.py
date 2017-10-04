@@ -4,6 +4,7 @@ from python_translators.translation_query import TranslationQuery
 from python_translators.translation_response import TranslationResponse
 from python_translators.translation_costs import TranslationCosts
 
+import time
 import urllib.request, urllib.parse, urllib.error
 import requests
 
@@ -12,8 +13,9 @@ class GlosbeTranslator(Translator):
 
     API_BASE_URL = 'https://glosbe.com/gapi/translate?'
 
-    def __init__(self, source_language: str, target_language: str) -> None:
-        super(GlosbeTranslator, self).__init__(source_language, target_language)
+    def __init__(self, source_language: str, target_language: str, translator_name: str = 'Glosbe', quality: int = '50',
+                 service_name: str = 'Glosbe') -> None:
+        super(GlosbeTranslator, self).__init__(source_language, target_language, translator_name, quality, service_name)
 
     def _translate(self, query: TranslationQuery) -> TranslationResponse:
         """
@@ -30,7 +32,7 @@ class GlosbeTranslator(Translator):
 
         # Extract the translations (thanks @SAMSUNG)
         try:
-            translations = [translation['phrase']['text'] for translation in response[:query.max_translations]]
+            translations = [self.make_translation(translation['phrase']['text']) for translation in response[:query.max_translations]]
         except KeyError:
             translations = []
 
@@ -41,10 +43,8 @@ class GlosbeTranslator(Translator):
             )
         )
 
-    def _estimate_costs(self, query: TranslationQuery) -> TranslationCosts:
-        return TranslationCosts(
-            money=0
-        )
+    def compute_money_costs(self, query: TranslationQuery) -> float:
+        return .0
 
     @staticmethod
     def build_url(query: str, source_language: str, target_language: str) -> str:

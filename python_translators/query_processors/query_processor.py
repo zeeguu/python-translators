@@ -4,7 +4,9 @@ from python_translators.translation_query import TranslationQuery
 
 class QueryProcessor(object, metaclass=ABCMeta):
 
-    @abstractmethod
+    def __init__(self, name: str):
+        self.name = name
+
     def process_query(self, query: TranslationQuery) -> TranslationQuery:
         """
         
@@ -12,3 +14,6 @@ class QueryProcessor(object, metaclass=ABCMeta):
         :return: 
         """
         pass
+
+    def get_name(self):
+        return self.name
