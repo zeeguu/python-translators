@@ -44,7 +44,9 @@ class TestGoogleTranslator(TestCase):
             query='klein',
             after_context=u'löwe'))
 
-        self.assertEqual(response.get_raw_translations()[0], "small")
+        # our translators change their mind sometimes, so we provide
+        # two options for the translation so this test does not fail
+        assert(response.get_raw_translations()[0] in ["little", "small"])
 
     def testUnicodeCharactersInWordToTranslate(self):
         response = self.translators['de-en'].translate(TranslationQuery(
