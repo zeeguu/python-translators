@@ -22,6 +22,7 @@ from python_translators import logger
 from python_translators.query_processors.escape_html import EscapeHtml
 from python_translators.response_processors.unescape_html import UnescapeHtml
 
+
 class MicrosoftTranslator(Translator):
     gt_instance = None
     token = None

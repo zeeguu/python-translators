@@ -122,7 +122,7 @@ class Translator(object, metaclass=ABCMeta):
 
         time_passed = current_milli_time() - start_time
 
-        logger.info(format_dict_for_logging(dict(
+        log_string = format_dict_for_logging(dict(
             EVENT='translation_result',
             FROM_CACHE=False,
             TIME_PASSED=time_passed,
@@ -145,7 +145,8 @@ class Translator(object, metaclass=ABCMeta):
             TRANSLATIONS=translation_response.get_raw_translations(),
             QUALITIES=translation_response.get_raw_qualities(),
             SERVICE_NAMES=translation_response.get_raw_service_names(),
-        )))
+        ))
+        logger.info(log_string)
 
         # Store time costs in response
         translation_response.costs.time = time_passed

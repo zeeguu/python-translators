@@ -26,7 +26,6 @@ class TestMicrosoftTranslator(TestCase):
         self.assertRaises(Exception, MicrosoftTranslator, '<this is an invalid key>')
 
     def test_ca_translations(self):
-
         response = self.translators['nl-en'].translate(TranslationQuery(
             before_context='De directeur',
             query='treedt af',
@@ -63,6 +62,7 @@ class TestMicrosoftTranslator(TestCase):
         response = self.translators['nl-en'].translate(TranslationQuery(
             query="m'n maat"
         ))
+
 
 if __name__ == '__main__':
     unittest.main()
