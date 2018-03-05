@@ -121,9 +121,9 @@ class TestGoogleTranslator(TestCase):
 
     def test_issue_29(self):
         response = self.translators['nl-en'].translate(TranslationQuery(
-            query='je nog speuren'
+            query="K'ratak is een klingon"
         ))
 
-        self.assertEqual(response.get_raw_translations()[0], "You're still looking")
+        self.assertEqual(response.get_raw_translations()[0], "K'ratak is a klingon")
 
         print(response.translations)
