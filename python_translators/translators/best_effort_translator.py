@@ -36,8 +36,8 @@ class BestEffortTranslator(CompositeParallelTranslator):
         self.add_translator(t)
 
         # Glosbe Translator without context
-        t = GlosbeTranslator(**lang_config)
-        t.quality = 30
-        self.add_translator(t)
+        #t = GlosbeTranslator(**lang_config)
+        #t.quality = 30
+        #self.add_translator(t)
 
         self.set_cache(MemoryCache(translator_type='best_effort_translator'))
