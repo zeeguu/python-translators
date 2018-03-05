@@ -1,5 +1,4 @@
-
-[![Build Status](https://travis-ci.org/mircealungu/python-translators.svg?branch=master)](https://travis-ci.org/mircealungu/python-translators)
+[![Build Status](https://travis-ci.org/zeeguu-ecosystem/Python-Translators.svg?branch=master)](https://travis-ci.org/zeeguu-ecosystem/Python-Translators)
 
 
 # Python translators
