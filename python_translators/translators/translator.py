@@ -114,7 +114,17 @@ class Translator(object, metaclass=ABCMeta):
         for query_processor in self.query_processors:
             query = query_processor.process_query(query)
 
-        translation_response = self._translate(query)
+        # try/catch added to fix issue #36 (https://github.com/zeeguu-ecosystem/Python-Translators/issues/36)
+        try:
+            translation_response = self._translate(query)
+        except Exception as e:
+            logger.info(f"Translator {self.get_translator_name()} failed in _translate()")
+            return TranslationResponse(
+                translations=[],
+                costs=TranslationCosts(
+                    time=current_milli_time() - start_time
+                )
+            )
 
         # Post-processing
         for response_processor in self.response_processors:

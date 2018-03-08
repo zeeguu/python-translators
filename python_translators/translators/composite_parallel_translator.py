@@ -55,8 +55,9 @@ class CompositeParallelTranslator(CompositeTranslator):
         # Process all the responses
         for idx, resp in enumerate(responses):
             if not threads[idx].is_alive():
-                translations = merge_translations(translations, resp.translations)
-                money_costs += resp.costs.money
+                if resp: #fixing issue #35 (https://github.com/zeeguu-ecosystem/Python-Translators/issues/35)
+                    translations = merge_translations(translations, resp.translations)
+                    money_costs += resp.costs.money
 
         return TranslationResponse(
             translations=translations,
