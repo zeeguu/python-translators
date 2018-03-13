@@ -22,10 +22,10 @@ class ReverseTranslator(Translator):
         :return: 
         """
 
-        translation = self.make_translation(query.query[::-1])
-        TRANSLATION = self.make_translation(query.query[::-1].upper())
-        Translation = self.make_translation(query.query[::-1].title())
-        translations = [translation, Translation, TRANSLATION][:query.max_translations]
+        simple_reverse = self.make_translation(query.query[::-1])
+        title_reverse = self.make_translation(query.query[::-1].title())
+        upper_reverse = self.make_translation(query.query[::-1].upper())
+        translations = [simple_reverse, title_reverse, upper_reverse][:query.max_translations]
 
         return TranslationResponse(
             translations=translations,
