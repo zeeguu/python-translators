@@ -4,10 +4,16 @@ from python_translators.translation_query import TranslationQuery
 from python_translators.translation_response import TranslationResponse
 from python_translators.translation_costs import TranslationCosts
 
-import requests
-
 
 class DuplicateTranslator(Translator):
+
+    """
+
+        a dummy translator useful for the tests
+        does nothing else than duplicates the original query.
+
+    """
+
 
     def __init__(self, source_language: str, target_language: str, translator_name: str = 'Reverse',
                  quality: int = '10',
