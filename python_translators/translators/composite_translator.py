@@ -45,7 +45,7 @@ class CompositeTranslator(Translator):
 
         t_start = current_milli_time()
         initial_time_budget = query.budget.time
-        print('budget', initial_time_budget)
+        # print('budget', initial_time_budget)
 
         for idx, translator in enumerate(self.translators):
             # Start a thread for each translator
@@ -55,7 +55,7 @@ class CompositeTranslator(Translator):
             while translate_thread.is_alive() and current_milli_time() - t_start < initial_time_budget:
                 time.sleep(0.05)
 
-            print('cmt - start', current_milli_time() - t_start)
+            # print('cmt - start', current_milli_time() - t_start)
 
             if translate_thread.is_alive():
                 break

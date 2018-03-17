@@ -128,5 +128,3 @@ class TestGoogleTranslator(TestCase):
         ))
 
         self.assertEqual(response.get_raw_translations()[0], "K'ratak is a klingon")
-
-        print(response.translations)

@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from translation_query import TranslationQuery
+from python_translators.translation_query import TranslationQuery
 from python_translators.translators.best_effort_translator import DummyBestEffortTranslator
 
 
