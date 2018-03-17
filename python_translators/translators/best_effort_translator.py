@@ -16,25 +16,25 @@ class BestEffortTranslator(CompositeParallelTranslator):
             target_language=target_language
         )
 
-        # Google Translator with context
-        t = GoogleTranslatorFactory.build_contextless(**lang_config)
+        # Google Translator WITH context
+        t = GoogleTranslatorFactory.build_with_context(**lang_config)
         t.quality = 80
         self.add_translator(t)
 
-        # Google Translator without context
-        t = GoogleTranslatorFactory.build_with_context(**lang_config)
+        # Microsoft Translator WITH context
+        t = MicrosoftTranslatorFactory.build_with_context(**lang_config)
+        t.quality = 75
+        #self.add_translator(t)
+
+        # Google Translator WITHOUT context
+        t = GoogleTranslatorFactory.build_contextless(**lang_config)
         t.quality = 70
         self.add_translator(t)
 
         # Microsoft Translator without context
-        t = MicrosoftTranslatorFactory.build_with_context(**lang_config)
-        t.quality = 60
-        self.add_translator(t)
-
-        # Microsoft Translator without context
         t = MicrosoftTranslatorFactory.build_contextless(**lang_config)
-        t.quality = 40
-        self.add_translator(t)
+        t.quality = 60
+        #self.add_translator(t)
 
         # Glosbe Translator without context
         # t = GlosbeTranslator(**lang_config)

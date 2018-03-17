@@ -38,6 +38,7 @@ class GoogleTranslatorFactory(object):
             translator.add_query_processor(RemoveUnnecessaryConjunctions(conjunctions[source_language]))
 
         translator.translator_name = 'Google - with context'
+        translator.service_name = 'Google - with context'
 
         return translator
 
@@ -56,6 +57,7 @@ class GoogleTranslatorFactory(object):
         translator.add_query_processor(RemoveAllContext())
 
         translator.translator_name = 'Google - without context'
+        translator.service_name = 'Google - without context'
 
         return translator
 
