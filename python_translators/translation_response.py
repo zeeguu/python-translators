@@ -5,7 +5,7 @@ from python_translators.utils import merge_unique
 
 
 class TranslationResponse(object):
-    def __init__(self, translations: [dict]=None, costs: TranslationCosts = None):
+    def __init__(self, translations: [dict] = None, costs: TranslationCosts = None):
         self.translations = translations if translations else []
         self.costs = costs if costs else TranslationCosts()
 
@@ -61,4 +61,30 @@ def make_translation(translation: str, quality: int, service_name: str) -> dict:
         translation=translation,
         quality=quality,
         service_name=service_name
+    )
+
+
+def order_by_quality(translations: [dict], query):
+    # first, if a translation is the same as the original word,
+    # we 'half' its quality;
+    # can't be that great of a translation, really
+
+    _trans = []
+    for x in translations:
+        if x['translation'] == query.query:
+            _trans.append(_update_quality(x, 0.5))
+        else:
+            _trans.append(x)
+
+    # then we sort the translations based on their quality
+    _trans = sorted(_trans, key=lambda x: x['quality'], reverse=True)
+
+    return _trans
+
+
+def _update_quality(old_translation: dict, ratio: float) -> dict:
+    return dict(
+        translation=old_translation["translation"],
+        quality=int(old_translation["quality"] * ratio),
+        service_name=old_translation["service_name"]
     )

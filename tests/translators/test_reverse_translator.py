@@ -1,7 +1,7 @@
 import unittest
 from unittest import TestCase
 from python_translators.translation_query import TranslationQuery
-from translators.reverse_translator import ReverseTranslator
+from python_translators.translators.reverse_translator import ReverseTranslator
 
 
 class TestReverseTranslator(TestCase):
