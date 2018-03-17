@@ -128,3 +128,12 @@ class TestGoogleTranslator(TestCase):
         ))
 
         self.assertEqual(response.get_raw_translations()[0], "K'ratak is a klingon")
+
+    def test_issue_20__many_words_returned(self):
+        res = self.translators['de-en'].translate(TranslationQuery(
+            before_context='Die Nato-Partner Amerikas ',
+            query='guckten',
+            after_context=' betreten, als Trump ihnen in Brüssel vorhielt, sie sollten gefälligst ihre Verteidigungsbudgets ausbauen und entsprechend ihrer Zusage zwei Prozent des Bruttoinlandsproduktes fürs Militär ausgeben. Damit nährt er den alten Verdacht, Trump '
+        ))
+        self.assertTrue(len(res.get_raw_translations()[0])<10)
+
