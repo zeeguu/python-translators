@@ -4,9 +4,7 @@ from python_translators.query_processors.remove_unnecessary_sentences import Rem
 from python_translators.query_processors.remove_unnecessary_conjunctions import RemoveUnnecessaryConjunctions
 from python_translators.query_processors.remove_all_context import RemoveAllContext
 
-from python_translators.query_processors.escape_html import EscapeHtml
-from python_translators.response_processors.unescape_html import UnescapeHtml
-
+from python_translators.response_processors.remove_punctuation import RemovePunctuation
 
 conjunctions = {
     'nl': {'en', 'of'},
@@ -36,6 +34,8 @@ class GoogleTranslatorFactory(object):
 
         if source_language in list(conjunctions.keys()):
             translator.add_query_processor(RemoveUnnecessaryConjunctions(conjunctions[source_language]))
+
+        translator.add_response_processor(RemovePunctuation())
 
         translator.translator_name = 'Google - with context'
         translator.service_name = 'Google - with context'

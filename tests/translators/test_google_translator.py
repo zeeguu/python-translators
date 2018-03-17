@@ -137,3 +137,13 @@ class TestGoogleTranslator(TestCase):
         ))
         self.assertTrue(len(res.get_raw_translations()[0])<10)
 
+
+    def test_issue_31__commma_in_response(self):
+        res = self.translators['de-en'].translate(TranslationQuery(
+            before_context='Nach ersten Abschnitten am Wochenende sei die Wasserstraße nun komplett  ',
+            query='dicht',
+            after_context=', sagte eine Sprecherin des Wasserstraßen- und Schifffahrtsamtes (WSA)'
+        ))
+        print (res.get_raw_translations()[0])
+
+        self.assertFalse("," in res.get_raw_translations()[0])
