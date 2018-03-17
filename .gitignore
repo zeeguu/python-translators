@@ -17,4 +17,4 @@ errors.translators.log
 translators.log
 script.py
 
-translators/translators.egg-info/*
+.pytest_cache*
