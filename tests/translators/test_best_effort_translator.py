@@ -4,7 +4,7 @@ from python_translators.translation_query import TranslationQuery
 from python_translators.translators.best_effort_translator import DummyBestEffortTranslator
 
 
-class TestReverseTranslator(TestCase):
+class TestBestEffortTranslator(TestCase):
 
     def setUp(self):
         self.translator = DummyBestEffortTranslator(source_language='es', target_language='en')
