@@ -19,7 +19,6 @@ class TestBestEffortTranslator(TestCase):
         self.assertNotEqual(response.translations[0]['translation'], 'ada')
 
     def testEnsureContextualHasPriority(self):
-
         response = self.bet.translate(TranslationQuery(
             before_context='Hunderte Züge und Dutzende Flüge wurden ',
             query='gestrichen',
@@ -28,3 +27,20 @@ class TestBestEffortTranslator(TestCase):
         ))
 
         assert (response.translations[0]['translation'] == "canceled")
+
+    def test_issue_20__avoidance_of_suspiciously_long_translations(self):
+        # source of example:
+        # http://www.spiegel.de/lebenundlernen/job/equal-pay-day-warum-die-deutschen-nicht-ueber-geld-reden-a-1198494.html
+        response = self.bet.translate(TranslationQuery(
+            before_context='Der amerikanische Traum wurzelt in dem Glauben, dass der ',
+            query='Einzelne',
+            after_context=' es vom Tellerwäscher zum Milliardär schaffen kann.',
+            max_translations=3
+        ))
+
+        # this works only after we 'half' the importance of the Google -- with context which
+        # translated more than the actual query normally
+        # [{'translation': 'individual', 'service_name': 'Microsoft - with context', 'quality': 75},
+        # {'translation': 'Single', 'service_name': 'Google - without context', 'quality': 70},
+        # {'translation': 'individual can make', 'quality': 40, 'service_name': 'Google - with context'}]
+        assert (response.translations[0]['translation'] == "individual")

@@ -2,6 +2,7 @@ import json
 
 from python_translators.translation_costs import TranslationCosts
 from python_translators.utils import merge_unique
+from python_translators import logger
 
 
 class TranslationResponse(object):
@@ -65,13 +66,9 @@ def make_translation(translation: str, quality: int, service_name: str) -> dict:
 
 
 def order_by_quality(translations: [dict], query):
-    # first, if a translation is the same as the original word,
-    # we 'half' its quality;
-    # can't be that great of a translation, really
-
     _trans = []
     for x in translations:
-        if x['translation'] == query.query:
+        if _probably_low_quality(x, query.query):
             _trans.append(_update_quality(x, 0.5))
         else:
             _trans.append(x)
@@ -80,6 +77,30 @@ def order_by_quality(translations: [dict], query):
     _trans = sorted(_trans, key=lambda x: x['quality'], reverse=True)
 
     return _trans
+
+
+def _probably_low_quality(translation_dict, origin):
+    translation = translation_dict['translation']
+    translation_service = translation_dict['service_name']
+    log_string = f'Decreasing quality for ({origin}-{translation}) by: {translation_service}'
+
+    # first, if a translation is the same as the original word,
+    # can't be that great of a translation, really
+
+    if translation == origin:
+        logger.info(log_string)
+        return True
+
+    # especially with GT-with context we get translations
+    # which capture more words than in the origin...
+    # most of the times, such a translation is of low quality
+
+    words_in_translation = len(translation.split())
+    words_in_origin = len(origin.split())
+
+    if words_in_translation > words_in_origin + 1:
+        logger.info(log_string)
+        return True
 
 
 def _update_quality(old_translation: dict, ratio: float) -> dict:

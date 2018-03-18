@@ -39,6 +39,7 @@ class MicrosoftTranslatorFactory(object):
             translator.add_query_processor(RemoveUnnecessaryConjunctions(conjunctions[source_language]))
 
         translator.translator_name = 'Microsoft - with context'
+        translator.service_name = 'Microsoft - with context'
 
         return translator
 
@@ -60,6 +61,7 @@ class MicrosoftTranslatorFactory(object):
         translator.add_response_processor(UnescapeHtml())
 
         translator.translator_name = 'Microsoft - without context'
+        translator.service_name = 'Microsoft - without context'
 
         return translator
 
