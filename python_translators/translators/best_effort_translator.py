@@ -5,6 +5,7 @@ from python_translators.factories.microsoft_translator_factory import MicrosoftT
 from python_translators.translation_caches.memory_cache import MemoryCache
 from python_translators.translators.reverse_translator import ReverseTranslator
 from python_translators.translators.duplicate_translator import DuplicateTranslator
+from python_translators.translators.glosbe_translator import GlosbeTranslator
 
 
 class BestEffortTranslator(CompositeParallelTranslator):
@@ -24,7 +25,7 @@ class BestEffortTranslator(CompositeParallelTranslator):
         # Microsoft Translator WITH context
         t = MicrosoftTranslatorFactory.build_with_context(**lang_config)
         t.quality = 75
-        #self.add_translator(t)
+        self.add_translator(t)
 
         # Google Translator WITHOUT context
         t = GoogleTranslatorFactory.build_contextless(**lang_config)
@@ -34,12 +35,12 @@ class BestEffortTranslator(CompositeParallelTranslator):
         # Microsoft Translator without context
         t = MicrosoftTranslatorFactory.build_contextless(**lang_config)
         t.quality = 60
-        #self.add_translator(t)
+        self.add_translator(t)
 
         # Glosbe Translator without context
-        # t = GlosbeTranslator(**lang_config)
-        # t.quality = 30
-        # self.add_translator(t)
+        t = GlosbeTranslator(**lang_config)
+        t.quality = 50
+        self.add_translator(t)
 
         self.set_cache(MemoryCache(translator_type='best_effort_translator'))
 
