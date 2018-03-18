@@ -2,6 +2,8 @@
 
 import re
 
+# note that this used to be apiclient, but in the newest versions is googleapiclient
+# https://stackoverflow.com/questions/18267749/importerror-no-module-named-apiclient-discovery#23521799
 from googleapiclient.discovery import build
 import xml.etree.ElementTree as ET
 
