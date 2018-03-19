@@ -65,6 +65,16 @@ def make_translation(translation: str, quality: int, service_name: str) -> dict:
     )
 
 
+def filter_empty_translations(translations: [dict]):
+    """
+        sometimes google with context returns an empty string!
+        for an example see issue #41
+            https://github.com/zeeguu-ecosystem/Python-Translators/issues/41
+
+    """
+    return [x for x in translations if x['translation'].replace(' ', '') != '']
+
+
 def order_by_quality(translations: [dict], query):
     _trans = []
     for x in translations:

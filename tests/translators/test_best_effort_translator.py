@@ -44,3 +44,15 @@ class TestBestEffortTranslator(TestCase):
         # {'translation': 'Single', 'service_name': 'Google - without context', 'quality': 70},
         # {'translation': 'individual can make', 'quality': 40, 'service_name': 'Google - with context'}]
         assert (response.translations[0]['translation'] == "individual")
+
+    def test_issue_41__avoidance_of_empty_strings(self):
+        # source of example:
+        # http://www.spiegel.de/panorama/justiz/indiana-bankraeuber-kam-mit-dem-taxi-a-1198724.html
+        response = self.bet.translate(TranslationQuery(
+            before_context='Nach der Fahrt zu der Bank ',
+            query='schob',
+            after_context=' er dem Angestellten an der Kasse lediglich einen Zettel zu: "Dies ist ein Überfall.',
+            max_translations=3
+        ))
+
+        assert (response.translations[0]['translation'] != "")

@@ -4,7 +4,7 @@ import time
 
 from python_translators.translators.translator import Translator
 from python_translators.translation_query import TranslationQuery
-from python_translators.translation_response import TranslationResponse, order_by_quality
+from python_translators.translation_response import TranslationResponse, order_by_quality, filter_empty_translations
 from python_translators.translation_costs import TranslationCosts
 from python_translators.translation_response import merge_translations
 from python_translators.translators.composite_translator import CompositeTranslator
@@ -62,6 +62,7 @@ class CompositeParallelTranslator(CompositeTranslator):
         # reorder translations such that the translation which is the same
         # as the original word is not the first
 
+        translations = filter_empty_translations(translations)
         translations = order_by_quality(translations, query)
 
         return TranslationResponse(
