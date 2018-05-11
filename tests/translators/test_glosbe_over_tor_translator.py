@@ -5,7 +5,7 @@ from python_translators.translation_query import TranslationQuery
 from translators.glosbe_over_tor_translator import GlosbeOverTorTranslator
 
 
-class TestGlosbeTranslator(TestCase):
+class TestGlosbeOverTorTranslator(TestCase):
 
     def setUp(self):
         self.translator = GlosbeOverTorTranslator(source_language='de', target_language='nl')
@@ -18,6 +18,22 @@ class TestGlosbeTranslator(TestCase):
         ))
 
         print (response.translations)
+
+
+        response = self.translator.translate(TranslationQuery(
+            query="genommen",
+            max_translations=5
+        ))
+
+        print (response.translations)
+
+        # response = self.translator.translate(TranslationQuery(
+        #     query="genommen",
+        #     max_translations=5
+        # ))
+        #
+        # print (response.translations)
+
 
         # self.assertEqual(response.translations[0]['translation'], 'bed')
         # self.assertEqual(len(response.translations), 5)
