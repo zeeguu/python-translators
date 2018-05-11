@@ -4,7 +4,6 @@ from python_translators.translation_query import TranslationQuery
 from python_translators.translation_response import TranslationResponse
 from python_translators.translation_costs import TranslationCosts
 
-import time
 import urllib.request, urllib.parse, urllib.error
 import requests
 
