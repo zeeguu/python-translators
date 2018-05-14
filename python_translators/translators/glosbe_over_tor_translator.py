@@ -1,7 +1,7 @@
-from translation_costs import TranslationCosts
-from translation_query import TranslationQuery
-from translation_response import TranslationResponse
-from translators.glosbe_translator import GlosbeTranslator
+from python_translators.translation_costs import TranslationCosts
+from python_translators.translation_query import TranslationQuery
+from python_translators.translation_response import TranslationResponse
+from python_translators.translators.glosbe_translator import GlosbeTranslator
 from torrequest import TorRequest
 
 
