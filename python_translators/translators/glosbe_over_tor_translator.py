@@ -1,7 +1,7 @@
-from translation_costs import TranslationCosts
-from translation_query import TranslationQuery
-from translation_response import TranslationResponse
-from translators.glosbe_translator import GlosbeTranslator
+from python_translators.translation_costs import TranslationCosts
+from python_translators.translation_query import TranslationQuery
+from python_translators.translation_response import TranslationResponse
+from python_translators.translators.glosbe_translator import GlosbeTranslator
 from torrequest import TorRequest
 
 
@@ -31,11 +31,13 @@ class GlosbeOverTorTranslator(GlosbeTranslator):
             response = tr.get(api_url).json()['tuc']
 
         # Extract the translations (thanks @SAMSUNG)
+        translations = []
         try:
-            translations = [self.make_translation(translation['phrase']['text']) for translation in
-                            response[:query.max_translations]]
+            for translation in response[:query.max_translations]:
+                translations.append(self.make_translation(translation['phrase']['text']))
+
         except KeyError:
-            translations = []
+            pass
 
         return TranslationResponse(
             translations=translations,

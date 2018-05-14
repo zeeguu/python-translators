@@ -30,10 +30,12 @@ class GlosbeTranslator(Translator):
         response = requests.get(api_url).json()['tuc']
 
         # Extract the translations (thanks @SAMSUNG)
+        translations = []
         try:
-            translations = [self.make_translation(translation['phrase']['text']) for translation in response[:query.max_translations]]
+            for translation in response[:query.max_translations]:
+                translations.append(self.make_translation(translation['phrase']['text']))
         except KeyError:
-            translations = []
+            pass
 
         return TranslationResponse(
             translations=translations,
