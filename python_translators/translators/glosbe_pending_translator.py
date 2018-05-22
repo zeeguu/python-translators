@@ -6,6 +6,13 @@ from torrequest import TorRequest
 from time import sleep
 import requests
 
+"""
+	similar to GlosbeTranslator
+	blocks and resends translation requests when Glosbe refuses to accept request due to too many connections
+	in this case manual intervention is required by translating a word through Glosbe's web page and answering the captcha
+"""
+
+
 class GlosbePendingTranslator(GlosbeTranslator):
 
     def __init__(self, source_language: str, target_language: str, translator_name: str = 'Glosbe', quality: int = '50',
@@ -34,7 +41,7 @@ class GlosbePendingTranslator(GlosbeTranslator):
         
         response = response['tuc']
         
-        # Extract the translations (thanks @SAMSUNG)
+        # Extract the translations
         translations = []
         try:
             for translation in response[:query.max_translations]:
