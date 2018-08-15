@@ -31,11 +31,11 @@ class GlosbeTranslator(Translator):
 
         # Extract the translations (thanks @SAMSUNG)
         translations = []
-        try:
-            for translation in response[:query.max_translations]:
+        for translation in response[:query.max_translations]:
+            try:
                 translations.append(self.make_translation(translation['phrase']['text']))
-        except KeyError:
-            pass
+            except KeyError:
+                pass
 
         return TranslationResponse(
             translations=translations,
