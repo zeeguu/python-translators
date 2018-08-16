@@ -19,12 +19,12 @@ class BestEffortTranslator(CompositeParallelTranslator):
 
         # Google Translator WITH context
         t = GoogleTranslatorFactory.build_with_context(**lang_config)
-        t.quality = 80
+        t.quality = 95
         self.add_translator(t)
 
         # Microsoft Translator WITH context
         t = MicrosoftTranslatorFactory.build_with_context(**lang_config)
-        t.quality = 75
+        t.quality = 80
         self.add_translator(t)
 
         # Google Translator WITHOUT context
