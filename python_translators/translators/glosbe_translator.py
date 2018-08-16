@@ -7,7 +7,7 @@ from python_translators.translation_costs import TranslationCosts
 import urllib.request, urllib.parse, urllib.error
 import requests
 
-problematic_definition_signs = ["Plural form of", "past tense", "past participle", "<i>", "&quot;"]
+problematic_definition_signs = ["plural form of", "past tense", "past participle", "present participle", "<i>", "&quot;"]
 
 
 class GlosbeTranslator(Translator):
@@ -48,7 +48,7 @@ class GlosbeTranslator(Translator):
 
                     problematic = False
                     for sign in problematic_definition_signs:
-                        if this_meaning.find(sign) != -1:
+                        if this_meaning.lower().find(sign) != -1:
                             problematic = True
                             print(f"ignoring problematic translation: {this_meaning}")
                             break
