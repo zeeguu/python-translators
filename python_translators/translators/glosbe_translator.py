@@ -7,7 +7,8 @@ from python_translators.translation_costs import TranslationCosts
 import urllib.request, urllib.parse, urllib.error
 import requests
 
-problematic_definition_signs = ["plural form of", "past tense", "past participle", "present participle", "<i>", "&quot;"]
+problematic_definition_signs = ["plural form of", "past tense", "past participle", "present participle", "<i>",
+                                "&quot;"]
 
 
 class GlosbeTranslator(Translator):
