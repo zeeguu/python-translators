@@ -8,7 +8,7 @@ import urllib.request, urllib.parse, urllib.error
 import requests
 
 problematic_definition_signs = ["plural form of", "past tense", "past participle", "present participle", "<i>",
-                                "&quot;"]
+                                "&quot;", "present indicative"]
 
 
 class GlosbeTranslator(Translator):
