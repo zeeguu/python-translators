@@ -14,7 +14,8 @@ MAX_WORDS_IN_DEFINITION = 20
 META_DEFINITION_PREFIXES = [
     "Present participle of",
     "Simple past tense and past participle of",
-    "Plural form of"
+    "Plural form of",
+    "The property of being able to" # found once with recoverability
 ]
 
 
