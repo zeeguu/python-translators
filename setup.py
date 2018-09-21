@@ -17,5 +17,6 @@ setuptools.setup(
         "google-api-python-client",
         "configobj",
         "requests",
-        "nltk")
+        "nltk",
+        "wordnik-py3")
 )
