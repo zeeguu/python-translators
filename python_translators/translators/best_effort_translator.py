@@ -7,6 +7,7 @@ from python_translators.translators.reverse_translator import ReverseTranslator
 from python_translators.translators.duplicate_translator import DuplicateTranslator
 from python_translators.translators.glosbe_translator import GlosbeTranslator
 from python_translators.translators.wordnik_translator import WordnikTranslator
+from python_translators.utils import get_key_from_config
 
 
 class BestEffortTranslator(CompositeParallelTranslator):
@@ -17,15 +18,16 @@ class BestEffortTranslator(CompositeParallelTranslator):
             source_language=source_language,
             target_language=target_language
         )
-        
+
         if source_language == target_language == 'en':
+
+            lang_config['key'] = get_key_from_config('WORDNIK_API_KEY')
 
             t = WordnikTranslator(**lang_config)
             t.quality = 90
             self.add_translator(t)
 
             return
-
 
         # Google Translator WITH context
         t = GoogleTranslatorFactory.build_with_context(**lang_config)
