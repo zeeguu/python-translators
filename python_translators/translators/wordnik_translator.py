@@ -59,7 +59,10 @@ class WordnikTranslator(Translator):
         :return: 
         """
 
-        response = self.word_api.getDefinitions(query.query, partOfSpeech=self._get_pos_tag(query))
+        pos=self._get_pos_tag(query)
+        response = self.word_api.getDefinitions(query.query, partOfSpeech=pos)
+        if not response:
+            response = self.word_api.getDefinitions(query.query.lower(), partOfSpeech=pos)
 
         if not response:
             response = []
