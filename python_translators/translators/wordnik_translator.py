@@ -40,8 +40,11 @@ class WordnikTranslator(Translator):
         pos_tags = nltk.pos_tag(full_sentence)
 
         for each in pos_tags:
-            if each[0] == query.query and each[1].startswith("V"):
-                return "verb"
+            if each[0] == query.query:
+                if each[1].startswith("V"):
+                    return "verb"
+                elif each[1].startswith("N"):
+                    return "noun"
 
         return ""
 
