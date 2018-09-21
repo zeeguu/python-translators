@@ -6,6 +6,7 @@ from python_translators.translation_caches.memory_cache import MemoryCache
 from python_translators.translators.reverse_translator import ReverseTranslator
 from python_translators.translators.duplicate_translator import DuplicateTranslator
 from python_translators.translators.glosbe_translator import GlosbeTranslator
+from python_translators.translators.wordnik_translator import WordnikTranslator
 
 
 class BestEffortTranslator(CompositeParallelTranslator):
@@ -16,6 +17,15 @@ class BestEffortTranslator(CompositeParallelTranslator):
             source_language=source_language,
             target_language=target_language
         )
+        
+        if source_language == target_language == 'en':
+
+            t = WordnikTranslator(**lang_config)
+            t.quality = 90
+            self.add_translator(t)
+
+            return
+
 
         # Google Translator WITH context
         t = GoogleTranslatorFactory.build_with_context(**lang_config)
