@@ -11,7 +11,11 @@ import nltk
 API_URL = 'http://api.wordnik.com/v4'
 MAX_WORDS_IN_DEFINITION = 16
 
-META_DEFINITION_PREFIXES = ["Present participle of", "Simple past tense and past participle of"]
+META_DEFINITION_PREFIXES = [
+    "Present participle of",
+    "Simple past tense and past participle of",
+    "Plural form of"
+]
 
 
 class WordnikTranslator(Translator):
@@ -33,7 +37,6 @@ class WordnikTranslator(Translator):
 
         self.api_client = swagger.ApiClient(self.key, API_URL)
         self.word_api = WordApi.WordApi(self.api_client)
-
 
     def _get_pos_tag(self, query):
         full_sentence = nltk.word_tokenize(query.before_context + " " + query.query + query.after_context)
