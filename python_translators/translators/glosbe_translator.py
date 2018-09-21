@@ -7,9 +7,11 @@ from python_translators.translation_costs import TranslationCosts
 import urllib.request, urllib.parse, urllib.error
 import requests
 
+problematic_definition_signs = ["plural form of", "past tense", "past participle", "present participle", "<i>",
+                                "&quot;", "present indicative"]
+
 
 class GlosbeTranslator(Translator):
-
     API_BASE_URL = 'https://glosbe.com/gapi/translate?'
 
     def __init__(self, source_language: str, target_language: str, translator_name: str = 'Glosbe', quality: int = '50',
@@ -31,11 +33,38 @@ class GlosbeTranslator(Translator):
 
         # Extract the translations (thanks @SAMSUNG)
         translations = []
-        for translation in response[:query.max_translations]:
+
+        for translation in response[1:query.max_translations]:
             try:
                 translations.append(self.make_translation(translation['phrase']['text']))
             except KeyError:
                 pass
+
+        translation_count = len(translations)
+        if translation_count < query.max_translations:
+            for meaning in response[0]['meanings']:
+                try:
+                    this_meaning = meaning['text']
+                    this_meaning = this_meaning[0:this_meaning.find("; &quot;")]
+
+                    problematic = False
+                    for sign in problematic_definition_signs:
+                        if this_meaning.lower().find(sign) != -1:
+                            problematic = True
+                            print(f"ignoring problematic translation: {this_meaning}")
+                            break
+
+                    if problematic:
+                        continue
+
+                    if len(this_meaning.split(" ")) < 10:
+                        translations.append(self.make_translation(this_meaning))
+                        translation_count += 1
+                except KeyError:
+                    pass
+
+                if translation_count == query.max_translations:
+                    break
 
         return TranslationResponse(
             translations=translations,
