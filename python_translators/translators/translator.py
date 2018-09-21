@@ -191,11 +191,16 @@ class Translator(object, metaclass=ABCMeta):
     def get_translator_name(self):
         return self.translator_name
 
-    def make_translation(self, translation):
+    def make_translation(self, translation, quality=None):
+        if quality:
+            _quality = quality
+        else:
+            _quality = self.get_quality()
+
         return dict(
             translation=translation,
             service_name=self.get_service_name(),
-            quality=self.get_quality()
+            quality=_quality
         )
 
     def set_cache(self, cache: TranslationCache):
