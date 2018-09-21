@@ -27,6 +27,28 @@ class TestGlosbeTranslator(TestCase):
         self.assertEqual(response.translations[0]['translation'], 'bed')
         self.assertEqual(len(response.translations), 3)
 
+    def test_en2en(self):
+
+        self.translator = GlosbeTranslator(source_language='en', target_language='en')
+
+        response = self.translator.translate(TranslationQuery(
+            query="mogul",
+            max_translations=20
+        ))
+
+        self.assertIn("A wealthy and powerful business person", [each['translation'] for each in response.translations])
+
+
+    def test_de2de(self):
+
+        self.translator = GlosbeTranslator(source_language='de', target_language='de')
+
+        response = self.translator.translate(TranslationQuery(
+            query="Wunder",
+            max_translations=20
+        ))
+
+        self.assertIn("Mirakel", [each['translation'] for each in response.translations])
 
 if __name__ == '__main__':
     unittest.main()
