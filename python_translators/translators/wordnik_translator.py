@@ -34,15 +34,26 @@ class WordnikTranslator(Translator):
         self.api_client = swagger.ApiClient(self.key, API_URL)
         self.word_api = WordApi.WordApi(self.api_client)
 
+
+    def _get_pos_tag(self, query):
+        full_sentence = nltk.word_tokenize(query.before_context + " " + query.query + query.after_context)
+        pos_tags = nltk.pos_tag(full_sentence)
+
+        for each in pos_tags:
+            if each[0] == query.query and each[1].startswith("V"):
+                return "verb"
+
+        return ""
+
     def _translate(self, query: TranslationQuery) -> TranslationResponse:
         """
 
         :param query: 
         :return: 
         """
-        full_sentence = query.before_context + query.query + query.after_context
 
-        response = self.word_api.getDefinitions(query.query)
+        response = self.word_api.getDefinitions(query.query, partOfSpeech=self._get_pos_tag(query))
+
         if not response:
             response = []
 
@@ -62,8 +73,7 @@ class WordnikTranslator(Translator):
                 for d2 in response2[:query.max_translations]:
                     d2clean = self.definition_without_example_and_without_see_synonims(d2)
                     if self.not_too_long(d2clean):
-                        translations.append(self.make_translation(meta_defined_word+": "+d2clean, quality))
-
+                        translations.append(self.make_translation(meta_defined_word + ": " + d2clean, quality))
 
         # if we don't know the translation, just parrot back the question
         if not translations:
@@ -81,7 +91,7 @@ class WordnikTranslator(Translator):
     def not_too_long(self, definition):
         return len(definition.split(" ")) < MAX_WORDS_IN_DEFINITION
 
-    def is_meta_definition(self, definition:str):
+    def is_meta_definition(self, definition: str):
         for prefix in META_DEFINITION_PREFIXES:
             if prefix in definition:
                 return definition.split(prefix)[1].strip(" ,.;")
@@ -92,7 +102,6 @@ class WordnikTranslator(Translator):
         rez = definition.text.split(":")[0]
         rez = rez.split(".")[0]
         return rez
-
 
     def compute_money_costs(self, query: TranslationQuery) -> float:
         return .0

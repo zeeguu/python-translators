@@ -5,7 +5,6 @@ from python_translators.factories.microsoft_translator_factory import MicrosoftT
 from python_translators.translation_caches.memory_cache import MemoryCache
 from python_translators.translators.reverse_translator import ReverseTranslator
 from python_translators.translators.duplicate_translator import DuplicateTranslator
-from python_translators.translators.glosbe_translator import GlosbeTranslator
 from python_translators.translators.wordnik_translator import WordnikTranslator
 from python_translators.utils import get_key_from_config
 
