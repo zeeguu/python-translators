@@ -34,7 +34,7 @@ class GlosbeTranslator(Translator):
         # Extract the translations (thanks @SAMSUNG)
         translations = []
 
-        for translation in response[1:query.max_translations]:
+        for translation in response[0:query.max_translations]:
             try:
                 translations.append(self.make_translation(translation['phrase']['text']))
             except KeyError:

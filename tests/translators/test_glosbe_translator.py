@@ -16,7 +16,7 @@ class TestGlosbeTranslator(TestCase):
             max_translations=5
         ))
 
-        self.assertEqual(response.translations[0]['translation'], 'bed')
+        self.assertIn('bed', [each['translation'] for each in response.translations])
         self.assertEqual(len(response.translations), 5)
 
         response = self.translator.translate(TranslationQuery(
