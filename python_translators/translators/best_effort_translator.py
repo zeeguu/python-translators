@@ -27,32 +27,27 @@ class BestEffortTranslator(CompositeParallelTranslator):
             t.quality = 90
             self.add_translator(t)
 
-            return
+        else:
 
-        # Google Translator WITH context
-        t = GoogleTranslatorFactory.build_with_context(**lang_config)
-        t.quality = 95
-        self.add_translator(t)
+            # Google Translator WITH context
+            t = GoogleTranslatorFactory.build_with_context(**lang_config)
+            t.quality = 95
+            self.add_translator(t)
 
-        # Microsoft Translator WITH context
-        t = MicrosoftTranslatorFactory.build_with_context(**lang_config)
-        t.quality = 80
-        self.add_translator(t)
+            # Microsoft Translator WITH context
+            t = MicrosoftTranslatorFactory.build_with_context(**lang_config)
+            t.quality = 80
+            self.add_translator(t)
 
-        # Google Translator WITHOUT context
-        t = GoogleTranslatorFactory.build_contextless(**lang_config)
-        t.quality = 70
-        self.add_translator(t)
+            # Google Translator WITHOUT context
+            t = GoogleTranslatorFactory.build_contextless(**lang_config)
+            t.quality = 70
+            self.add_translator(t)
 
-        # Microsoft Translator without context
-        t = MicrosoftTranslatorFactory.build_contextless(**lang_config)
-        t.quality = 60
-        self.add_translator(t)
-
-        # Glosbe Translator without context
-        t = GlosbeTranslator(**lang_config)
-        t.quality = 50
-        self.add_translator(t)
+            # Microsoft Translator without context
+            t = MicrosoftTranslatorFactory.build_contextless(**lang_config)
+            t.quality = 60
+            self.add_translator(t)
 
         self.set_cache(MemoryCache(translator_type='best_effort_translator'))
 
