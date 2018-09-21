@@ -9,17 +9,18 @@ from python_translators.factories.microsoft_translator_factory import MicrosoftT
 class TestMicrosoftTranslator(TestCase):
     def setUp(self):
         self.microsoft = MicrosoftTranslatorFactory.build_with_context('en', 'zh-CN')
+
+        # language codes for google from: https://ctrlq.org/code/19899-google-translate-languages
         self.google = GoogleTranslatorFactory.build_with_context('en', 'zh-CN')
 
-    def test_water_is_water_in_all_translators(self):
+    def test_water_is_water_in_both_google_and_microsoft(self):
         query = TranslationQuery(
             before_context='This',
             query='water',
             after_context='is good')
 
-        mresponse = self.microsoft.translate(query)
-        gresponse = self.google.translate(query)
+        m_response = self.microsoft.translate(query)
+        g_response = self.google.translate(query)
 
-        self.assertTrue(mresponse.get_raw_translations() == gresponse.get_raw_translations())
+        self.assertTrue(m_response.get_raw_translations() == g_response.get_raw_translations())
 
-        # language codes for google from: https://ctrlq.org/code/19899-google-translate-languages
