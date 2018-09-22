@@ -9,7 +9,7 @@ from wordnik import swagger, WordApi
 import nltk
 
 API_URL = 'http://api.wordnik.com/v4'
-MAX_WORDS_IN_DEFINITION = 20
+MAX_WORDS_IN_DEFINITION = 42
 
 META_DEFINITION_PREFIXES = [
     "Present participle of",
