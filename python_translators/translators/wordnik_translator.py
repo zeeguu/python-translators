@@ -10,12 +10,13 @@ import nltk
 
 API_URL = 'http://api.wordnik.com/v4'
 MAX_WORDS_IN_DEFINITION = 42
+quote_characters = ["'", '"']
 
 META_DEFINITION_PREFIXES = [
     "Present participle of",
     "Simple past tense and past participle of",
     "Plural form of",
-    "The property of being able to" # found once with recoverability
+    "The property of being able to"  # found once with recoverability
 ]
 
 
@@ -59,10 +60,18 @@ class WordnikTranslator(Translator):
         :return: 
         """
 
-        pos=self._get_pos_tag(query)
+        pos = self._get_pos_tag(query)
         response = self.word_api.getDefinitions(query.query, partOfSpeech=pos)
         if not response:
-            response = self.word_api.getDefinitions(query.query.lower(), partOfSpeech=pos)
+
+            if self._query_is_uppercase(query):
+                query.query = query.query.lower()
+                return self._translate(query)
+
+            elif self._query_starts_with_quote(query):
+                # try to see whether the problem is due to 'quotes' around the word name
+                self._remove_quotes(query)
+                return self._translate(query)
 
         if not response:
             response = []
@@ -85,8 +94,8 @@ class WordnikTranslator(Translator):
                     if self.not_too_long(d2clean):
                         translations.append(self.make_translation(meta_defined_word + ": " + d2clean, quality))
 
-        # if we don't know the translation, just parrot back the question
         if not translations:
+            # if we don't know the translation, just parrot back the question
             translations.append(self.make_translation(query.query, quality))
 
         rez = TranslationResponse(
@@ -115,3 +124,14 @@ class WordnikTranslator(Translator):
 
     def compute_money_costs(self, query: TranslationQuery) -> float:
         return .0
+
+    def _query_is_uppercase(self, query):
+        return query.query[0].isupper()
+
+    def _query_starts_with_quote(self, query):
+        return query.query[0] in quote_characters
+
+    def _remove_quotes(self, query):
+        for quote in quote_characters:
+            if query.query.startswith(quote) and query.query.endswith(quote):
+                query.query = query.query[1:-1]
