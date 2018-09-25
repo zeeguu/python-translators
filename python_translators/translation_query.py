@@ -43,7 +43,12 @@ class TranslationQuery(object):
             the query is interesting (in the situation where there's multiple occurrences of query
             in the context)
         """
-        before_context, after_context = context.split(query, word_index_for_query)
+        result = context.split(query, word_index_for_query)
+        before_context = after_context = ''
+
+        if len(result) > 1:
+            before_context, after_context = result[0], result[1]
+
         return cls(query, before_context=before_context, after_context=after_context, max_translations=max_translations)
 
     @classmethod
@@ -54,7 +59,7 @@ class TranslationQuery(object):
             The char_index insures that in case of multiple occurrences of the query in the context
              the right one is being translated.
         """
-        before_context, after_context = context[:char_index], context[:char_index+len(query)]
+        before_context, after_context = context[:char_index], context[:char_index + len(query)]
         return cls(query, before_context=before_context, after_context=after_context, max_translations=max_translations)
 
     @classmethod
@@ -81,7 +86,7 @@ class TranslationQuery(object):
              the right one is being translated.
 
         """
-        before_context, after_context = context[:char_index], context[:char_index+len(query)]
+        before_context, after_context = context[:char_index], context[:char_index + len(query)]
         return cls(query, before_context=before_context, after_context=after_context, max_translations=max_translations)
 
     def is_context_aware_request(self):
