@@ -18,6 +18,7 @@ META_DEFINITION_PREFIXES = [
     "Plural form of",
     "Past participle of",
     "Simple past tense and past participle of",
+    "Present participle of",
     "The property of being able to"  # found once with recoverability
 ]
 
