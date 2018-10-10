@@ -20,6 +20,8 @@ META_DEFINITION_PREFIXES = [
     "Simple past tense and past participle of",
     "Present participle of",
     "Alternative spelling of",
+    "The act of",
+    "Chiefly British Variant of",
     "The property of being able to"  # found once with recoverability
 ]
 
