@@ -15,6 +15,7 @@ quote_characters = ["'", '"']
 META_DEFINITION_PREFIXES = [
     "Present participle of",
     "Simple past tense and past participle of",
+    "Third-person singular simple present indicative form of",
     "Plural form of",
     "Past participle of",
     "Simple past tense and past participle of",
