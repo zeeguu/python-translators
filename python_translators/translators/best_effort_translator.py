@@ -6,7 +6,7 @@ from python_translators.translation_caches.memory_cache import MemoryCache
 from python_translators.translators.reverse_translator import ReverseTranslator
 from python_translators.translators.duplicate_translator import DuplicateTranslator
 from python_translators.translators.wordnik_translator import WordnikTranslator
-from python_translators.utils import get_key_from_config
+from python_translators.config import get_key_from_config
 
 
 class BestEffortTranslator(CompositeParallelTranslator):

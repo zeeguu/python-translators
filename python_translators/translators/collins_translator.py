@@ -9,7 +9,8 @@ import urllib.error
 import requests
 import xml.etree.ElementTree as ET
 
-from python_translators.utils import code_to_full_language, get_key_from_config
+from python_translators.utils import code_to_full_language
+from python_translators.config import get_key_from_config
 
 SUPPORTED_TRANSLATIONS = {
     'es': ['en'],  # Spanish can only be translated to English

@@ -3,7 +3,7 @@ from unittest import TestCase
 from python_translators.translators.glosbe_translator import GlosbeTranslator
 from python_translators.translation_query import TranslationQuery
 from python_translators.translators.wordnik_translator import WordnikTranslator
-from python_translators.utils import get_key_from_config
+from python_translators.config import get_key_from_config
 
 
 class TestWordnikTranslator(TestCase):

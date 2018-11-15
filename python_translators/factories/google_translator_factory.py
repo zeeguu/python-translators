@@ -1,5 +1,5 @@
 from python_translators.translators.google_translator import GoogleTranslator
-from python_translators.utils import get_key_from_config
+from python_translators.config import get_key_from_config
 from python_translators.query_processors.remove_unnecessary_sentences import RemoveUnnecessarySentences
 from python_translators.query_processors.remove_unnecessary_conjunctions import RemoveUnnecessaryConjunctions
 from python_translators.query_processors.remove_all_context import RemoveAllContext

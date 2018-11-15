@@ -1,4 +1,4 @@
-from python_translators.utils import get_key_from_config
+from python_translators.config import get_key_from_config
 from python_translators.translators.microsoft_translator import MicrosoftTranslator
 
 # response processors
