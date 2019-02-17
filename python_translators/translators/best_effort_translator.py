@@ -34,25 +34,22 @@ class BestEffortTranslator(CompositeParallelTranslator):
             self.add_translator(t)
 
             # Microsoft Translator WITH context
-            try:
-                t = MicrosoftTranslatorFactory.build_with_context(**lang_config)
-                t.quality = 80
-                self.add_translator(t)
-            except:
-                print("MicrosoftTranslater failed to build with context")
 
+            t = MicrosoftTranslatorFactory.build_with_context(**lang_config)
+            t.quality = 80
+            self.add_translator(t)
+   
             # Google Translator WITHOUT context
             t = GoogleTranslatorFactory.build_contextless(**lang_config)
             t.quality = 70
             self.add_translator(t)
 
             # Microsoft Translator without context
-            try:
-                t = MicrosoftTranslatorFactory.build_contextless(**lang_config)
-                t.quality = 60
-                self.add_translator(t)
-            except:
-                print("MicrosoftTranslater failed to build without context")
+    
+            t = MicrosoftTranslatorFactory.build_contextless(**lang_config)
+            t.quality = 60
+            self.add_translator(t)
+        
 
         self.set_cache(MemoryCache(translator_type='best_effort_translator'))
 
