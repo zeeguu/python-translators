@@ -5,6 +5,7 @@ import re
 # note that this used to be apiclient, but in the newest versions is googleapiclient
 # https://stackoverflow.com/questions/18267749/importerror-no-module-named-apiclient-discovery#23521799
 from googleapiclient.discovery import build
+from googleapiclient.errors import HttpError
 import xml.etree.ElementTree as ET
 
 from python_translators.translators.translator import Translator
@@ -35,7 +36,10 @@ class GoogleTranslator(Translator):
         )
 
         self.key = key
-        self.translation_service = build('translate', 'v2', developerKey=key)
+        try:
+            self.translation_service = build('translate', 'v2', developerKey='bla')
+        except HttpError as e:
+            raise Excepton(e.resp.status)
 
         self.add_query_processor(EscapeHtml())
         self.add_response_processor(UnescapeHtml())
