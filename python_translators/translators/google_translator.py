@@ -37,9 +37,9 @@ class GoogleTranslator(Translator):
 
         self.key = key
         try:
-            self.translation_service = build('translate', 'v2', developerKey='bla')
+            self.translation_service = build('translate', 'v2', developerKey=key)
         except HttpError as e:
-            responseString = f'response: {e.resp}  status: {e.resp.status}'
+            responseString = f'error: {e} rrrrrrrrrrrresponse: {e.resp}  ssssssssssstatus: {e.resp.status}'
             raise Exception(responseString)
 
         self.add_query_processor(EscapeHtml())
