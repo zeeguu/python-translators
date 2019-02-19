@@ -26,7 +26,9 @@ class RemoveUnnecessarySentences(QueryProcessor):
     @classmethod
     def _load_tokenizer(cls, language_code):
         resource_url = NLTK_DATA_PATH % {'language': code_to_full_language(language_code)}
+        print(f"about to expand: {resource_url} ")
         resource_url = os.path.expanduser(resource_url)
+        print(f"about to load: {resource_url}")
 
         tokenizer = nltk.data.load(resource_url)
 
