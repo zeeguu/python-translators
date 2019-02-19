@@ -5,7 +5,7 @@ from python_translators.utils import code_to_full_language
 import os.path
 import copy
 
-NLTK_DATA_PATH = "~/nltk_data/tokenizers/punkt/%(language)s.pickle"
+NLTK_DATA_PATH = "/usr/local/share/nltk_data/tokenizers/punkt/%(language)s.pickle"
 
 
 class RemoveUnnecessarySentences(QueryProcessor):
