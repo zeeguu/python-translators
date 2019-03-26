@@ -118,6 +118,7 @@ class Translator(object, metaclass=ABCMeta):
         try:
             translation_response = self._translate(query)
         except Exception as e:
+            logger.info(f"Exception raised: {e}")
             logger.info(f"Translator {self.get_translator_name()} failed in _translate()")
             return TranslationResponse(
                 translations=[],
