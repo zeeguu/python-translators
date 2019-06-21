@@ -1,3 +1,4 @@
+import json
 import urllib.request
 import urllib.parse
 import urllib.error
@@ -11,7 +12,7 @@ from python_translators.translation_response import TranslationResponse
 from python_translators.translation_costs import TranslationCosts
 
 TOKEN_SERVICE_URL = 'https://api.cognitive.microsoft.com/sts/v1.0/issueToken'
-TRANSLATION_SERVICE_URL = 'https://api.microsofttranslator.com/V2/Http.svc/Translate'
+TRANSLATION_SERVICE_URL = 'https://api.cognitive.microsofttranslator.com/translate'
 
 HTML_TAG = 'span'
 
@@ -51,12 +52,13 @@ class MicrosoftTranslator(Translator):
 
         api_query = MicrosoftTranslator._build_raw_query(query)
 
-        translation = self.send_translation_request(api_query, 'text/html')
+        translation = self.send_translation_request(api_query, 'application/json')
 
         # Enclose in <s> tag to make it valid XML (<s> is arbitrarily chosen)
         xml_object = ET.fromstring(f'<s>{translation}</s>')
 
         parsed_translation = xml_object.find(HTML_TAG).text
+        parsed_translation = parsed_translation.strip()
 
         return TranslationResponse(
             translations=[self.make_translation(parsed_translation)],
@@ -81,26 +83,27 @@ class MicrosoftTranslator(Translator):
 
         # Build query parameters
         query_params = {
-            'text': query.encode('utf-8'),
+            'api-version': '3.0.',
+            'textType': 'html',
             'from': self.source_language,
-            'to': self.target_language,
-            'contentType': content_type,
+            'to': self.target_language
         }
 
         # Build headers
         headers = {
             'Accept': 'application/xml',
             'Authorization': 'Bearer ' + self.token['token'],
+            'contentType': content_type,
         }
 
         # Send request to API
         encoded_params = urllib.parse.urlencode(query_params)
 
-        response = requests.get(f'{TRANSLATION_SERVICE_URL}?{encoded_params}', headers=headers)
+        response = requests.post(f'{TRANSLATION_SERVICE_URL}?{encoded_params}', headers=headers, json=[{'Text': query}])
 
-        xml_object = ET.fromstring(response.text.encode('utf-8'))
-
-        return xml_object.text
+        json_object = json.loads(response.text)
+        translation = json_object[0]["translations"][0]['text']
+        return translation
 
     def refresh_token_if_needed(self) -> None:
         if MicrosoftTranslator.token_is_invalid():
