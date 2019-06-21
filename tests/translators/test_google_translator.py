@@ -120,7 +120,7 @@ class TestGoogleTranslator(TestCase):
             query='m\'n maat'
         ))
 
-        assert (response.get_raw_translations()[0] in ['my size', 'my partner'])
+        assert (response.get_raw_translations()[0] in ['my size', 'my partner', 'my mate'])
 
     def test_issue_29(self):
         response = self.translators['nl-en'].translate(TranslationQuery(
