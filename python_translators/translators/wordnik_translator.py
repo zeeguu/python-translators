@@ -3,6 +3,7 @@ from python_translators.translators.translator import Translator
 from python_translators.translation_query import TranslationQuery
 from python_translators.translation_response import TranslationResponse
 from python_translators.translation_costs import TranslationCosts
+from python_translators import logger
 
 from wordnik import swagger, WordApi
 
@@ -89,17 +90,20 @@ class WordnikTranslator(Translator):
         for d in response[:query.max_translations]:
             quality -= 1
 
-            definition = self.definition_without_example_and_without_see_synonims(d)
-            if self.not_too_long(definition):
-                translations.append(self.make_translation(definition, quality))
+            try:
+                definition = self.definition_without_example_and_without_see_synonims(d)
+                if self.not_too_long(definition):
+                    translations.append(self.make_translation(definition, quality))
 
-            meta_defined_word = self.is_meta_definition(definition)
-            if meta_defined_word:
-                response2 = self.word_api.getDefinitions(meta_defined_word)
-                for d2 in response2[:query.max_translations]:
-                    d2clean = self.definition_without_example_and_without_see_synonims(d2)
-                    if self.not_too_long(d2clean):
-                        translations.append(self.make_translation(meta_defined_word + ": " + d2clean, quality))
+                meta_defined_word = self.is_meta_definition(definition)
+                if meta_defined_word:
+                    response2 = self.word_api.getDefinitions(meta_defined_word)
+                    for d2 in response2[:query.max_translations]:
+                        d2clean = self.definition_without_example_and_without_see_synonims(d2)
+                        if self.not_too_long(d2clean):
+                            translations.append(self.make_translation(meta_defined_word + ": " + d2clean, quality))
+            except Exception as e:
+                logger.info(f"Can't parse definition: {e}")
 
         if not translations:
             # if we don't know the translation, just parrot back the question
