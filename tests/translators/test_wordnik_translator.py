@@ -21,33 +21,41 @@ class TestWordnikTranslator(TestCase):
 
         assert 2 <= len(response.translations)
 
-    def testUppercase(self):
+    def testUppercaseMatters(self):
+        response = self.translator.translate(TranslationQuery(
+            query="March",
+            max_translations=5
+        ))
         response2 = self.translator.translate(TranslationQuery(
+            query="march",
+            max_translations=5
+        ))
+
+        # The first is the month; the second is the verb
+        assert response.translations != response2.translations
+
+    def testWordnikDoesNotLowercaseByItself(self):
+        response = self.translator.translate(TranslationQuery(
             query="Conjunction",
             max_translations=5
         ))
-        response = self.translator.translate(TranslationQuery(
-            query="conjunction",
+
+        assert response.translations == []
+
+    def testQuotedWord(self):
+        response1 = self.translator.translate(TranslationQuery(
+            query="'insincere'",
             max_translations=5
         ))
 
-        assert response.translations == response2.translations
+        response2 = self.translator.translate(TranslationQuery(
+            query="insincere",
+            max_translations=5
+        ))
 
+        response3 = self.translator.translate(TranslationQuery(
+            query=''"insincere"'',
+            max_translations=5
+        ))
 
-def testQuotedWord(self):
-    response1 = self.translator.translate(TranslationQuery(
-        query="'insincere'",
-        max_translations=5
-    ))
-
-    response2 = self.translator.translate(TranslationQuery(
-        query="insincere",
-        max_translations=5
-    ))
-
-    response3 = self.translator.translate(TranslationQuery(
-        query=''"insincere"'',
-        max_translations=5
-    ))
-
-    assert (response1.translations == response2.translations == response3.translations)
+        assert (response1.translations == response2.translations == response3.translations)
