@@ -43,7 +43,7 @@ class TestBestEffortTranslator(TestCase):
         # [{'translation': 'individual', 'service_name': 'Microsoft - with context', 'quality': 75},
         # {'translation': 'Single', 'service_name': 'Google - without context', 'quality': 70},
         # {'translation': 'individual can make', 'quality': 40, 'service_name': 'Google - with context'}]
-        assert (response.translations[0]['translation'] == "individual")
+        assert (response.translations[0]['translation'] in ["individual", "individuals"])
 
     def test_issue_41__avoidance_of_empty_strings(self):
         # source of example:
