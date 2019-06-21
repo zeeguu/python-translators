@@ -32,7 +32,7 @@ class TestMicrosoftTranslator(TestCase):
             after_context=''
         ))
 
-        self.assertEqual(response.get_raw_translations()[0], 'resigns')
+        self.assertEqual('shall resign', response.get_raw_translations()[0])
 
         response = self.translators['en-nl'].translate(TranslationQuery(
             before_context='Dark',
@@ -40,7 +40,7 @@ class TestMicrosoftTranslator(TestCase):
             after_context='is an unidentified type of matter distinct from dark energy.'
         ))
 
-        self.assertEqual(response.get_raw_translations()[0], 'materie')
+        self.assertEqual('materie', response.get_raw_translations()[0])
 
     def test_unicode_outputs(self):
         response = self.translators['en-de'].translate(TranslationQuery(
@@ -49,14 +49,14 @@ class TestMicrosoftTranslator(TestCase):
             after_context='goes to the forest'
         ))
 
-        self.assertEqual(response.get_raw_translations()[0], u'Löwe')
+        self.assertEqual(u'Löwe', response.get_raw_translations()[0])
 
     def test_unicode_inputs(self):
         response = self.translators['de-en'].translate(TranslationQuery(
             query=u'Löwe'
         ))
 
-        self.assertEqual(response.get_raw_translations()[0], 'Lion')
+        self.assertEqual('Lion', response.get_raw_translations()[0])
 
     def test_html_chars(self):
         response = self.translators['nl-en'].translate(TranslationQuery(
