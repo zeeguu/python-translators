@@ -2,7 +2,7 @@ appdirs==1.4.0
 configobj==5.0.6
 google-api-python-client==1.6.2
 httplib2==0.10.3
-nltk==3.2.2
+nltk==3.4.5
 oauth2client==4.0.0
 packaging==16.8
 pyasn1==0.2.3
