@@ -58,6 +58,8 @@ class WordnikTranslator(Translator):
                     return "verb"
                 elif each[1].startswith("N"):
                     return "noun"
+                elif each[1].startswith("J"):
+                    return "adjective"
 
         return ""
 
@@ -69,7 +71,11 @@ class WordnikTranslator(Translator):
         """
 
         pos = self._get_pos_tag(query)
-        response = self.word_api.getDefinitions(query.query, partOfSpeech=pos)
+        if pos:
+            response = self.word_api.getDefinitions(query.query, partOfSpeech=pos)
+        else:
+            response = self.word_api.getDefinitions(query.query)
+
         if not response:
 
             if self._query_is_uppercase(query):
