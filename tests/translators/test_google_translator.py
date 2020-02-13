@@ -135,7 +135,8 @@ class TestGoogleTranslator(TestCase):
             query='guckten',
             after_context=' betreten, als Trump ihnen in Brüssel vorhielt, sie sollten gefälligst ihre Verteidigungsbudgets ausbauen und entsprechend ihrer Zusage zwei Prozent des Bruttoinlandsproduktes fürs Militär ausgeben. Damit nährt er den alten Verdacht, Trump '
         ))
-        self.assertTrue(len(res.get_raw_translations()[0])<10)
+        first_translation = res.get_raw_translations()[0]
+        self.assertTrue(len(first_translation)<20)
 
 
     def test_issue_31__commma_in_response(self):
@@ -144,6 +145,4 @@ class TestGoogleTranslator(TestCase):
             query='dicht',
             after_context=', sagte eine Sprecherin des Wasserstraßen- und Schifffahrtsamtes (WSA)'
         ))
-        print (res.get_raw_translations()[0])
-
         self.assertFalse("," in res.get_raw_translations()[0])

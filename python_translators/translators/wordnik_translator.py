@@ -1,3 +1,5 @@
+from urllib.error import HTTPError
+
 from python_translators.translators.translator import Translator
 
 from python_translators.translation_query import TranslationQuery
@@ -71,21 +73,29 @@ class WordnikTranslator(Translator):
         """
 
         pos = self._get_pos_tag(query)
-        if pos:
-            response = self.word_api.getDefinitions(query.query, partOfSpeech=pos)
-        else:
-            response = self.word_api.getDefinitions(query.query)
 
-        if not response:
+        try:
+            if pos:
+                response = self.word_api.getDefinitions(query.query, partOfSpeech=pos)
+            else:
+                response = self.word_api.getDefinitions(query.query)
 
-            if self._query_is_uppercase(query):
-                query.query = query.query.lower()
-                return self._translate(query)
+        except HTTPError as e:
+            print(f"error code returned: {e.code}")
+            if e.code == 429:
+                logger.info("Wordnik returned 429: 'Too Many Requests'!")
 
-            elif self._query_starts_with_quote(query):
-                # try to see whether the problem is due to 'quotes' around the word name
-                self._remove_quotes(query)
-                return self._translate(query)
+            elif e.code == 404:
+                # Wordnik API will return 404 for Uppercase or quoted words
+                # in that case we adapt the query and retry
+                if self._query_is_uppercase(query):
+                    query.query = query.query.lower()
+                    return self._translate(query)
+
+                elif self._query_starts_with_quote(query):
+                    # try to see whether the problem is due to 'quotes' around the word name
+                    self._remove_quotes(query)
+                    return self._translate(query)
 
         if not response:
             response = []

@@ -31,16 +31,16 @@ class TestMicrosoftTranslator(TestCase):
             query='treedt af',
             after_context=''
         ))
-
-        self.assertEqual('shall resign', response.get_raw_translations()[0])
+        translation = response.get_raw_translations()[0]
+        self.assertIn(translation, ['shall resign', 'resigns'])  # was 'shall resign' but not anymore as of 2020
 
         response = self.translators['en-nl'].translate(TranslationQuery(
             before_context='Dark',
             query='matter',
             after_context='is an unidentified type of matter distinct from dark energy.'
         ))
-
-        self.assertEqual('materie', response.get_raw_translations()[0])
+        translation = response.get_raw_translations()[0]
+        self.assertEqual('materie', translation)
 
     def test_unicode_outputs(self):
         response = self.translators['en-de'].translate(TranslationQuery(

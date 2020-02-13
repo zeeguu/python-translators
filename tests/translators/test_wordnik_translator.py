@@ -34,13 +34,13 @@ class TestWordnikTranslator(TestCase):
         # The first is the month; the second is the verb
         assert response.translations != response2.translations
 
-    def testWordnikDoesNotLowercaseByItself(self):
+    def testWordnikShouldLowercaseByItself(self):
         response = self.translator.translate(TranslationQuery(
             query="Conjunction",
             max_translations=5
         ))
 
-        assert response.translations == []
+        self.assertFalse(response.translations == [])
 
     def testQuotedWord(self):
         response1 = self.translator.translate(TranslationQuery(
@@ -58,4 +58,6 @@ class TestWordnikTranslator(TestCase):
             max_translations=5
         ))
 
-        assert (response1.translations == response2.translations == response3.translations)
+        assert (len(response1.translations) ==
+                len(response2.translations) ==
+                len(response3.translations))
