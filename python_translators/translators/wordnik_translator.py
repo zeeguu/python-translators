@@ -90,13 +90,13 @@ class WordnikTranslator(Translator):
                 # in that case we adapt the query and retry
                 if self._query_is_uppercase(query):
                     query.query = query.query.lower()
-                    print("trying to translate {query.query} instead")
+                    print(f"trying to translate {query.query} instead")
                     return self._translate(query)
 
                 elif self._query_starts_with_quote(query):
                     # try to see whether the problem is due to 'quotes' around the word name
                     self._remove_quotes(query)
-                    print("trying to translate {query.query} instead")
+                    print(f"trying to translate {query.query} instead")
                     return self._translate(query)
 
         if not response:
