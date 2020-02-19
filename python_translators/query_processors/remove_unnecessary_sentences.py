@@ -6,7 +6,7 @@ import os.path
 import copy
 
 NLTK_DATA_PATH = "~/nltk_data/tokenizers/punkt/%(language)s.pickle"
-# on  windows it seems default install of ntlk is in AppData/roaming under current user.
+# on  windows it seems default install of NLTK is in AppData/roaming under current user.
 NLTK_WINDOWS_DATA_PATH = "~/AppData/Roaming/nltk_data/tokenizers/punkt/%(language)s.pickle"
 
 
@@ -36,7 +36,7 @@ class RemoveUnnecessarySentences(QueryProcessor):
         print(f"about to expand: {resource_url} ")
         resource_url = os.path.expanduser(resource_url)
 
-        if os.name == "nt":  # if  a windows, replace \\ with / and put 'file://' in  front
+        if os.name == "nt":  # if on windows, replace '\\' with '/' and put 'file://' in  front
             resource_url = "file://" + resource_url.replace("\\", '/')
 
         print(f"about to load: {resource_url}")
