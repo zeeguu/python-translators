@@ -27,7 +27,6 @@ class RemoveUnnecessarySentences(QueryProcessor):
 
     @classmethod
     def _load_tokenizer(cls, language_code):
-        #todo
         if os.name == "nt":  # nt is the value for windows, load special path if on windows
             resource_url = NLTK_WINDOWS_DATA_PATH % {'language': code_to_full_language(language_code)}
 
