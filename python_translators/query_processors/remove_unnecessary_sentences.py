@@ -6,6 +6,8 @@ import os.path
 import copy
 
 NLTK_DATA_PATH = "~/nltk_data/tokenizers/punkt/%(language)s.pickle"
+# on  windows it seems default install of ntlk is in AppData/roaming under current user.
+NLTK_WINDOWS_DATA_PATH = "~/AppData/Roaming/nltk_data/tokenizers/punkt/%(language)s.pickle"
 
 
 class RemoveUnnecessarySentences(QueryProcessor):
@@ -25,13 +27,22 @@ class RemoveUnnecessarySentences(QueryProcessor):
 
     @classmethod
     def _load_tokenizer(cls, language_code):
-        resource_url = NLTK_DATA_PATH % {'language': code_to_full_language(language_code)}
+        #todo
+        if os.name == "nt":  # nt is the value for windows, load special path if on windows
+            resource_url = NLTK_WINDOWS_DATA_PATH % {'language': code_to_full_language(language_code)}
+
+        else:
+            resource_url = NLTK_DATA_PATH % {'language': code_to_full_language(language_code)}
+
         print(f"about to expand: {resource_url} ")
         resource_url = os.path.expanduser(resource_url)
+
+        if os.name == "nt":  # if  a windows, replace \\ with / and put 'file://' in  front
+            resource_url = "file://" + resource_url.replace("\\", '/')
+
         print(f"about to load: {resource_url}")
 
         tokenizer = nltk.data.load(resource_url)
-
         return tokenizer
 
     def _process_context(self, context: str, token_index: -1):
