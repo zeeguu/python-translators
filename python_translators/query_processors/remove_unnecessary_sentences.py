@@ -27,20 +27,19 @@ class RemoveUnnecessarySentences(QueryProcessor):
 
     @classmethod
     def _load_tokenizer(cls, language_code):
-        if os.name == "nt":  # nt is the value for windows, load special path if on windows
+        on_windows = os.name == "nt"  # nt is the value for windows,
+        if on_windows:
             resource_url = NLTK_WINDOWS_DATA_PATH % {'language': code_to_full_language(language_code)}
-
         else:
             resource_url = NLTK_DATA_PATH % {'language': code_to_full_language(language_code)}
 
         print(f"about to expand: {resource_url} ")
         resource_url = os.path.expanduser(resource_url)
 
-        if os.name == "nt":  # if on windows, replace '\\' with '/' and put 'file://' in  front
+        if on_windows:
             resource_url = "file://" + resource_url.replace("\\", '/')
 
         print(f"about to load: {resource_url}")
-
         tokenizer = nltk.data.load(resource_url)
         return tokenizer
 
