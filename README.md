@@ -10,7 +10,7 @@ This library contains a few wrappers for translation services. The GlosbeTransla
 
 1. (Optional) `virtualenv .`
 2. `pip install -r requirements.txt`
-3. `python setup.y install`
+3. `python setup.py install`
 
 ## Examples
 
