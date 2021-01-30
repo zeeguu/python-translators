@@ -1,6 +1,6 @@
 import logging
 
-logger = logging.getLogger('app')
+logger = logging.getLogger('python_translators')
 logger.setLevel(logging.DEBUG)
 
 # General logging tracking ALL logs
