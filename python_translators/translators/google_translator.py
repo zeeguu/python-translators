@@ -35,7 +35,7 @@ class GoogleTranslator(Translator):
         )
 
         self.key = key
-        self.translation_service = build('translate', 'v2', developerKey=key)
+        self.translation_service = build('translate', 'v2', developerKey=key, cache_discovery=False)
 
         self.add_query_processor(EscapeHtml())
         self.add_response_processor(UnescapeHtml())
