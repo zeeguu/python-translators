@@ -1,6 +1,6 @@
 appdirs==1.4.0
 configobj==5.0.6
-google-api-python-client==1.6.2
+google-api-python-client==1.12.8
 httplib2==0.10.3
 nltk==3.4.5
 oauth2client==4.0.0
@@ -10,6 +10,6 @@ pyasn1-modules==0.0.8
 pyparsing==2.1.10
 requests==2.20.0
 rsa==3.4.2
-six==1.10.0
+six===1.15.0
 uritemplate==3.0.0
 torrequest==0.1.0
