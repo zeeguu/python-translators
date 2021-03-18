@@ -10,6 +10,6 @@ pyasn1-modules==0.0.8
 pyparsing==2.1.10
 requests==2.20.0
 rsa==3.4.2
-six===1.15.0
+six==1.15.0
 uritemplate==3.0.0
 torrequest==0.1.0
