@@ -18,5 +18,8 @@ setuptools.setup(
         "configobj",
         "requests",
         "nltk",
-        "wordnik-py3")
+        "wordnik-py3",
+        "azure-ai-translation-text",
+        "azure-core",
+    ),
 )
