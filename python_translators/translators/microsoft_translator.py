@@ -10,6 +10,9 @@ from python_translators.translators.translator import Translator
 from python_translators.translation_query import TranslationQuery
 from python_translators.translation_response import TranslationResponse
 from python_translators.translation_costs import TranslationCosts
+
+# Using of the azure API wrapper package as described here:
+# https://learn.microsoft.com/en-us/python/api/overview/azure/ai-translation-text-readme?view=azure-python
 from azure.core.credentials import AzureKeyCredential
 from azure.ai.translation.text import TextTranslationClient
 
