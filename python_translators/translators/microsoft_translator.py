@@ -10,11 +10,11 @@ from python_translators.translators.translator import Translator
 from python_translators.translation_query import TranslationQuery
 from python_translators.translation_response import TranslationResponse
 from python_translators.translation_costs import TranslationCosts
+from azure.core.credentials import AzureKeyCredential
+from azure.ai.translation.text import TextTranslationClient
 
-TOKEN_SERVICE_URL = 'https://api.cognitive.microsoft.com/sts/v1.0/issueToken'
-TRANSLATION_SERVICE_URL = 'https://api.cognitive.microsofttranslator.com/translate'
 
-HTML_TAG = 'span'
+HTML_TAG = "span"
 
 COST_PER_CHARACTER = 1000 / 1_000_000  # 10 euro per 1 million characters
 
@@ -28,8 +28,15 @@ class MicrosoftTranslator(Translator):
     gt_instance = None
     token = None
 
-    def __init__(self, source_language: str, target_language: str, key: str, translator_name: str = 'Microsoft',
-                 quality: int = 50, service_name: str = 'Microsoft') -> None:
+    def __init__(
+        self,
+        source_language: str,
+        target_language: str,
+        key: str,
+        translator_name: str = "Microsoft",
+        quality: int = 50,
+        service_name: str = "Microsoft",
+    ) -> None:
         super(MicrosoftTranslator, self).__init__(
             source_language=source_language,
             target_language=target_language,
@@ -39,104 +46,41 @@ class MicrosoftTranslator(Translator):
         )
 
         self.key = key
-        self.refresh_token_if_needed()
+
+        credential = AzureKeyCredential(self.key)
+        self.text_translator = TextTranslationClient(credential=credential)
 
         self.add_query_processor(EscapeHtml())
         self.add_response_processor(UnescapeHtml())
 
     @staticmethod
     def _build_raw_query(query: TranslationQuery) -> str:
-        return f'{query.before_context}<{HTML_TAG}>{query.query}</{HTML_TAG}>{query.after_context}'
+        return f"{query.before_context}<{HTML_TAG}>{query.query}</{HTML_TAG}>{query.after_context}"
 
     def _translate(self, query: TranslationQuery) -> TranslationResponse:
 
         api_query = MicrosoftTranslator._build_raw_query(query)
 
-        translation = self.send_translation_request(api_query, 'application/json')
+        response_json = self.text_translator.translate(
+            body=[api_query],
+            to_language=[self.target_language],
+            from_language=self.source_language,
+        )
+
+        translation = (
+            response_json[0]["translations"][0]["text"] if response_json else None
+        )
 
         # Enclose in <s> tag to make it valid XML (<s> is arbitrarily chosen)
-        xml_object = ET.fromstring(f'<s>{translation}</s>')
+        xml_object = ET.fromstring(f"<s>{translation}</s>")
 
         parsed_translation = xml_object.find(HTML_TAG).text
         parsed_translation = parsed_translation.strip()
 
         return TranslationResponse(
             translations=[self.make_translation(parsed_translation)],
-            costs=TranslationCosts(
-                money=0
-            )
+            costs=TranslationCosts(money=0),
         )
 
     def compute_money_costs(self, query: TranslationQuery) -> float:
         return len(MicrosoftTranslator._build_raw_query(query)) * COST_PER_CHARACTER
-
-    def send_translation_request(self, query: str, content_type: str) -> str:
-        """
-        Sends a translation request to the Microsoft Translation service, query parameters are
-
-        :param query:
-        :param content_type:
-        :return:
-        """
-
-        self.refresh_token_if_needed()
-
-        # Build query parameters
-        query_params = {
-            'api-version': '3.0.',
-            'textType': 'html',
-            'from': self.source_language,
-            'to': self.target_language
-        }
-
-        # Build headers
-        headers = {
-            'Accept': 'application/xml',
-            'Authorization': 'Bearer ' + self.token['token'],
-            'contentType': content_type,
-        }
-
-        # Send request to API
-        encoded_params = urllib.parse.urlencode(query_params)
-
-        response = requests.post(f'{TRANSLATION_SERVICE_URL}?{encoded_params}', headers=headers, json=[{'Text': query}])
-
-        json_object = json.loads(response.text)
-        translation = json_object[0]["translations"][0]['text']
-        return translation
-
-    def refresh_token_if_needed(self) -> None:
-        if MicrosoftTranslator.token_is_invalid():
-            MicrosoftTranslator.token = MicrosoftTranslator.request_token(self.key)
-
-    @staticmethod
-    def request_token(key) -> dict:
-        logger.info(format_dict_for_logging(dict(EVENT='MICROSOFT_REQUEST_TOKEN')))
-        t1 = current_milli_time()
-
-        headers = {
-            "Ocp-Apim-Subscription-Key": key,
-            "Accept": 'application/jwt',
-            'Content-Type': 'application/json',
-        }
-
-        response = requests.post('https://api.cognitive.microsoft.com/sts/v1.0/issueToken', headers=headers)
-
-        time_passed = current_milli_time() - t1
-
-        logger.info(format_dict_for_logging(dict(EVENT='MICROSOFT_RECEIVED_TOKEN', TIME_PASSED=time_passed)))
-        if response.status_code == 401:
-            raise Exception('Access denied due to invalid subscription key. Make sure to provide a valid key for an '
-                            'active subscription.')
-
-        if response.status_code != 200:
-            raise Exception('Something went wrong when requesting a new token.')
-
-        return {
-            'expiresAt': time.time() + (60 * 8),  # expire after 8 minutes
-            'token': response.text,
-        }
-
-    @staticmethod
-    def token_is_invalid():
-        return MicrosoftTranslator.token is None or time.time() >= MicrosoftTranslator.token['expiresAt']
