@@ -54,7 +54,8 @@ class TranslationQuery(object):
         Note: the current implementation does not use the word_index_for_query
         """
 
-        result = re.search(r"\b" + re.escape(query) + r"\b", context).span()
+        # using rf together based on: https://stackoverflow.com/a/55810892
+        result = re.search(rf"\b{query}\b", context).span()
 
         before_context = context[0 : result[0]]
         after_context = context[result[1] :]
