@@ -43,7 +43,7 @@ class TranslationQuery(object):
         cls,
         query: str,
         context: str,
-        word_index_for_query: int,
+        word_index_for_query: int = 1,
         max_translations: int = 1,
     ):
         """
@@ -57,7 +57,7 @@ class TranslationQuery(object):
         result = re.search(r"\b" + re.escape(query) + r"\b", context).span()
 
         before_context = context[0 : result[0]]
-        after_context = context[result[1] + len(query) :]
+        after_context = context[result[1] :]
 
         return cls(
             query,
