@@ -23,9 +23,7 @@ class TestMicrosoftTranslator(TestCase):
         )
 
         m_response = self.microsoft.translate(query)
-        print(m_response.translations)
         g_response = self.google.translate(query)
-        print(g_response.translations)
 
         self.assertTrue(
             m_response.get_raw_translations() == g_response.get_raw_translations()
