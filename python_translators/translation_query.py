@@ -67,7 +67,6 @@ class TranslationQuery(object):
             max_translations=max_translations,
         )
 
-    @classmethod
     def is_context_aware_request(self):
         return self.before_context or self.after_context
 
