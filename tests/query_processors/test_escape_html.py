@@ -9,15 +9,13 @@ class TestEscapeHtml(TestCase):
 
     def test_escaping(self):
         q = TranslationQuery(
-            before_context='"Hello", ',
-            query='said',
-            after_context="the man."
+            before_context='"Hello", ', query="said", after_context="the man."
         )
 
         result = self.query_processor.process_query(q)
 
-        self.assertEqual(result.before_context, '&quot;Hello&quot;, ')
+        self.assertEqual(result.before_context, "&quot;Hello&quot;, ")
 
         # query and after_context should remain the same
-        self.assertEquals(result.query, q.query)
-        self.assertEquals(result.after_context, q.after_context)
+        self.assertEqual(result.query, q.query)
+        self.assertEqual(result.after_context, q.after_context)
