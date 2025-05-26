@@ -28,10 +28,6 @@ class GoogleTranslatorFactory(object):
 
         translator = GoogleTranslatorFactory.build_clean(source_language, target_language, key)
 
-        # Right now only apply the processor to Dutch, English, German, French, Spanish
-        if source_language in ['nl', 'en', 'de', 'fr', 'es']:
-            translator.add_query_processor(RemoveUnnecessarySentences(source_language))
-
         if source_language in list(conjunctions.keys()):
             translator.add_query_processor(RemoveUnnecessaryConjunctions(conjunctions[source_language]))
 
